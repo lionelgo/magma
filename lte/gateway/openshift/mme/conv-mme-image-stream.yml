@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ImageStream
+metadata:
+    name: conv-oai-mme
+    namespace: oaicicd-tmp
+status:
+    tag: ci-tmp

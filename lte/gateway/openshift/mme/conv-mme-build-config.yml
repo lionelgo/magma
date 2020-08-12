@@ -1,0 +1,32 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: "conv-oai-mme-build-config"
+spec:
+    runPolicy: "Serial"
+    source:
+        git:
+            uri: "https://github.com/rdefosse/magma.git"
+            ref: "oai-mme-docker-file-rh8.2"
+            httpProxy: http://proxy.eurecom.fr:8080
+            httpsProxy: https://proxy.eurecom.fr:8080
+        secrets:
+        # The Secret SHALL be created from lycos (or any RHEL8 physical computer)
+        - secret:
+            name: etc-pki-entitlement
+          destinationDir: etc-pki-entitlement
+        # Again these config maps SHALL be created from lycos (or any RHEL8 physical computer)
+        configMaps:
+          - configMap:
+              name: rhsm-conf
+            destinationDir: rhsm-conf
+          - configMap:
+              name: rhsm-ca
+            destinationDir: rhsm-ca
+    strategy:
+        dockerStrategy:
+            dockerfilePath: "lte/gateway/docker/mme/Dockerfile.rhel8-2.oc4-4"
+    output:
+        to:
+            kind: "ImageStreamTag"
+            name: "conv-oai-mme:ci-tmp"

@@ -1,0 +1,274 @@
+################################################################
+# Builder Image (can also be used as developer's image)
+################################################################
+FROM registry.access.redhat.com/ubi8/ubi:latest as conv-oai-mme-builder
+
+ARG FEATURES=mme_oai
+ENV MAGMA_ROOT=/magma
+ENV C_BUILD=/build/c
+
+RUN mkdir -p $C_BUILD
+# Add Converged MME sources to the container
+COPY ./ $MAGMA_ROOT
+
+RUN rm -Rf /etc/rhsm/ca /etc/pki/entitlement
+# Copy the entitlements
+COPY ./etc-pki-entitlement /etc/pki/entitlement
+
+# Copy the subscription manager configurations
+COPY ./rhsm-conf /etc/rhsm
+COPY ./rhsm-ca /etc/rhsm/ca
+
+RUN rm /etc/rhsm-host && \
+    # Initialize /etc/yum.repos.d/redhat.repo
+    # See https://access.redhat.com/solutions/1443553
+    yum repolist --disablerepo=* && \
+    subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms && \
+    yum update -y && \
+    yum -y install --enablerepo="codeready-builder-for-rhel-8-x86_64-rpms" \
+       gnupg \
+       wget \
+       autoconf \
+       automake \
+       make \
+       cmake3 \
+       bzip2 \
+       libtool \
+       curl \
+       make \
+       unzip \
+       git \ 
+       ninja-build \ 
+       pkg-config \
+       gcc \
+       gcc-c++ \
+       ca-certificates \
+       vim \
+       openssl-devel \
+       golang \
+       python2 \
+       perl \
+    # Install FMT lib requirements
+       elfutils-libelf-devel-static \
+       libdwarf-devel \
+    # Install Folly requirements
+       cmake \
+       boost \
+       boost-devel \
+       libevent-devel \
+       glog-devel \
+       gflags-devel \
+       lz4-devel \
+       zlib-devel \
+       binutils-devel \
+       bzip2-devel \
+       libaio-devel \
+    # Install FreeDiameter requirements
+       lksctp-tools \
+       lksctp-tools-devel \
+       bison \
+       flex \
+       patch \
+       libidn-devel \
+       gnutls-devel \
+       libgcrypt-devel \
+    # Install libgtpnl requirements
+       libmnl-devel \
+    # Install Nettle requirements
+       libconfig-devel \
+       libxml2-devel \
+       libyaml-devel \
+    # for some reasons diff, cmp and file are not present in ubi
+       diffutils \
+       file && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum
+
+WORKDIR $MAGMA_ROOT/lte/gateway/c/oai/patches
+COPY scripts/0001-opencoord.org.freeDiameter.patch .
+COPY scripts/folly-gflagslib-fix.patch .
+WORKDIR /
+
+RUN git config --global http.proxy http://proxy.eurecom.fr:8080
+
+##### Facebook Folly C++ lib
+WORKDIR /
+RUN echo "Install fmtlib required by Folly" && \
+    git clone https://github.com/fmtlib/fmt.git && cd fmt && \
+    mkdir _build && cd _build && \
+    cmake3 .. && \
+    make -j`nproc` && \
+    make install && \
+    cd / && \
+    echo "Install Double Conversion" && \
+    git clone --depth=1 --branch=v3.1.5 https://github.com/google/double-conversion.git && cd double-conversion && \
+    cmake3 . && \
+    make -j`nproc` && \
+    make install && \
+    cd / && \
+    echo "Install Unwind" && \
+    git clone --depth=1 --branch=v1.2.1 https://github.com/libunwind/libunwind.git && cd libunwind && \
+    ./autogen.sh && \
+    ./configure && \
+    make -j`nproc` && \
+    make install && \
+    cd / && \
+    echo "Install Folly" && \
+    git clone https://github.com/facebook/folly.git /folly && \
+    cd /folly && \
+    git checkout -f efe2962d54734d9e899f592dfaa68055e7752858 && \
+    patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/folly-gflagslib-fix.patch && \
+    mkdir _build && \
+    cd _build && \
+    cmake "-DFPHSA_NAME_MISMATCHED=true" .. && \
+    make -j`nproc` && \
+    make install
+
+##### FreeDiameter
+RUN git clone https://github.com/OPENAIRINTERFACE/opencord.org.freeDiameter.git freediameter && \
+    cd freediameter && \
+    git pull origin master && \
+    git log -n1 && \
+    echo "Patching dict_S6as6d" && \
+    patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/0001-opencoord.org.freeDiameter.patch && \
+    mkdir build && \
+    cd build && \
+    cmake3 ../ && \
+    grep DISABLE_SCTP CMakeCache.txt && \
+    awk '{if (/^DISABLE_SCTP/) gsub(/OFF/, "ON"); print}' CMakeCache.txt > tmp && mv tmp CMakeCache.txt && \
+    grep DISABLE_SCTP CMakeCache.txt && \
+    make -j`nproc` && \
+    make install
+
+##### GRPC and it's dependencies
+RUN git clone --recurse-submodules -b v1.15.0 https://github.com/grpc/grpc && \
+    echo "Install c-ares" && \
+    cd grpc && \
+    cd third_party/cares/cares && \
+    git fetch origin && \
+    git checkout cares-1_13_0 && \
+    mkdir -p cmake/build && \
+    cd cmake/build && \
+    cmake3 -DCMAKE_BUILD_TYPE=Release ../.. && \
+    make -j`nproc` && \
+    make install && \
+    cd ../../../../.. && \
+    rm -rf third_party/cares/cares && \
+    echo "Install zlib" && \
+    cd third_party/zlib && \
+    mkdir -p cmake/build && \
+    cd cmake/build && \
+    cmake3 -DCMAKE_BUILD_TYPE=Release ../.. && \
+    make -j`nproc` && \
+    make install && \
+    cd ../../../.. && \
+    rm -rf third_party/zlib && \
+    echo "Install protobuf" && \
+    cd third_party/protobuf && \
+    git submodule update --init --recursive  && \
+    ./autogen.sh  && \
+    ./configure  && \
+    make -j`nproc` && \
+    make install && \
+    cd ../.. && \
+    rm -rf third_party/protobuf && \
+    ldconfig && \
+    echo "Install GRPC" && \
+    mkdir -p cmake/build && \
+    cd cmake/build && \
+    cmake3 \
+        -DgRPC_INSTALL=ON \
+        -DBUILD_SHARED_LIBS=ON \
+        -DgRPC_BUILD_TESTS=OFF \
+        -DgRPC_PROTOBUF_PROVIDER=package \
+        -DgRPC_ZLIB_PROVIDER=package \
+        -DgRPC_CARES_PROVIDER=package \
+        -DgRPC_SSL_PROVIDER=package \
+        -DCMAKE_BUILD_TYPE=Release \
+        ../.. && \
+    make -j`nproc` && \
+    make install
+
+##### Prometheus CPP
+RUN git clone https://github.com/jupp0r/prometheus-cpp.git && \
+    cd prometheus-cpp && \
+    git checkout d8326b2bba945a435f299e7526c403d7a1f68c1f && \
+    git submodule init && git submodule update && \
+    mkdir _build && \
+    cd _build/ && \
+    cmake3 .. && \
+    make -j`nproc` && \
+    make install
+
+##### Redis CPP
+RUN git clone https://github.com/cpp-redis/cpp_redis.git && \
+    cd cpp_redis && \
+    git checkout bbe38a7f83de943ffcc90271092d689ae02b3489 && \
+    git submodule init && git submodule update && \
+    mkdir build && cd build && \
+    cmake3 .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j`nproc` && \
+    make install
+
+##### NETTLE
+RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
+    tar -xf nettle-2.5.tar.gz && \
+    cd nettle-2.5 && \
+    mkdir build && \
+    cd build/ && \
+    ../configure  && \
+    make -j`nproc` && \
+    make install
+
+##### liblfds
+# https://www.liblfds.org/mediawiki/index.php?title=r7.1.0:Building_Guide_(liblfds)
+RUN wget https://liblfds.org/downloads/liblfds%20release%207.1.0%20source.tar.bz2  && \
+    tar -xf liblfds\ release\ 7.1.0\ source.tar.bz2  && \
+    cd liblfds/liblfds7.1.0/liblfds710/build/gcc_gnumake/ && \
+    make -j`nproc` && \
+    make ar_install
+
+##### libgtpnl
+# review https://github.com/OPENAIRINTERFACE/openair-cn/blob/master/build/tools/build_helper.gtpnl
+RUN git clone https://git.osmocom.org/libgtpnl && \
+    cd libgtpnl && \
+    git reset --hard 345d687 && \
+    autoreconf -fi && \
+    ./configure && \
+    make -j`nproc` && \
+    make install && \
+    ldconfig
+
+#####  asn1c
+RUN git clone https://gitlab.eurecom.fr/oai/asn1c.git && \
+    cd asn1c && \
+    ./configure && \
+    make -j`nproc` && \
+    make install
+
+# Build MME executables
+RUN ldconfig && \
+    cd $MAGMA_ROOT/lte/gateway && \
+    echo $FEATURES && \ 
+    make build_oai && \
+    make build_sctpd
+
+#Temporary to get all the shared libraries
+RUN echo "ldd $C_BUILD/oai/oai_mme/mme" && \
+    ldd $C_BUILD/oai/oai_mme/mme
+RUN echo "ldd $C_BUILD/sctpd/sctpd" && \
+    ldd $C_BUILD/sctpd/sctpd
+
+################################################################
+# Target Image
+################################################################
+FROM registry.access.redhat.com/ubi8/ubi:latest as conv-oai-mme
+
+ENV MAGMA_ROOT=/magma
+ENV C_BUILD=/build/c
+
+RUN yum update -y \
+    && yum clean all -y \
+    && rm -rf /var/cache/yum
+
+
