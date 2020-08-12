@@ -8,8 +8,6 @@ ENV MAGMA_ROOT=/magma
 ENV C_BUILD=/build/c
 
 RUN mkdir -p $C_BUILD
-# Add Converged MME sources to the container
-COPY ./ $MAGMA_ROOT
 
 RUN rm -Rf /etc/rhsm/ca /etc/pki/entitlement
 # Copy the entitlements
@@ -84,15 +82,15 @@ RUN rm /etc/rhsm-host && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
-WORKDIR $MAGMA_ROOT/lte/gateway/c/oai/patches
-COPY scripts/0001-opencoord.org.freeDiameter.patch .
-COPY scripts/folly-gflagslib-fix.patch .
-WORKDIR /
-
+# Add Converged MME sources to the container
+COPY ./ $MAGMA_ROOT
+# Currently hard-coded
 RUN git config --global http.proxy http://proxy.eurecom.fr:8080
 
-##### Facebook Folly C++ lib
+# All works will be done from root of file system
 WORKDIR /
+
+##### Facebook Folly C++ lib
 RUN echo "Install fmtlib required by Folly" && \
     git clone https://github.com/fmtlib/fmt.git && cd fmt && \
     mkdir _build && cd _build && \
