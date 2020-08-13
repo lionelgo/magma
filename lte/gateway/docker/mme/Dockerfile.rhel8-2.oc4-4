@@ -10,12 +10,9 @@ ENV C_BUILD=/build/c
 RUN mkdir -p $C_BUILD
 
 # Add Converged MME sources to the container
-COPY ./ $MAGMA_ROOT
-WORKDIR $MAGMA_ROOT/lte
-COPY ./lte/ .
+COPY . $MAGMA_ROOT
 # One by One since docker on OC does not like current dockerfile syntax
 RUN ls -lst $MAGMA_ROOT
-RUN ls -lst $MAGMA_ROOT/lte
 RUN ls -lst $MAGMA_ROOT/lte/gateway/c/oai/patches/
 
 # Copy the entitlements
