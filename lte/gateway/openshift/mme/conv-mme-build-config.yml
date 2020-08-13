@@ -12,15 +12,15 @@ spec:
         # The Secret SHALL be created from lycos (or any RHEL8 physical computer)
         - secret:
             name: etc-pki-entitlement
-          destinationDir: etc-pki-entitlement
+          destinationDir: lte/gateway/openshift/etc-pki-entitlement
         # Again these config maps SHALL be created from lycos (or any RHEL8 physical computer)
         configMaps:
           - configMap:
               name: rhsm-conf
-            destinationDir: rhsm-conf
+            destinationDir: lte/gateway/openshift/rhsm-conf
           - configMap:
               name: rhsm-ca
-            destinationDir: rhsm-ca
+            destinationDir: lte/gateway/openshift/rhsm-ca
     strategy:
         dockerStrategy:
             dockerfilePath: "lte/gateway/docker/mme/Dockerfile.rhel8-2.oc4-4"
