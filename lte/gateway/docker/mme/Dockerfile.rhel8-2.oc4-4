@@ -83,6 +83,8 @@ RUN rm /etc/rhsm-host && \
 
 # Add Converged MME sources to the container
 COPY ./ $MAGMA_ROOT
+RUN ls -lst $MAGMA_ROOT
+RUN ls -lst $MAGMA_ROOT/lte/gateway/c/oai/patches/
 # Currently hard-coded
 RUN git config --global http.proxy http://proxy.eurecom.fr:8080
 
