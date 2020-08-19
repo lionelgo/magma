@@ -198,6 +198,9 @@ RUN git clone --recurse-submodules -b v1.15.0 https://github.com/grpc/grpc && \
     make -j`nproc` && \
     make install
 
+#debug
+RUN which protoc
+
 ##### Prometheus CPP
 RUN git clone https://github.com/jupp0r/prometheus-cpp.git && \
     cd prometheus-cpp && \
@@ -252,6 +255,26 @@ RUN git clone https://git.osmocom.org/libgtpnl && \
 RUN git clone https://gitlab.eurecom.fr/oai/asn1c.git && \
     cd asn1c && \
     ./configure && \
+    make -j`nproc` && \
+    make install
+
+##### lib nlohmann json
+RUN git clone https://github.com/nlohmann/json.git && \
+    cd json && \
+    git log -n1 && \
+    mkdir _build && \
+    cd _build && \
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .. && \
+    make -j`nproc` && \
+    make install
+
+##### lib yaml-cpp
+RUN git clone https://github.com/jbeder/yaml-cpp.git && \
+    cd yaml-cpp && \
+    git checkout -f yaml-cpp-0.6.3 && \
+    mkdir _build && \
+    cd _build && \
+    cmake -DYAML_BUILD_SHARED_LIBS=ON .. && \
     make -j`nproc` && \
     make install
 
