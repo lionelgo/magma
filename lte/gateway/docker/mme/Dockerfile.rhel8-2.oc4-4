@@ -199,7 +199,9 @@ RUN git clone --recurse-submodules -b v1.15.0 https://github.com/grpc/grpc && \
     make install
 
 #debug
-RUN which protoc
+RUN ldd /usr/local/bin/grpc_cpp_plugin
+RUN ldd /usr/local/bin/protoc
+RUN ls -ls /usr/local/lib/libprotoc.so.17
 
 ##### Prometheus CPP
 RUN git clone https://github.com/jupp0r/prometheus-cpp.git && \
@@ -266,7 +268,8 @@ RUN git clone https://github.com/nlohmann/json.git && \
     cd _build && \
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .. && \
     make -j`nproc` && \
-    make install
+    make install && \
+    cp /usr/local/include/nlohmann/json.hpp /usr/local/include/
 
 ##### lib yaml-cpp
 RUN git clone https://github.com/jbeder/yaml-cpp.git && \
