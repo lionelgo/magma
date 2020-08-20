@@ -89,7 +89,7 @@ RUN rm /etc/rhsm-host && \
 ##### lib czmq
 RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
     cd libzmq && \
-    ./autogen.sh &&
+    ./autogen.sh && \
     ./configure && \
     make && \
     make check && \
