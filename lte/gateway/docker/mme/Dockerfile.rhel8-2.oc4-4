@@ -75,7 +75,6 @@ RUN rm /etc/rhsm-host && \
     # Install libgtpnl requirements
        libmnl-devel \
     # Install Nettle requirements
-       nettle-devel \
        libconfig-devel \
        libxml2-devel \
        libyaml-devel \
@@ -86,8 +85,6 @@ RUN rm /etc/rhsm-host && \
        file && \
     yum clean all -y && \
     rm -rf /var/cache/yum
-
-RUN rpm -q --whatrequires nettle-devel
 
 ##### lib czmq
 RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
@@ -187,14 +184,14 @@ RUN git clone https://github.com/cpp-redis/cpp_redis.git && \
     make install
 
 ##### NETTLE
-#RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
-#    tar -xf nettle-2.5.tar.gz && \
-#    cd nettle-2.5 && \
-#    mkdir build && \
-#    cd build/ && \
-#    ../configure  && \
-#    make -j`nproc` && \
-#    make install
+RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
+    tar -xf nettle-2.5.tar.gz && \
+    cd nettle-2.5 && \
+    mkdir build && \
+    cd build/ && \
+    ../configure  && \
+    make -j`nproc` && \
+    make install
 
 ##### liblfds
 # https://www.liblfds.org/mediawiki/index.php?title=r7.1.0:Building_Guide_(liblfds)
