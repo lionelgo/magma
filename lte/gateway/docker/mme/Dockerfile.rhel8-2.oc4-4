@@ -79,8 +79,8 @@ RUN rm /etc/rhsm-host && \
        libconfig-devel \
        libxml2-devel \
        libyaml-devel \
-       libzmq \
-       libzmq1 \
+       zeromq \
+       zeromq-devel \
     # for some reasons diff, cmp and file are not present in ubi
        diffutils \
        file && \
@@ -275,12 +275,12 @@ RUN git clone https://github.com/jbeder/yaml-cpp.git && \
     make install
 
 ##### lib czmq
-RUN git clone --branch=v4.1.0 https://github.com/zeromq/czmq.git && \
-    cd czmq && \
-    ./autogen.sh && \
-    ./configure && \
-    make check && \
-    make install
+#RUN git clone --branch=v4.1.0 https://github.com/zeromq/czmq.git && \
+#    cd czmq && \
+#    ./autogen.sh && \
+#    ./configure && \
+#    make check && \
+#    make install
 
 # Build MME executables
 RUN ldconfig --verbose && \
