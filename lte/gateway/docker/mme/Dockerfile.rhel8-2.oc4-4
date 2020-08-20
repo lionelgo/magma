@@ -277,7 +277,7 @@ RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
     ./autogen.sh && \
     ./configure CC=c99 LIBS=-lposix && \
     make && \
-    make install &&
+    make install && \
     git clone --branch=v4.1.0 https://github.com/zeromq/czmq.git && \
     cd czmq && \
     ./autogen.sh && \
