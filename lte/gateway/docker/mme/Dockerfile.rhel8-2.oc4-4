@@ -86,23 +86,6 @@ RUN rm /etc/rhsm-host && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
-##### lib czmq
-RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
-    cd libzmq && \
-    ./autogen.sh && \
-    ./configure && \
-    make && \
-    make check && \
-    make install
-
-RUN git clone --branch=v4.1.0 https://github.com/zeromq/czmq.git && \
-    cd czmq && \
-    ./autogen.sh && \
-    ./configure && \
-    make && \
-    make check && \
-    make install
-
 # Add Converged MME sources to the container
 COPY ./ $MAGMA_ROOT
 
@@ -289,12 +272,18 @@ RUN git clone https://github.com/jbeder/yaml-cpp.git && \
     make install
 
 ##### lib czmq
-#RUN git clone --branch=v4.1.0 https://github.com/zeromq/czmq.git && \
-#    cd czmq && \
-#    ./autogen.sh && \
-#    ./configure && \
-#    make check && \
-#    make install
+RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
+    cd libzmq && \
+    ./autogen.sh && \
+    ./configure CC=c99 LIBS=-lposix && \
+    make && \
+    make install &&
+    git clone --branch=v4.1.0 https://github.com/zeromq/czmq.git && \
+    cd czmq && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    make install
 
 # Build MME executables
 RUN ldconfig --verbose && \
