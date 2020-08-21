@@ -178,7 +178,7 @@ RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
     make -j`nproc` && \
     make install && \
     ldconfig -v && \
-    cd / &&
+    cd / && \
     wget http://mirrors.dotsrc.org/gcrypt/gnutls/v3.1/gnutls-3.1.23.tar.xz && \
     tar xf gnutls-3.1.23.tar.xz && \
     cd gnutls-3.1.23 && \
@@ -186,6 +186,7 @@ RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
     sed -i -e "s#elif 0#elif 1#" gl/fseterr.c && \
     make -j`nproc` && \
     make install && \
+    ldconfig -v
 
 ##### liblfds
 # https://www.liblfds.org/mediawiki/index.php?title=r7.1.0:Building_Guide_(liblfds)
