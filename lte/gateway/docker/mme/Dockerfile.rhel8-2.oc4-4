@@ -70,7 +70,6 @@ RUN rm /etc/rhsm-host && \
        flex \
        patch \
        libidn-devel \
-       gnutls-devel \
        libgcrypt-devel \
     # Install libgtpnl requirements
        libmnl-devel \
@@ -86,8 +85,6 @@ RUN rm /etc/rhsm-host && \
     ln -s /usr/bin/python2.7 /usr/local/bin/python && \
     yum clean all -y && \
     rm -rf /var/cache/yum
-
-RUN yum repoquery --installed --whatrequires nettle-devel
 
 # Add Converged MME sources to the container
 COPY ./ $MAGMA_ROOT
@@ -169,15 +166,21 @@ RUN git clone https://github.com/cpp-redis/cpp_redis.git && \
     make -j`nproc` && \
     make install
 
-##### NETTLE
-#RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
-#    tar -xf nettle-2.5.tar.gz && \
-#    cd nettle-2.5 && \
-#    mkdir build && \
-#    cd build/ && \
-#    ../configure  && \
-#    make -j`nproc` && \
-#    make install
+##### NETTLE / gnutls
+RUN wget http://mirrors.dotsrc.org/gcrypt/gnutls/v3.1/gnutls-3.1.23.tar.xz && \
+    tar xf gnutls-3.1.23.tar.xz && \
+    cd gnutls-3.1.23 && \
+    ./configure && \
+    make -j`nproc` && \
+    make install && \
+    wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
+    tar -xf nettle-2.5.tar.gz && \
+    cd nettle-2.5 && \
+    mkdir build && \
+    cd build/ && \
+    ../configure  && \
+    make -j`nproc` && \
+    make install
 
 ##### liblfds
 # https://www.liblfds.org/mediawiki/index.php?title=r7.1.0:Building_Guide_(liblfds)
