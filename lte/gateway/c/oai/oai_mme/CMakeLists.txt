@@ -19,9 +19,9 @@ include_directories(${CRYPTO_INCLUDE_DIRS})
 pkg_search_module(NETTLE nettle REQUIRED)
 include_directories(${NETTLE_INCLUDE_DIRS})
 
-#if (NOT "${NETTLE_VERSION}" STREQUAL "2.5")
-#    message(FATAL_ERROR "Nettle version incorrect -- 2.5 required")
-#endif ()
+if (NOT "${NETTLE_VERSION}" STREQUAL "2.5")
+    message(FATAL_ERROR "Nettle version incorrect -- 2.5 required")
+endif ()
 
 find_library(LFDS lfds710 PATHS /usr/local/lib /usr/lib )
 
