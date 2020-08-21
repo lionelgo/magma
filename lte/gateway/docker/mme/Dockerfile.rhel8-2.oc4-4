@@ -292,6 +292,8 @@ RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
 
 # Build MME executables
 RUN ldconfig --verbose && \
+    # temporary warnings not error when compiling
+    patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/CMake-warnings-not-errors.patch && \
     cd $MAGMA_ROOT/lte/gateway && \
     make build_oai && \
     make build_sctpd
