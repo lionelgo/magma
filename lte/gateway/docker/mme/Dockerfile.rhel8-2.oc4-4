@@ -279,13 +279,14 @@ RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
     patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/libzmq-strncpy.patch && \
     ./autogen.sh && \
     ./configure && \
-    make && \
+    make -j`nproc` && \
     make install && \
     git clone --branch=v4.1.0 https://github.com/zeromq/czmq.git && \
     cd czmq && \
+    patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/czmq-strncat.patch && \
     ./autogen.sh && \
     ./configure && \
-    make && \
+    make -j`nproc` && \
     make install
 
 # Build MME executables
