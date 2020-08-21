@@ -77,6 +77,7 @@ RUN rm /etc/rhsm-host && \
        libconfig-devel \
        libxml2-devel \
        libyaml-devel \
+       gmp-devel \
        xz \
     # Install czmq requirements
        uuid-devel \
@@ -173,15 +174,16 @@ RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
     cd nettle-2.5 && \
     mkdir build && \
     cd build/ && \
-    ../configure  && \
+    ../configure --libdir=/usr/local/lib && \
     make -j`nproc` && \
     make install && \
     ldconfig -v && \
-    echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local-lib.conf && \
+    cd / &&
     wget http://mirrors.dotsrc.org/gcrypt/gnutls/v3.1/gnutls-3.1.23.tar.xz && \
     tar xf gnutls-3.1.23.tar.xz && \
     cd gnutls-3.1.23 && \
-    ./configure --with-lib-path=/usr/local/lib64 && \
+    ./configure --with-libnettle-prefix=/usr/local && \
+    sed -i -e "s#elif 0#elif 1#" gl/fseterr.c && \
     make -j`nproc` && \
     make install && \
 
