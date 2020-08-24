@@ -22,7 +22,6 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <functional>
 
 #include "3gpp_23.003.h"
 #include "assertions.h"
@@ -34,6 +33,7 @@ extern "C" {
 }
 #endif
 
+#include <functional>
 #include <google/protobuf/map.h>
 
 #include "lte/protos/oai/common_types.pb.h"
