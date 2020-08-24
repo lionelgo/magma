@@ -82,6 +82,7 @@ RUN rm /etc/rhsm-host && \
     # Install czmq requirements
        uuid-devel \
     # for some reasons diff, cmp and file are not present in ubi
+       libasan \
        diffutils \
        file && \
     ln -s /usr/bin/python2.7 /usr/local/bin/python && \
