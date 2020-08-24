@@ -22,6 +22,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <functional>
 
 #include "3gpp_23.003.h"
 #include "assertions.h"
