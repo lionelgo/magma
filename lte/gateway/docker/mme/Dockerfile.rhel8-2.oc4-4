@@ -92,8 +92,8 @@ RUN rm /etc/rhsm-host && \
 # Add Converged MME sources to the container
 COPY ./ $MAGMA_ROOT
 
-# Currently hard-coded
-RUN git config --global http.proxy http://proxy.eurecom.fr:8080
+# In some network environments, GIT proxy is required
+RUN /bin/bash -c "if [[ -v NEEDED_GIT_PROXY ]]; then git config --global http.proxy $NEEDED_GIT_PROXY; fi"
 
 # All works will be done from root of file system
 WORKDIR /
