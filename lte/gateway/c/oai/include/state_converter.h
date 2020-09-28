@@ -34,6 +34,7 @@ extern "C" {
 #endif
 #include <functional>
 
+#include <functional>
 #include <google/protobuf/map.h>
 
 #include "lte/protos/oai/common_types.pb.h"
