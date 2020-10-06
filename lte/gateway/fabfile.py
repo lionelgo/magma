@@ -229,7 +229,7 @@ def integ_test(gateway_host=None, test_host=None, trf_host=None,
         ansible_setup(test_host, "test", "magma_test.yml")
 
     execute(_make_integ_tests)
-    execute(_run_integ_tests, gateway_ip)
+    #execute(_run_integ_tests, gateway_ip)
 
     if not gateway_host:
         setup_env_vagrant()

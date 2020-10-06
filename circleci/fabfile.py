@@ -239,7 +239,7 @@ def _run_remote_cwf_integ_test(repo: str, magma_root: str):
         test_xml = "tests.xml"
         result = run('fab integ_test:'
                      'destroy_vm=True,'
-                     'transfer_images=True,'
+                     'transfer_images=True, test_re=TestAuth'
                      'test_result_xml=' + test_xml,
                      timeout=110*60, warn_only=True)
         # Move JUnit test result to /tmp/test-results directory
