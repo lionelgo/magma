@@ -46,7 +46,6 @@ class S6aProxyRpcServicer(s6a_proxy_pb2_grpc.S6aProxyServicer):
         aia = s6a_proxy_pb2.AuthenticationInformationAnswer()
         try:
             plmn = request.visited_plmn
-
             re_sync_info = request.resync_info
             #resync_info =
             #  rand + auts, rand is of 16 bytes + auts is of 14 bytes
@@ -127,5 +126,4 @@ class S6aProxyRpcServicer(s6a_proxy_pb2_grpc.S6aProxyServicer):
             sec_apn.pdn = (
                 s6a_proxy_pb2.UpdateLocationAnswer.APNConfiguration.IPV4
             )
-
         return ula

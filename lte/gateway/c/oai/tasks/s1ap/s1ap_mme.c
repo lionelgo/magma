@@ -133,8 +133,8 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
       S1ap_S1AP_PDU_t pdu = {0};
 
       // Invoke S1AP message decoder
-      if (s1ap_mme_decode_pdu(
-              &pdu, SCTP_DATA_IND(received_message_p).payload)) {
+      if (s1ap_mme_decode_pdu(&pdu, SCTP_DATA_IND(received_message_p).payload) <
+          0) {
         // TODO: Notify eNB of failure with right cause
         OAILOG_ERROR(LOG_S1AP, "Failed to decode new buffer\n");
       } else {
@@ -253,7 +253,7 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
           mme_ue_s1ap_id_t mme_ue_s1ap_id = timer_arg.instance_id;
           if ((ue_ref_p = s1ap_state_get_ue_mmeid(mme_ue_s1ap_id)) == NULL) {
             OAILOG_WARNING_UE(
-                imsi64, LOG_S1AP,
+                LOG_S1AP, imsi64,
                 "Timer expired but no assoicated UE context for UE id %d\n",
                 mme_ue_s1ap_id);
             timer_handle_expired(

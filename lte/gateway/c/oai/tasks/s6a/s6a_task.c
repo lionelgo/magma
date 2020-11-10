@@ -85,8 +85,12 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
         OAILOG_DEBUG(
             LOG_S6A, "Sending s6a AIR for imsi=%s\n",
             received_message_p->ittiMsg.s6a_auth_info_req.imsi);
+        OAILOG_DEBUG(
+            LOG_S6A, "State PLMN " PLMN_FMT "from proto",
+            PLMN_ARG(
+                &received_message_p->ittiMsg.s6a_auth_info_req.visited_plmn));
       } else {
-        OAILOG_ERROR(
+        OAILOG_DEBUG(
             LOG_S6A, "Failure in sending s6a AIR for imsi=%s\n",
             received_message_p->ittiMsg.s6a_auth_info_req.imsi);
       }
@@ -165,8 +169,6 @@ int s6a_init(const mme_config_t* mme_config_p) {
   }
 
   return RETURNok;
-  // if (s6a_viface_open(&mme_config_p->s6a_config)) return RETURNok;
-  // else return RETURNerror;
 }
 
 //------------------------------------------------------------------------------

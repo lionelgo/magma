@@ -81,8 +81,8 @@
 int s1ap_mme_handle_initial_ue_message(
     s1ap_state_t* state, const sctp_assoc_id_t assoc_id,
     const sctp_stream_id_t stream, S1ap_S1AP_PDU_t* pdu) {
-  S1ap_InitialUEMessage_t* container;
-  S1ap_InitialUEMessage_IEs_t *ie = NULL, *ie_e_tmsi, *ie_csg_id, *ie_gummei,
+  S1ap_InitialUEMessage_t* container = NULL;
+  S1ap_InitialUEMessage_IEs_t *ie    = NULL, *ie_e_tmsi, *ie_csg_id, *ie_gummei,
                               *ie_cause;
   ue_description_t* ue_ref        = NULL;
   enb_description_t* eNB_ref      = NULL;
@@ -180,7 +180,7 @@ int s1ap_mme_handle_initial_ue_message(
         true);
     OCTET_STRING_TO_TAC(&ie->value.choice.TAI.tAC, tai.tac);
     DevAssert(ie->value.choice.TAI.pLMNidentity.size == 3);
-    // TBCD_TO_PLMN_T(&ie->value.choice.TAI.pLMNidentity, &tai.plmn);
+    TBCD_TO_PLMN_T(&ie->value.choice.TAI.pLMNidentity, &tai.plmn);
 
     // CGI mandatory IE
     S1AP_FIND_PROTOCOLIE_BY_ID(
@@ -323,15 +323,16 @@ int s1ap_mme_handle_uplink_nas_transport(
     OAILOG_FUNC_RETURN(LOG_S1AP, RETURNerror);
   }
 
-S1AP_FIND_PROTOCOLIE_BY_ID(S1ap_UplinkNASTransport_IEs_t, ie_nas_pdu,
-                             container, S1ap_ProtocolIE_ID_id_NAS_PDU, true);
+  S1AP_FIND_PROTOCOLIE_BY_ID(
+      S1ap_UplinkNASTransport_IEs_t, ie_nas_pdu, container,
+      S1ap_ProtocolIE_ID_id_NAS_PDU, true);
   // TAI mandatory IE
   S1AP_FIND_PROTOCOLIE_BY_ID(
       S1ap_UplinkNASTransport_IEs_t, ie, container, S1ap_ProtocolIE_ID_id_TAI,
       true);
   OCTET_STRING_TO_TAC(&ie->value.choice.TAI.tAC, tai.tac);
   DevAssert(ie->value.choice.TAI.pLMNidentity.size == 3);
-  TBCD_TO_PLMN_T(&ie->value.choice.TAI.pLMNidentity, &tai);
+  TBCD_TO_PLMN_T(&ie->value.choice.TAI.pLMNidentity, &tai.plmn);
 
   // CGI mandatory IE
   S1AP_FIND_PROTOCOLIE_BY_ID(
@@ -395,6 +396,17 @@ int s1ap_mme_handle_nas_non_delivery(
       S1ap_NASNonDeliveryIndication_IEs_t, ie, container,
       S1ap_ProtocolIE_ID_id_Cause, true);
 
+  /*
+   * UE associated signalling on stream == 0 is not valid.
+   */
+  if (stream == 0) {
+    OAILOG_NOTICE(
+        LOG_S1AP,
+        "Received S1AP NAS_NON_DELIVERY_INDICATION message on "
+        "invalid sctp stream 0\n");
+    OAILOG_FUNC_RETURN(LOG_S1AP, RETURNerror);
+  }
+
   OAILOG_NOTICE(
       LOG_S1AP,
       "Received S1AP NAS_NON_DELIVERY_INDICATION message "
@@ -424,8 +436,8 @@ int s1ap_mme_handle_nas_non_delivery(
 
   // TODO: forward NAS PDU to NAS
   s1ap_mme_itti_nas_non_delivery_ind(
-      ie->value.choice.MME_UE_S1AP_ID, ie->value.choice.NAS_PDU.buf,
-      ie->value.choice.NAS_PDU.size, &ie->value.choice.Cause, imsi64);
+      ie->value.choice.MME_UE_S1AP_ID, ie_nas_pdu->value.choice.NAS_PDU.buf,
+      ie_nas_pdu->value.choice.NAS_PDU.size, &ie->value.choice.Cause, imsi64);
   OAILOG_FUNC_RETURN(LOG_S1AP, RETURNok);
 }
 
@@ -438,6 +450,7 @@ int s1ap_generate_downlink_nas_transport(
   uint8_t* buffer_p        = NULL;
   uint32_t length          = 0;
   void* id                 = NULL;
+  uint8_t err              = 0;
 
   OAILOG_FUNC_IN(LOG_S1AP);
 
@@ -485,7 +498,6 @@ int s1ap_generate_downlink_nas_transport(
     S1ap_DownlinkNASTransport_t* out;
     S1ap_S1AP_PDU_t pdu = {0};
 
-    memset(&pdu, 0, sizeof(pdu));
     pdu.present = S1ap_S1AP_PDU_PR_initiatingMessage;
     pdu.choice.initiatingMessage.procedureCode =
         S1ap_ProcedureCode_id_downlinkNASTransport;
@@ -534,9 +546,13 @@ int s1ap_generate_downlink_nas_transport(
      */
     OCTET_STRING_fromBuf(
         &ie->value.choice.NAS_PDU, (char*) bdata(*payload), blength(*payload));
-        ASN_SEQUENCE_ADD(&out->protocolIEs.list, ie);
+    ASN_SEQUENCE_ADD(&out->protocolIEs.list, ie);
 
     if (s1ap_mme_encode_pdu(&pdu, &buffer_p, &length) < 0) {
+      err = 1;
+    }
+    ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_S1ap_DownlinkNASTransport, out);
+    if (err) {
       OAILOG_FUNC_RETURN(LOG_S1AP, RETURNerror);
     }
 
@@ -601,7 +617,6 @@ int s1ap_generate_s1ap_e_rab_setup_req(
     S1ap_S1AP_PDU_t pdu             = {0};
     S1ap_E_RABSetupRequest_t* out   = NULL;
     S1ap_E_RABSetupRequestIEs_t* ie = NULL;
-    memset(&pdu, 0, sizeof(pdu));
     pdu.choice.initiatingMessage.procedureCode =
         S1ap_ProcedureCode_id_E_RABSetup;
     pdu.choice.initiatingMessage.criticality = S1ap_Criticality_reject;
@@ -805,6 +820,7 @@ void s1ap_handle_conn_est_cnf(
    * context setup request message to eNB.
    */
   uint8_t* buffer_p        = NULL;
+  uint8_t err              = 0;
   uint32_t length          = 0;
   ue_description_t* ue_ref = NULL;
   S1ap_InitialContextSetupRequest_t* out;
@@ -840,17 +856,6 @@ void s1ap_handle_conn_est_cnf(
    * Start the outcome response timer.
    * * * * When time is reached, MME consider that procedure outcome has failed.
    */
-  //     timer_setup(mme_config.s1ap_config.outcome_drop_timer_sec, 0,
-  //     TASK_S1AP, INSTANCE_DEFAULT,
-  //                 TIMER_ONE_SHOT,
-  //                 NULL,
-  //                 &ue_ref->outcome_response_timer_id);
-  /*
-   * Insert the timer in the MAP of mme_ue_s1ap_id <-> timer_id
-   */
-  //     s1ap_timer_insert(ue_ref->mme_ue_s1ap_id,
-  //     ue_ref->outcome_response_timer_id);
-  memset(&pdu, 0, sizeof(pdu));
   pdu.present = S1ap_S1AP_PDU_PR_initiatingMessage;
   pdu.choice.initiatingMessage.procedureCode =
       S1ap_ProcedureCode_id_InitialContextSetup;
@@ -931,16 +936,13 @@ void s1ap_handle_conn_est_cnf(
         conn_est_cnf_pP->e_rab_level_qos_preemption_vulnerability[item];
 
     if (conn_est_cnf_pP->nas_pdu[item]) {
-      // DevAssert(!nas_pdu);
       S1ap_NAS_PDU_t* nas_pdu = calloc(1, sizeof(S1ap_NAS_PDU_t));
       nas_pdu->size           = blength(conn_est_cnf_pP->nas_pdu[item]);
       nas_pdu->buf            = malloc(blength(conn_est_cnf_pP->nas_pdu[item]));
       memcpy(nas_pdu->buf, conn_est_cnf_pP->nas_pdu[item]->data, nas_pdu->size);
       e_RABToBeSetup->nAS_PDU = nas_pdu;
     }
-    /*
-     * Set the GTP-TEID. This is the S1-U S-GW TEID
-     */
+    // Set the GTP-TEID. This is the S1-U S-GW TEID
     INT32_TO_OCTET_STRING(
         conn_est_cnf_pP->gtp_teid[item], &e_RABToBeSetup[item].gTP_TEID);
     // S-GW IP address(es) for user-plane
@@ -1016,7 +1018,7 @@ void s1ap_handle_conn_est_cnf(
   /*
    * Only add capability information if it's not empty.
    */
-  if (conn_est_cnf_pP->ue_radio_cap_length) {
+  if (conn_est_cnf_pP->ue_radio_capability) {
     OAILOG_DEBUG(LOG_S1AP, "UE radio capability found, adding to message\n");
 
     ie = (S1ap_InitialContextSetupRequestIEs_t*) calloc(
@@ -1031,6 +1033,14 @@ void s1ap_handle_conn_est_cnf(
         conn_est_cnf_pP->ue_radio_cap_length);
     ASN_SEQUENCE_ADD(&out->protocolIEs.list, ie);
     free_wrapper((void**) &(conn_est_cnf_pP->ue_radio_capability));
+  }
+
+  if (s1ap_mme_encode_pdu(&pdu, &buffer_p, &length) < 0) {
+    err = 1;
+  }
+  ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_S1ap_InitialContextSetupRequest, out);
+  if (err) {
+    OAILOG_FUNC_OUT(LOG_S1AP);
   }
 
   OAILOG_NOTICE_UE(
@@ -1163,30 +1173,57 @@ int s1ap_generate_s1ap_e_rab_rel_cmd(
     ie->value.present = S1ap_E_RABReleaseCommandIEs__value_PR_ENB_UE_S1AP_ID;
     ie->value.choice.ENB_UE_S1AP_ID = ue_ref->enb_ue_s1ap_id;
     ASN_SEQUENCE_ADD(&out->protocolIEs.list, ie);
-
     ue_ref->s1_ue_state = S1AP_UE_CONNECTED;
+
+    ie = (S1ap_E_RABReleaseCommandIEs_t*) calloc(
+        1, sizeof(S1ap_E_RABReleaseCommandIEs_t));
+    ie->id            = S1ap_ProtocolIE_ID_id_E_RABToBeReleasedList;
+    ie->criticality   = S1ap_Criticality_ignore;
+    ie->value.present = S1ap_E_RABReleaseCommandIEs__value_PR_E_RABList;
+    ASN_SEQUENCE_ADD(&out->protocolIEs.list, ie);
+    S1ap_E_RABList_t* const e_rab_list = &ie->value.choice.E_RABList;
+
+    for (int i = 0; i < e_rab_rel_cmd->e_rab_to_be_rel_list.no_of_items; i++) {
+      S1ap_E_RABItemIEs_t* s1ap_e_rab_item_ies =
+          calloc(1, sizeof(S1ap_E_RABItemIEs_t));
+      s1ap_e_rab_item_ies->id          = S1ap_ProtocolIE_ID_id_E_RABItem;
+      s1ap_e_rab_item_ies->criticality = S1ap_Criticality_ignore;
+      s1ap_e_rab_item_ies->value.present =
+          S1ap_E_RABItemIEs__value_PR_E_RABItem;
+
+      S1ap_E_RABItem_t* s1ap_e_rab_item =
+          &s1ap_e_rab_item_ies->value.choice.E_RABItem;
+
+      s1ap_e_rab_item->e_RAB_ID =
+          e_rab_rel_cmd->e_rab_to_be_rel_list.item[i].e_rab_id;
+      s1ap_mme_set_cause(
+          &s1ap_e_rab_item->cause, S1ap_Cause_PR_radioNetwork,
+          S1ap_CauseRadioNetwork_unspecified);
+
+      ASN_SEQUENCE_ADD(&e_rab_list->list, s1ap_e_rab_item_ies);
+    }
 
     /*
      * Fill in the NAS pdu
      */
-    S1AP_FIND_PROTOCOLIE_BY_ID(
-        S1ap_E_RABReleaseCommandIEs_t, ie, out,
-        S1ap_ProtocolIE_ID_id_E_RABReleasedList, true);
-    OCTET_STRING_fromBuf(
-        &ie->value.choice.NAS_PDU, (char*) bdata(e_rab_rel_cmd->nas_pdu),
-        blength(e_rab_rel_cmd->nas_pdu));
+    if (e_rab_rel_cmd->nas_pdu) {
+      ie = (S1ap_E_RABReleaseCommandIEs_t*) calloc(
+          1, sizeof(S1ap_E_RABReleaseCommandIEs_t));
+      ie->id            = S1ap_ProtocolIE_ID_id_NAS_PDU;
+      ie->criticality   = S1ap_Criticality_ignore;
+      ie->value.present = S1ap_E_RABReleaseCommandIEs__value_PR_NAS_PDU;
 
-    S1ap_E_RABItem_t*
-        s1ap_E_RABItemIEs[e_rab_rel_cmd->e_rab_to_be_rel_list.no_of_items];
-    for (int i = 0; i < e_rab_rel_cmd->e_rab_to_be_rel_list.no_of_items; i++) {
-      s1ap_E_RABItemIEs[i] = calloc(1, sizeof *s1ap_E_RABItemIEs[i]);
-      s1ap_E_RABItemIEs[i]->e_RAB_ID =
-          e_rab_rel_cmd->e_rab_to_be_rel_list.item[i].e_rab_id;
-      s1ap_mme_set_cause(
-          &s1ap_E_RABItemIEs[i]->cause, S1ap_Cause_PR_radioNetwork,
-          S1ap_CauseRadioNetwork_unspecified);
-
-      ASN_SEQUENCE_ADD(&ie->value.choice.E_RABList, s1ap_E_RABItemIEs[i]);
+      S1ap_NAS_PDU_t* nas_pdu = &ie->value.choice.NAS_PDU;
+      OCTET_STRING_fromBuf(
+          nas_pdu, (char*) bdata(e_rab_rel_cmd->nas_pdu),
+          blength(e_rab_rel_cmd->nas_pdu));
+      ASN_SEQUENCE_ADD(&out->protocolIEs.list, ie);
+    } else {
+      OAILOG_INFO(
+          LOG_S1AP,
+          "No NAS message received for S1AP E-RAB release command for "
+          "ueId " MME_UE_S1AP_ID_FMT " .\n",
+          e_rab_rel_cmd->mme_ue_s1ap_id);
     }
 
     if (s1ap_mme_encode_pdu(&pdu, &buffer_p, &length) < 0) {
