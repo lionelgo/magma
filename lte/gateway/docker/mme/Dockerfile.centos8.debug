@@ -3,6 +3,7 @@
 ################################################################
 FROM centos:8 as conv-oai-mme-builder
 
+ARG GIT_PROXY
 ARG FEATURES=mme_oai
 ENV MAGMA_ROOT=/magma
 ENV C_BUILD=/build/c
@@ -110,7 +111,7 @@ RUN yum update -y \
 COPY ./ $MAGMA_ROOT
 
 # In some network environments, GIT proxy is required
-RUN /bin/bash -c "if [[ -v NEEDED_GIT_PROXY ]]; then git config --global http.proxy $NEEDED_GIT_PROXY; fi"
+RUN /bin/bash -c "if [[ -v GIT_PROXY ]]; then git config --global http.proxy $GIT_PROXY; fi"
 
 # All works will be done from root of file system
 WORKDIR /
