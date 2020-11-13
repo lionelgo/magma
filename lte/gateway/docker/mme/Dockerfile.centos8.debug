@@ -95,7 +95,7 @@ RUN yum install -y \
     xz \
     # Install czmq requirements
     uuid-devel \
-  && ln -s /usr/bin/python2.7 /usr/local/bin/python \
+  && ln -s /usr/bin/python2.7 /usr/local/bin/python 
 
 RUN yum install -y \  
     # for some reasons diff, cmp and file are not present in ubi
