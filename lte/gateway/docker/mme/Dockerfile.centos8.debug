@@ -102,7 +102,7 @@ RUN yum update -y \
     valgrind \
     tree \
     # redis is temporary --> has to be deployed w/ an other pod/container
-    redis && \
+    redis \
   && ln -s /usr/bin/python2.7 /usr/local/bin/python \
   && yum clean all -y \
   && rm -rf /var/cache/yum
