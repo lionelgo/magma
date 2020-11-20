@@ -353,25 +353,25 @@ RUN echo "ldd $C_BUILD/sctpd/sctpd" && \
     
 # For developer's to have the same run env as in target image to debug
 # Copy the configuration file templates and mean to modify/generate certificates
-WORKDIR $MAGMA_ROOT/bin
+WORKDIR /magma/bin
 RUN cp $C_BUILD/oai/oai_mme/mme oai_mme
 RUN cp $C_BUILD/sctpd/sctpd .
 
-WORKDIR $MAGMA_ROOT/etc
+RUN mkdir -p /magma/etc
 
 # Create running dirs
 WORKDIR /var/opt/magma
 WORKDIR /usr/local/etc/redis
 RUN cp $MAGMA_ROOT/lte/gateway/docker/mme/configs/redis_for_container.conf redis.conf
 
-WORKDIR $MAGMA_ROOT/scripts
+WORKDIR /magma/scripts
 RUN cp $MAGMA_ROOT/lte/gateway/openshift/mme/entrypoint.sh .
 RUN cp $MAGMA_ROOT/lte/gateway/c/oai/test/check_mme_s6a_certificate .
 RUN sed -i -e "s@^.*THIS_SCRIPT_PATH@#@" -e "s@\$SUDO@@" check_mme_s6a_certificate
 RUN sed -i -e "s@echo_error@echo@" -e "s@echo_success@echo@" -e "s@echo_warning@echo@" check_mme_s6a_certificate
 
-WORKDIR $MAGMA_ROOT
+WORKDIR /magma
 RUN openssl rand -out /root/.rnd 128    
 
-CMD ["$MAGMA_ROOT/bin/oai_mme", "-c", "$MAGMA_ROOT/etc/mme.conf"]
-ENTRYPOINT ["$MAGMA_ROOT/scripts/entrypoint.sh"]
+CMD ["/magma/bin/oai_mme", "-c", "/magma/etc/mme.conf"]
+ENTRYPOINT ["/magma/scripts/entrypoint.sh"]
