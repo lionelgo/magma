@@ -108,6 +108,8 @@ RUN yum install -y \
     iputils \
     net-tools \
     valgrind \
+    tcpdump \
+    openssh-server \
     tree
   
 RUN yum install -y \  
