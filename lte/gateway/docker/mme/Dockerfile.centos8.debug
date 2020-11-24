@@ -343,9 +343,9 @@ RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
 # patch for mme/sctpd sidecar  
 WORKDIR /magma/lte/gateway/c/sctpd
 RUN sed -i -e "s@tmp/sctpd_upstream.sock@tmp/sctpd/sctpd_upstream.sock@" *.h && \
-    sed -i -e "s@tmp/sctpd_downstream.sock@tmp/sctpd/sctpd_downstream.sock@" *.h && \
+    sed -i -e "s@tmp/sctpd_downstream.sock@tmp/sctpd/sctpd_downstream.sock@" *.h
 
-
+WORKDIR /
 # Build MME executables
 RUN ldconfig --verbose && \
     export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/ && \
