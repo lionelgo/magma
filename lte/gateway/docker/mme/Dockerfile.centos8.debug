@@ -51,7 +51,9 @@ RUN yum install -y \
     curl \
     make \
     unzip \
-    git \ 
+    git \
+    git-clang-format \
+    clang-tools-extra \
     ninja-build \ 
     pkg-config \
     gcc \
