@@ -109,7 +109,9 @@ int set_sctp_opts(
   event.sctp_shutdown_event = on;
   event.sctp_data_io_event = on;
 
-  if (setsockopt(sd, IPPROTO_SCTP, SCTP_EVENTS, &event, sizeof(event)) < 0) {
+  // should be "sizeof(event)" instead of 8, but see bug:
+  // https://forums.centos.org/viewtopic.php?t=12941
+  if (setsockopt(sd, IPPROTO_SCTP, SCTP_EVENTS, &event, 8) < 0) {
     MLOG_perror("setsockopt");
     return -1;
   }
