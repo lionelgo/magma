@@ -340,6 +340,12 @@ RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
     make -j`nproc` && \
     make install
 
+# patch for mme/sctpd sidecar  
+WORKDIR /magma/lte/gateway/c/sctpd
+RUN sed -i -e "s@tmp/sctpd_upstream.sock@tmp/sctpd/sctpd_upstream.sock@" *.h && \
+    sed -i -e "s@tmp/sctpd_downstream.sock@tmp/sctpd/sctpd_downstream.sock@" *.h && \
+
+
 # Build MME executables
 RUN ldconfig --verbose && \
     export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/ && \
@@ -380,7 +386,7 @@ RUN cp $MAGMA_ROOT/lte/gateway/openshift/mme/entrypoint.sh . && \
     sed -i -e "s@echo_error@echo@" -e "s@echo_success@echo@" -e "s@echo_warning@echo@" check_mme_s6a_certificate
 
 WORKDIR /magma
-RUN openssl rand -out /root/.rnd 128    
+RUN openssl rand -out /root/.rnd 128
 
 CMD ["/magma/bin/oai_mme", "-c", "/magma/etc/mme.conf"]
 ENTRYPOINT ["/magma/scripts/entrypoint.sh"]
