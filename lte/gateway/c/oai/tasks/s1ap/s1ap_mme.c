@@ -144,6 +144,7 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
       }
 
       // Free received PDU array
+      ASN_STRUCT_FREE_CONTENTS_ONLY(asn_DEF_S1ap_S1AP_PDU, &pdu);
       bdestroy_wrapper(&SCTP_DATA_IND(received_message_p).payload);
     } break;
 
@@ -281,10 +282,6 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
       timer_handle_expired(
           received_message_p->ittiMsg.timer_has_expired.timer_id);
 
-      /* TODO - Commenting out below function as it is not used as of now.
-       * Need to handle it when we support other timers in S1AP
-       */
-
     } break;
 
     case TERMINATE_MESSAGE: {
@@ -336,7 +333,6 @@ int s1ap_mme_init(const mme_config_t* mme_config_p) {
   }
 
   OAILOG_DEBUG(LOG_S1AP, "ASN1C version %d\n", get_asn1c_environment_version());
-  OAILOG_DEBUG(LOG_S1AP, "S1AP Release v15.6.0\n");
 
   if (s1ap_state_init(
           mme_config_p->max_ues, mme_config_p->max_enbs,
@@ -489,7 +485,8 @@ ue_description_t* s1ap_new_ue(
   DevAssert(ue_ref != NULL);
   ue_ref->sctp_assoc_id  = sctp_assoc_id;
   ue_ref->enb_ue_s1ap_id = enb_ue_s1ap_id;
-  ue_ref->comp_s1ap_id   = s1ap_get_comp_s1ap_id(sctp_assoc_id, enb_ue_s1ap_id);
+  ue_ref->comp_s1ap_id =
+      S1AP_GENERATE_COMP_S1AP_ID(sctp_assoc_id, enb_ue_s1ap_id);
 
   hash_table_ts_t* state_ue_ht = get_s1ap_ue_state();
   hashtable_rc_t hashrc        = hashtable_ts_insert(
