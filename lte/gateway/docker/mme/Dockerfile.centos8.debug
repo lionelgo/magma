@@ -126,11 +126,31 @@ RUN /bin/bash -c "if [[ -v GIT_PROXY ]]; then git config --global http.proxy $GI
 
 # All works will be done from root of file system
 WORKDIR /
-    
+
+# git clone may fail on our OC cluster (could not resolve github.com, other sites
+# may happen), we may have to tweak some limits...
+# Prefer to fail as soon as possible if it has to happen
+RUN  git clone --recurse-submodules -b v1.15.0 https://github.com/grpc/grpc && \
+     git clone https://github.com/jupp0r/prometheus-cpp.git && \
+     git clone https://github.com/cpp-redis/cpp_redis.git && \
+     wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
+     wget http://mirrors.dotsrc.org/gcrypt/gnutls/v3.1/gnutls-3.1.23.tar.xz && \
+     wget https://liblfds.org/downloads/liblfds%20release%207.1.0%20source.tar.bz2  && \
+     git clone https://git.osmocom.org/libgtpnl && \
+     git clone https://github.com/OPENAIRINTERFACE/asn1c.git && \
+     git clone https://github.com/fmtlib/fmt.git && \
+     git clone --depth=1 --branch=v3.1.5 https://github.com/google/double-conversion.git && \
+     git clone --depth=1 --branch=v1.2.1 https://github.com/libunwind/libunwind.git && \
+     git clone https://github.com/facebook/folly.git /folly && \
+     git clone https://github.com/OPENAIRINTERFACE/opencord.org.freeDiameter.git freediameter && \
+     git clone https://github.com/jbeder/yaml-cpp.git && \
+     git clone https://github.com/nlohmann/json.git && \
+     git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git
+     
 ##### GRPC and it's dependencies
 RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/local-lib.conf && \
     echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local-lib.conf && \
-    git clone --recurse-submodules -b v1.15.0 https://github.com/grpc/grpc && \
+    # Moved git clone --recurse-submodules -b v1.15.0 https://github.com/grpc/grpc && \
     echo "Install c-ares" && \
     cd grpc && \
     cd third_party/cares/cares && \
@@ -179,7 +199,7 @@ RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/local-lib.conf && \
     make install
 
 ##### Prometheus CPP
-RUN git clone https://github.com/jupp0r/prometheus-cpp.git && \
+RUN # Moved git clone https://github.com/jupp0r/prometheus-cpp.git && \
     cd prometheus-cpp && \
     git checkout d8326b2bba945a435f299e7526c403d7a1f68c1f && \
     git submodule init && git submodule update && \
@@ -190,7 +210,7 @@ RUN git clone https://github.com/jupp0r/prometheus-cpp.git && \
     make install
 
 ##### Redis CPP
-RUN git clone https://github.com/cpp-redis/cpp_redis.git && \
+RUN # Moved git clone https://github.com/cpp-redis/cpp_redis.git && \
     cd cpp_redis && \
     git checkout bbe38a7f83de943ffcc90271092d689ae02b3489 && \
     git submodule init && git submodule update && \
@@ -200,7 +220,7 @@ RUN git clone https://github.com/cpp-redis/cpp_redis.git && \
     make install
 
 ##### NETTLE / gnutls
-RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
+RUN # Moved wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
     tar -xf nettle-2.5.tar.gz && \
     cd nettle-2.5 && \
     mkdir build && \
@@ -210,7 +230,7 @@ RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
     make install && \
     ldconfig -v && \
     cd / && \
-    wget http://mirrors.dotsrc.org/gcrypt/gnutls/v3.1/gnutls-3.1.23.tar.xz && \
+    # Moved wget http://mirrors.dotsrc.org/gcrypt/gnutls/v3.1/gnutls-3.1.23.tar.xz && \
     tar xf gnutls-3.1.23.tar.xz && \
     cd gnutls-3.1.23 && \
     ./configure --with-libnettle-prefix=/usr/local && \
@@ -221,7 +241,7 @@ RUN wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
 
 ##### liblfds
 # https://www.liblfds.org/mediawiki/index.php?title=r7.1.0:Building_Guide_(liblfds)
-RUN wget https://liblfds.org/downloads/liblfds%20release%207.1.0%20source.tar.bz2  && \
+RUN # Moved wget https://liblfds.org/downloads/liblfds%20release%207.1.0%20source.tar.bz2  && \
     tar -xf liblfds\ release\ 7.1.0\ source.tar.bz2  && \
     cd liblfds/liblfds7.1.0/liblfds710/build/gcc_gnumake/ && \
     make -j`nproc` && \
@@ -229,7 +249,7 @@ RUN wget https://liblfds.org/downloads/liblfds%20release%207.1.0%20source.tar.bz
 
 ##### libgtpnl
 # review https://github.com/OPENAIRINTERFACE/openair-cn/blob/master/build/tools/build_helper.gtpnl
-RUN git clone https://git.osmocom.org/libgtpnl && \
+RUN # Moved git clone https://git.osmocom.org/libgtpnl && \
     cd libgtpnl && \
     git reset --hard 345d687 && \
     autoreconf -fi && \
@@ -239,7 +259,7 @@ RUN git clone https://git.osmocom.org/libgtpnl && \
     ldconfig
 
 #####  asn1c
-RUN git clone https://github.com/OPENAIRINTERFACE/asn1c.git && \
+RUN # Moved git clone https://github.com/OPENAIRINTERFACE/asn1c.git && \
     cd asn1c && \
     git checkout f12568d617dbf48497588f8e227d70388fa217c9 && \
     autoreconf -iv && \
@@ -249,7 +269,8 @@ RUN git clone https://github.com/OPENAIRINTERFACE/asn1c.git && \
 
 ##### Facebook Folly C++ lib
 RUN echo "Install fmtlib required by Folly" && \
-    git clone https://github.com/fmtlib/fmt.git && cd fmt && \
+    # Moved git clone https://github.com/fmtlib/fmt.git && \
+    cd fmt && \
     mkdir _build && cd _build && \
     cmake3 .. && \
     make -j`nproc` && \
@@ -257,7 +278,7 @@ RUN echo "Install fmtlib required by Folly" && \
     ldconfig && \
     cd / && \
     echo "Install Double Conversion" && \
-    git clone --depth=1 --branch=v3.1.5 https://github.com/google/double-conversion.git && \
+    # Moved git clone --depth=1 --branch=v3.1.5 https://github.com/google/double-conversion.git && \
     cd double-conversion && \
     cmake3 -DBUILD_SHARED_LIBS=ON . && \
     make -j`nproc` && \
@@ -265,7 +286,8 @@ RUN echo "Install fmtlib required by Folly" && \
     ldconfig && \
     cd / && \
     echo "Install Unwind" && \
-    git clone --depth=1 --branch=v1.2.1 https://github.com/libunwind/libunwind.git && cd libunwind && \
+    # Moved git clone --depth=1 --branch=v1.2.1 https://github.com/libunwind/libunwind.git && \
+    cd libunwind && \
     ./autogen.sh && \
     ./configure && \
     make -j`nproc` && \
@@ -273,7 +295,7 @@ RUN echo "Install fmtlib required by Folly" && \
     ldconfig && \
     cd / && \
     echo "Install Folly" && \
-    git clone https://github.com/facebook/folly.git /folly && \
+    # Moved git clone https://github.com/facebook/folly.git /folly && \
     cd /folly && \
     git checkout -f efe2962d54734d9e899f592dfaa68055e7752858 && \
     patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/folly-gflagslib-fix.patch && \
@@ -288,7 +310,7 @@ RUN echo "Install fmtlib required by Folly" && \
     make install
 
 ##### FreeDiameter
-RUN git clone https://github.com/OPENAIRINTERFACE/opencord.org.freeDiameter.git freediameter && \
+RUN # Moved git clone https://github.com/OPENAIRINTERFACE/opencord.org.freeDiameter.git freediameter && \
     cd freediameter && \
     git pull origin master && \
     git log -n1 && \
@@ -304,7 +326,7 @@ RUN git clone https://github.com/OPENAIRINTERFACE/opencord.org.freeDiameter.git 
     make install
 
 ##### lib nlohmann json
-RUN git clone https://github.com/nlohmann/json.git && \
+RUN # Moved git clone https://github.com/nlohmann/json.git && \
     cd json && \
     git log -n1 && \
     mkdir _build && \
@@ -315,7 +337,7 @@ RUN git clone https://github.com/nlohmann/json.git && \
     cp /usr/local/include/nlohmann/json.hpp /usr/local/include/
 
 ##### lib yaml-cpp
-RUN git clone https://github.com/jbeder/yaml-cpp.git && \
+RUN # Moved git clone https://github.com/jbeder/yaml-cpp.git && \
     cd yaml-cpp && \
     git checkout -f yaml-cpp-0.6.3 && \
     mkdir _build && \
@@ -325,7 +347,7 @@ RUN git clone https://github.com/jbeder/yaml-cpp.git && \
     make install
 
 ##### lib czmq
-RUN git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
+RUN # Moved git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
     cd libzmq && \
     patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/libzmq-strncpy.patch && \
     ./autogen.sh && \
