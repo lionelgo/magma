@@ -199,8 +199,8 @@ RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/local-lib.conf && \
     make install
 
 ##### Prometheus CPP
-RUN # Moved git clone https://github.com/jupp0r/prometheus-cpp.git && \
-    cd prometheus-cpp && \
+RUN cd prometheus-cpp && \
+    # Moved git clone https://github.com/jupp0r/prometheus-cpp.git && \
     git checkout d8326b2bba945a435f299e7526c403d7a1f68c1f && \
     git submodule init && git submodule update && \
     mkdir _build && \
@@ -210,8 +210,8 @@ RUN # Moved git clone https://github.com/jupp0r/prometheus-cpp.git && \
     make install
 
 ##### Redis CPP
-RUN # Moved git clone https://github.com/cpp-redis/cpp_redis.git && \
-    cd cpp_redis && \
+RUN cd cpp_redis && \
+    # Moved git clone https://github.com/cpp-redis/cpp_redis.git && \
     git checkout bbe38a7f83de943ffcc90271092d689ae02b3489 && \
     git submodule init && git submodule update && \
     mkdir build && cd build && \
@@ -220,8 +220,8 @@ RUN # Moved git clone https://github.com/cpp-redis/cpp_redis.git && \
     make install
 
 ##### NETTLE / gnutls
-RUN # Moved wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
-    tar -xf nettle-2.5.tar.gz && \
+RUN tar -xf nettle-2.5.tar.gz && \
+    # Moved wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
     cd nettle-2.5 && \
     mkdir build && \
     cd build/ && \
@@ -241,16 +241,16 @@ RUN # Moved wget https://ftp.gnu.org/gnu/nettle/nettle-2.5.tar.gz && \
 
 ##### liblfds
 # https://www.liblfds.org/mediawiki/index.php?title=r7.1.0:Building_Guide_(liblfds)
-RUN # Moved wget https://liblfds.org/downloads/liblfds%20release%207.1.0%20source.tar.bz2  && \
-    tar -xf liblfds\ release\ 7.1.0\ source.tar.bz2  && \
+RUN tar -xf liblfds\ release\ 7.1.0\ source.tar.bz2  && \
+    # Moved wget https://liblfds.org/downloads/liblfds%20release%207.1.0%20source.tar.bz2  && \
     cd liblfds/liblfds7.1.0/liblfds710/build/gcc_gnumake/ && \
     make -j`nproc` && \
     make ar_install
 
 ##### libgtpnl
 # review https://github.com/OPENAIRINTERFACE/openair-cn/blob/master/build/tools/build_helper.gtpnl
-RUN # Moved git clone https://git.osmocom.org/libgtpnl && \
-    cd libgtpnl && \
+RUN cd libgtpnl && \
+    # Moved git clone https://git.osmocom.org/libgtpnl && \
     git reset --hard 345d687 && \
     autoreconf -fi && \
     ./configure && \
@@ -259,8 +259,8 @@ RUN # Moved git clone https://git.osmocom.org/libgtpnl && \
     ldconfig
 
 #####  asn1c
-RUN # Moved git clone https://github.com/OPENAIRINTERFACE/asn1c.git && \
-    cd asn1c && \
+RUN cd asn1c && \
+    # Moved git clone https://github.com/OPENAIRINTERFACE/asn1c.git && \
     git checkout f12568d617dbf48497588f8e227d70388fa217c9 && \
     autoreconf -iv && \
     ./configure && \
@@ -310,8 +310,8 @@ RUN echo "Install fmtlib required by Folly" && \
     make install
 
 ##### FreeDiameter
-RUN # Moved git clone https://github.com/OPENAIRINTERFACE/opencord.org.freeDiameter.git freediameter && \
-    cd freediameter && \
+RUN cd freediameter && \
+    # Moved git clone https://github.com/OPENAIRINTERFACE/opencord.org.freeDiameter.git freediameter && \
     git pull origin master && \
     git log -n1 && \
     echo "Patching dict_S6as6d" && \
@@ -326,8 +326,8 @@ RUN # Moved git clone https://github.com/OPENAIRINTERFACE/opencord.org.freeDiame
     make install
 
 ##### lib nlohmann json
-RUN # Moved git clone https://github.com/nlohmann/json.git && \
-    cd json && \
+RUN cd json && \
+    # Moved git clone https://github.com/nlohmann/json.git && \
     git log -n1 && \
     mkdir _build && \
     cd _build && \
@@ -337,8 +337,8 @@ RUN # Moved git clone https://github.com/nlohmann/json.git && \
     cp /usr/local/include/nlohmann/json.hpp /usr/local/include/
 
 ##### lib yaml-cpp
-RUN # Moved git clone https://github.com/jbeder/yaml-cpp.git && \
-    cd yaml-cpp && \
+RUN cd yaml-cpp && \
+    # Moved git clone https://github.com/jbeder/yaml-cpp.git && \
     git checkout -f yaml-cpp-0.6.3 && \
     mkdir _build && \
     cd _build && \
@@ -347,8 +347,8 @@ RUN # Moved git clone https://github.com/jbeder/yaml-cpp.git && \
     make install
 
 ##### lib czmq
-RUN # Moved git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
-    cd libzmq && \
+RUN cd libzmq && \
+    # Moved git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
     patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/libzmq-strncpy.patch && \
     ./autogen.sh && \
     ./configure && \
