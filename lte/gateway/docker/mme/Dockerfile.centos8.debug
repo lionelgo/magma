@@ -1,7 +1,7 @@
 ################################################################
 # Builder Image (can also be used as developer's image)
 ################################################################
-FROM centos:8 as centos-dev-oai-mme-builder
+FROM centos:8 as centos8-mme-debug-3rd-party-builder
 
 ARG GIT_PROXY
 ARG FEATURES=mme_oai
@@ -119,7 +119,12 @@ RUN yum install -y \
   && rm -rf /var/cache/yum
 
 # Add Converged MME sources to the container
-COPY ./ $MAGMA_ROOT
+WORKDIR /patches
+COPY  lte/gateway/c/oai/patches/folly-gflagslib-fix.patch .
+COPY  lte/gateway/c/oai/patches/0001-opencoord.org.freeDiameter.patch .
+COPY  lte/gateway/c/oai/patches/libzmq-strncpy.patch .
+COPY  lte/gateway/c/oai/patches/czmq-strncat.patch .
+COPY  lte/gateway/c/oai/patches/CMake-warnings-not-errors.patch .
 
 # In some network environments, GIT proxy is required
 RUN /bin/bash -c "if [[ -v GIT_PROXY ]]; then git config --global http.proxy $GIT_PROXY; fi"
@@ -298,7 +303,7 @@ RUN echo "Install fmtlib required by Folly" && \
     # Moved git clone https://github.com/facebook/folly.git /folly && \
     cd /folly && \
     git checkout -f efe2962d54734d9e899f592dfaa68055e7752858 && \
-    patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/folly-gflagslib-fix.patch && \
+    patch -p1 < /patches/folly-gflagslib-fix.patch && \
     mkdir _build && \
     cd _build && \
     # cmake "-DFPHSA_NAME_MISMATCHED=true" .. && \
@@ -315,7 +320,7 @@ RUN cd freediameter && \
     git pull origin master && \
     git log -n1 && \
     echo "Patching dict_S6as6d" && \
-    patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/0001-opencoord.org.freeDiameter.patch && \
+    patch -p1 < /patches/0001-opencoord.org.freeDiameter.patch && \
     mkdir build && \
     cd build && \
     cmake3 ../ && \
@@ -349,18 +354,26 @@ RUN cd yaml-cpp && \
 ##### lib czmq
 RUN cd libzmq && \
     # Moved git clone --branch=v4.2.3 https://github.com/zeromq/libzmq.git && \
-    patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/libzmq-strncpy.patch && \
+    patch -p1 < /patches/libzmq-strncpy.patch && \
     ./autogen.sh && \
     ./configure && \
     make -j`nproc` && \
     make install && \
     git clone --branch=v4.1.0 https://github.com/zeromq/czmq.git && \
     cd czmq && \
-    patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/czmq-strncat.patch && \
+    patch -p1 < /patches/czmq-strncat.patch && \
     ./autogen.sh && \
     ./configure && \
     make -j`nproc` && \
     make install
+
+################################################################
+# Target Image
+################################################################
+FROM centos8-mme-debug-3rd-party-builder as centos8-mme-debug
+
+# Add Converged MME sources to the container
+COPY ./ $MAGMA_ROOT
 
 WORKDIR /
 # Build MME executables
