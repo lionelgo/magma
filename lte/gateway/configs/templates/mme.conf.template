@@ -45,6 +45,7 @@ MME :
     {
         S6A_CONF                   = "{{ conf_dir }}/mme_fd.conf"; # YOUR MME freeDiameter config file path
         HSS_HOSTNAME               = "{{ hss_hostname }}"; # relevant for freeDiameter only
+        HSS_REALM                  = "{{ hss_realm }}"; # relevant for freeDiameter only
     };
 
     # ------- SCTP definitions

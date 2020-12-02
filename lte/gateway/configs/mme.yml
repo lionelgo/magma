@@ -18,7 +18,8 @@ realm: "magma.com"
 conf_dir: "/var/opt/magma/tmp"
 cert_dir: "/usr/local/etc/oai"
 hss_ip: "192.168.60.153"
-hss_hostname: "hss"
+hss_hostname: "hss.magma.com"
+hss_realm: "magma.com"
 use_stateless: false
 enable_apn_correction: false
 apn_correction_map_list:

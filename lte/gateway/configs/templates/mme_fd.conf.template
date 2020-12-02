@@ -178,4 +178,4 @@ LoadExtension = "/usr/local/lib/freeDiameter/dict_S6c.fdx";
 # incoming connections from other peers, see the acl_wl.fdx? extension which
 # allows exactly this.
 
-ConnectPeer= "{{ hss_hostname }}.{{ realm }}" { ConnectTo = "{{ hss_ip }}"; No_SCTP ; No_IPv6; Prefer_TCP; No_TLS; port = 3868;  realm = "{{ realm }}";};
+ConnectPeer= "{{ hss_hostname }}" { ConnectTo = "{{ hss_ip }}"; No_SCTP ; No_IPv6; Prefer_TCP; No_TLS; port = 3868; };
