@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ImageStream
+metadata:
+    name: magma-mme
+    namespace: oai-cn
+status:
+    tag: rel15_centos8

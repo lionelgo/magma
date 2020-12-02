@@ -1,0 +1,31 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: "magma-debug-3rdparty-build-config"
+spec:
+    runPolicy: "Serial"
+    source:
+        git:
+            uri: "https://github.com/lionelgo/magma.git"
+            ref: "rel15_centos8"
+        secrets:
+        # The Secret SHALL be created from lycos (or any RHEL8 physical computer)
+        - secret:
+            name: etc-pki-entitlement
+          destinationDir: lte/gateway/openshift/etc-pki-entitlement
+        # Again these config maps SHALL be created from lycos (or any RHEL8 physical computer)
+        configMaps:
+          - configMap:
+              name: rhsm-conf
+            destinationDir: lte/gateway/openshift/rhsm-conf
+          - configMap:
+              name: rhsm-ca
+            destinationDir: lte/gateway/openshift/rhsm-ca
+    strategy:
+        dockerStrategy:
+            dockerfilePath: "lte/gateway/docker/mme/Dockerfile.centos8.debug.3dparty"
+            target: "centos8-mme-debug-3rd-party-builder"
+    output:
+        to:
+            kind: "ImageStreamTag"
+            name: "magma-mme:debug-3rd-party"
