@@ -308,7 +308,7 @@ int s1ap_mme_handle_uplink_nas_transport(
           LOG_S1AP,
           "Received S1AP UPLINK_NAS_TRANSPORT No UE is attached to this "
           "mme_ue_s1ap_id: " MME_UE_S1AP_ID_FMT "\n",
-          (mme_ue_s1ap_id_t) mme_ue_s1ap_id);
+          mme_ue_s1ap_id);
       OAILOG_FUNC_RETURN(LOG_S1AP, RETURNerror);
     }
   }
@@ -860,10 +860,6 @@ void s1ap_handle_conn_est_cnf(
       imsi_map->mme_ue_id_imsi_htbl, (const hash_key_t) conn_est_cnf_pP->ue_id,
       &imsi64);
 
-  /*
-   * Start the outcome response timer.
-   * * * * When time is reached, MME consider that procedure outcome has failed.
-   */
   pdu.present = S1ap_S1AP_PDU_PR_initiatingMessage;
   pdu.choice.initiatingMessage.procedureCode =
       S1ap_ProcedureCode_id_InitialContextSetup;
@@ -952,18 +948,18 @@ void s1ap_handle_conn_est_cnf(
     }
     // Set the GTP-TEID. This is the S1-U S-GW TEID
     INT32_TO_OCTET_STRING(
-        conn_est_cnf_pP->gtp_teid[item], &e_RABToBeSetup[item].gTP_TEID);
+        conn_est_cnf_pP->gtp_teid[item], &e_RABToBeSetup->gTP_TEID);
     // S-GW IP address(es) for user-plane
-    e_RABToBeSetup[item].transportLayerAddress.buf = calloc(
+    e_RABToBeSetup->transportLayerAddress.buf = calloc(
         blength(conn_est_cnf_pP->transport_layer_address[item]),
         sizeof(uint8_t));
     memcpy(
-        e_RABToBeSetup[item].transportLayerAddress.buf,
+        e_RABToBeSetup->transportLayerAddress.buf,
         conn_est_cnf_pP->transport_layer_address[item]->data,
         blength(conn_est_cnf_pP->transport_layer_address[item]));
-    e_RABToBeSetup[item].transportLayerAddress.size =
+    e_RABToBeSetup->transportLayerAddress.size =
         blength(conn_est_cnf_pP->transport_layer_address[item]);
-    e_RABToBeSetup[item].transportLayerAddress.bits_unused = 0;
+    e_RABToBeSetup->transportLayerAddress.bits_unused = 0;
     ASN_SEQUENCE_ADD(&e_rab_to_be_setup_list->list, e_rab_tobesetup_item);
   }
   {
