@@ -123,6 +123,9 @@ void mme_app_handle_initial_context_setup_failure(
     const itti_mme_app_initial_context_setup_failure_t* const
         initial_ctxt_setup_failure_pP);
 
+void mme_app_handle_e_rab_modification_ind(
+    const itti_s1ap_e_rab_modification_ind_t* const e_rab_modification_ind);
+
 bool mme_app_dump_ue_context(
     const hash_key_t keyP, void* const ue_context_pP, void* unused_param_pP,
     void** unused_result_pP);
