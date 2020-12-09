@@ -14,24 +14,22 @@ RUN ldconfig --verbose && \
     cd $MAGMA_ROOT/ && patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/CMake-warnings-not-errors.patch && \
     cd $MAGMA_ROOT/lte/gateway && \
     make build_oai FEATURES=mme_oai && \
-    make build_sctpd
-
-#Temporary to get all the shared libraries
-RUN echo "ldd $C_BUILD/oai/oai_mme/mme" && \
-    ldd $C_BUILD/oai/oai_mme/mme
-RUN echo "ldd $C_BUILD/sctpd/sctpd" && \
+    make build_sctpd && \
+    #Temporary to get all the shared libraries
+    echo "ldd $C_BUILD/oai/oai_mme/mme" && \
+    ldd $C_BUILD/oai/oai_mme/mme && \
+    echo "ldd $C_BUILD/sctpd/sctpd" && \
     ldd $C_BUILD/sctpd/sctpd
-    
+
 # For developer's to have the same run env as in target image to debug
 # Copy the configuration file templates and mean to modify/generate certificates
 WORKDIR /magma/bin
-RUN cp $C_BUILD/oai/oai_mme/mme oai_mme
-RUN cp $C_BUILD/sctpd/sctpd .
+RUN cp $C_BUILD/oai/oai_mme/mme oai_mme && \
+    cp $C_BUILD/sctpd/sctpd .
 
-RUN mkdir -p /magma/etc
-
+RUN mkdir -p /magma/etc && \
+    mkdir -p /var/opt/magma
 # Create running dirs
-WORKDIR /var/opt/magma
 WORKDIR /usr/local/etc/redis
 RUN cp $MAGMA_ROOT/lte/gateway/docker/mme/configs/redis_for_container.conf redis.conf
 
