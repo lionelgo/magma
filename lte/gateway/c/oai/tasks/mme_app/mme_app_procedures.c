@@ -148,8 +148,8 @@ int mme_app_run_s1ap_procedure_modify_bearer_ind(
   // mme_app_is_ue_context_clean(ue_context)?!?
   /** Get the PDN Context. */
   // TODO sort by pdn_context if different SGWs (not the case now)
-  pdn_context_t* registered_pdn_ctx =
-      RB_MIN(PdnContexts, &ue_context_p->pdn_contexts);
+  // pdn_context_t* registered_pdn_ctx =
+  //  RB_MIN(PdnContexts, &ue_context_p->pdn_contexts);
 
   for (int nb_bearer = 0;
        nb_bearer < proc->e_rab_to_be_modified_list.no_of_items; nb_bearer++) {
