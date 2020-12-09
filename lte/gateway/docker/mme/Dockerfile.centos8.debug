@@ -1,0 +1,56 @@
+################################################################
+# Target Image
+################################################################
+FROM magma-mme:debug-3rd-party as centos8-mme-debug
+
+# Add Converged MME sources to the container
+COPY ./ $MAGMA_ROOT
+
+WORKDIR /
+# Build MME executables
+RUN ldconfig --verbose && \
+    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/ && \
+    # temporary warnings not error when compiling
+    cd $MAGMA_ROOT/ && patch -p1 < $MAGMA_ROOT/lte/gateway/c/oai/patches/CMake-warnings-not-errors.patch && \
+    cd $MAGMA_ROOT/lte/gateway && \
+    make build_oai FEATURES=mme_oai && \
+    make build_sctpd && \
+    #Temporary to get all the shared libraries
+    echo "ldd $C_BUILD/oai/oai_mme/mme" && \
+    ldd $C_BUILD/oai/oai_mme/mme && \
+    echo "ldd $C_BUILD/sctpd/sctpd" && \
+    ldd $C_BUILD/sctpd/sctpd
+
+# For developer's to have the same run env as in target image to debug
+# Copy the configuration file templates and mean to modify/generate certificates
+WORKDIR /magma/bin
+RUN cp $C_BUILD/oai/oai_mme/mme oai_mme && \
+    cp $C_BUILD/sctpd/sctpd .
+
+RUN mkdir -p /magma/etc && \
+    mkdir -p /var/opt/magma
+# Create running dirs
+WORKDIR /usr/local/etc/redis
+RUN cp $MAGMA_ROOT/lte/gateway/docker/mme/configs/redis_for_container.conf redis.conf
+
+WORKDIR /etc/magma
+RUN cp $MAGMA_ROOT/lte/gateway/configs/control_proxy.yml . && \
+    cp $MAGMA_ROOT/lte/gateway/configs/redis.yml . && \
+    cp $MAGMA_ROOT/lte/gateway/configs/service_registry.yml .
+
+WORKDIR /magma/scripts
+RUN cp $MAGMA_ROOT/lte/gateway/openshift/mme/entrypoint.sh . && \
+    cp $MAGMA_ROOT/lte/gateway/c/oai/test/check_mme_s6a_certificate . && \
+    sed -i -e "s@^.*THIS_SCRIPT_PATH@#@" -e "s@\$SUDO@@" check_mme_s6a_certificate && \
+    sed -i -e "s@echo_error@echo@" -e "s@echo_success@echo@" -e "s@echo_warning@echo@" check_mme_s6a_certificate
+
+WORKDIR /magma
+RUN openssl rand -out /root/.rnd 128 && \
+    # Need to SSH on the container
+    sed -E 's/^#(PermitRootLogin )no/\1yes/' /etc/ssh/sshd_config -i && \
+    echo "root:root" | chpasswd && \
+    # Host keys for starting sshd
+    /usr/bin/ssh-keygen -A
+
+CMD ["/magma/bin/oai_mme", "-c", "/magma/etc/mme.conf"]
+ENTRYPOINT ["/magma/scripts/entrypoint.sh"]

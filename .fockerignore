@@ -23,6 +23,7 @@
 !lte/gateway/python/
 !lte/gateway/Makefile
 !lte/gateway/c
+!lte/gateway/openshift/
 !lte/protos/
 !lte/swagger/
 !lte/gateway/deploy
