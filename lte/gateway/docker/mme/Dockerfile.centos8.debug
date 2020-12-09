@@ -45,7 +45,12 @@ RUN cp $MAGMA_ROOT/lte/gateway/openshift/mme/entrypoint.sh . && \
     sed -i -e "s@echo_error@echo@" -e "s@echo_success@echo@" -e "s@echo_warning@echo@" check_mme_s6a_certificate
 
 WORKDIR /magma
-RUN openssl rand -out /root/.rnd 128
+RUN openssl rand -out /root/.rnd 128 && \
+    # Need to SSH on the container
+    sed -E 's/^#(PermitRootLogin )no/\1yes/' /etc/ssh/sshd_config -i && \
+    echo "root:root" | chpasswd && \
+    # Host keys for starting sshd
+    /usr/bin/ssh-keygen -A
 
 CMD ["/magma/bin/oai_mme", "-c", "/magma/etc/mme.conf"]
 ENTRYPOINT ["/magma/scripts/entrypoint.sh"]
