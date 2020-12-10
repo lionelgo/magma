@@ -3695,10 +3695,11 @@ void mme_app_handle_e_rab_modification_ind(
     const itti_s1ap_e_rab_modification_ind_t* const e_rab_modification_ind) {
   OAILOG_FUNC_IN(LOG_MME_APP);
   struct ue_mm_context_s* ue_context_p = NULL;
-  // struct ue_session_pool_s* ue_session_pool = NULL;
-  // struct pdn_context_s* pdn_context         = NULL;
-  // ebi_list_t ebi_list;
-  // MessageDef* message_p = NULL;
+  bearer_context_t* current_bearer_p = NULL;
+  pdn_cid_t cid                      = 0;
+  int idx                            = 0;
+  pdn_context_t* pdn_context         = NULL;
+  MessageDef* message_p              = NULL;
 
   if (!e_rab_modification_ind->e_rab_to_be_modified_list.no_of_items) {
     OAILOG_NOTICE(
@@ -3738,11 +3739,6 @@ void mme_app_handle_e_rab_modification_ind(
     bearer_context_t* bearer_context =
         mme_app_get_bearer_context(ue_context_p, (ebi_t) e_rab_id);
 
-    // mme_app_get_session_bearer_context_from_all(
-    //  ue_session_pool,
-    // e_rab_modification_ind->e_rab_to_be_modified_list.item[i].e_rab_id,
-    //&bearer_context);
-
     if (!bearer_context) {
       OAILOG_NOTICE(
           LOG_MME_APP,
@@ -3753,10 +3749,25 @@ void mme_app_handle_e_rab_modification_ind(
 
       ue_context_p = mme_ue_context_exists_mme_ue_s1ap_id(
           e_rab_modification_ind->mme_ue_s1ap_id);
-      // ue_context->privates.s1_ue_context_release_cause =
-      // S1AP_RADIO_UNKNOWN_E_RAB_ID;
+      ue_context_p->ue_context_rel_cause = S1AP_RADIO_UNKNOWN_E_RAB_ID;
       mme_app_itti_ue_context_release(
           ue_context_p, ue_context_p->ue_context_rel_cause);
+    }
+    /*
+     * If the E-RAB MODIFICATION INDICATION message contains several E-RAB ID IEs
+     * set to the same value, the MME shall trigger the UE Context Release
+     * procedure.
+     */
+    for (int j = 0;
+           j < i;
+           j++) {
+      if (e_rab_modification_ind->e_rab_to_be_modified_list.item[i].e_rab_id ==
+          e_rab_modification_ind->e_rab_to_be_modified_list.item[j].e_rab_id) {
+        ue_context_p->ue_context_rel_cause = S1AP_RADIO_MULTIPLE_E_RAB_ID;
+        mme_app_itti_ue_context_release(
+            ue_context_p, ue_context_p->ue_context_rel_cause);
+        OAILOG_FUNC_OUT(LOG_MME_APP);
+      }
     }
   }
 
@@ -3776,49 +3787,159 @@ void mme_app_handle_e_rab_modification_ind(
               .e_rab_id,
           e_rab_modification_ind->mme_ue_s1ap_id);
 
-      // ue_context_t* ue_context = mme_ue_context_exists_mme_ue_s1ap_id(
-      // e_rab_modification_ind->mme_ue_s1ap_id);
-      // ue_context->privates.s1_ue_context_release_cause =
-      // S1AP_RADIO_UNKNOWN_E_RAB_ID;
+      ue_context_p->ue_context_rel_cause = S1AP_RADIO_UNKNOWN_E_RAB_ID;
       mme_app_itti_ue_context_release(
           ue_context_p, ue_context_p->ue_context_rel_cause);
       OAILOG_FUNC_OUT(LOG_MME_APP);
+    }
+    /*
+     * If the E-RAB MODIFICATION INDICATION message contains several E-RAB ID IEs
+     * set to the same value, the MME shall trigger the UE Context Release
+     * procedure.
+     */
+    for (int j = 0;
+           j < i;
+           j++) {
+      if (e_rab_modification_ind->e_rab_not_to_be_modified_list.item[i].e_rab_id ==
+          e_rab_modification_ind->e_rab_not_to_be_modified_list.item[j].e_rab_id) {
+        ue_context_p->ue_context_rel_cause = S1AP_RADIO_MULTIPLE_E_RAB_ID;
+        mme_app_itti_ue_context_release(
+            ue_context_p, ue_context_p->ue_context_rel_cause);
+        OAILOG_FUNC_OUT(LOG_MME_APP);
+      }
     }
   }
 
-  /*
-   * If the E-RAB MODIFICATION INDICATION message contains several E-RAB ID IEs
-   * set to the same value, the MME shall trigger the UE Context Release
-   * procedure.
-   */
-  // TODO Cause = S1AP_RADIO_MULTIPLE_E_RAB_ID
+  // Build and send Modify Bearer Request
+  message_p = itti_alloc_new_message(TASK_MME_APP, S11_MODIFY_BEARER_REQUEST);
+  if (message_p == NULL) {
+    OAILOG_ERROR_UE(
+        LOG_MME_APP, ue_context_p->emm_context._imsi64,
+        "Failed to allocate new ITTI message for S11 Modify Bearer Request "
+        "for MME UE S1AP Id: " MME_UE_S1AP_ID_FMT "\n",
+        e_rab_modification_ind->mme_ue_s1ap_id);
+    OAILOG_FUNC_OUT(LOG_MME_APP);
+  }
+  itti_s11_modify_bearer_request_t* s11_modify_bearer_request =
+      &message_p->ittiMsg.s11_modify_bearer_request;
+  s11_modify_bearer_request->local_teid = ue_context_p->mme_teid_s11;
 
-  /*
-    mme_app_s1ap_proc_modify_bearer_ind_t* proc =
-        mme_app_create_s1ap_procedure_modify_bearer_ind(ue_session_pool);
-    if (proc) {
-      memcpy(
-          (void*) &proc->e_rab_to_be_modified_list,
-          (void*) &e_rab_modification_ind->e_rab_to_be_modified_list,
-          sizeof(proc->e_rab_to_be_modified_list));
-
-      int ret = mme_app_run_s1ap_procedure_modify_bearer_ind(
-          proc, e_rab_modification_ind);
-      OAILOG_FUNC_OUT(LOG_MME_APP);
+  for (idx = 0; idx < e_rab_modification_ind->e_rab_to_be_modified_list.no_of_items; idx++) {
+    e_rab_id_t bearer_id = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
+    if ((current_bearer_p =
+             mme_app_get_bearer_context(ue_context_p, bearer_id)) == NULL) {
+      // useless, already tested few lines above
+      OAILOG_ERROR_UE(
+          LOG_MME_APP, ue_context_p->emm_context._imsi64,
+          "Bearer Contex for bearer_id %d does not exist for ue_id %d\n",
+          bearer_id, ue_context_p->mme_ue_s1ap_id);
     } else {
-      OAILOG_ERROR(
-          LOG_MME_APP,
-          "S1AP E-RAB_MODIFICATION_IND could not allocate S1AP "
-          "procedure for mme_ue_s1ap_id: " MME_UE_S1AP_ID_FMT "\n",
-          e_rab_modification_ind->mme_ue_s1ap_id);
-      ue_context_p = mme_ue_context_exists_mme_ue_s1ap_id(
-          e_rab_modification_ind->mme_ue_s1ap_id);
-      // ue_context->privates.s1_ue_context_release_cause = S1AP_SYSTEM_FAILURE;
-      mme_app_itti_ue_context_release(
-          ue_context_p, ue_context_p->ue_context_rel_cause);
-      OAILOG_FUNC_OUT(LOG_MME_APP);
+      s11_modify_bearer_request->bearer_contexts_to_be_modified
+          .bearer_contexts[idx]
+          .eps_bearer_id = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
+      s11_modify_bearer_request->bearer_contexts_to_be_modified
+          .bearer_contexts[idx]
+          .s1_eNB_fteid.teid = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].s1_xNB_fteid.teid;
+
+      memcpy(
+            &s11_modify_bearer_request->bearer_contexts_to_be_modified
+                 .bearer_contexts[idx]
+                 .s1_eNB_fteid,
+                 &e_rab_modification_ind->e_rab_to_be_modified_list.item[idx]
+                .s1_xNB_fteid,
+            sizeof(s11_modify_bearer_request->bearer_contexts_to_be_modified
+                .bearer_contexts[idx]
+                .s1_eNB_fteid));
+      s11_modify_bearer_request->bearer_contexts_to_be_modified
+          .bearer_contexts[idx]
+          .s1_eNB_fteid.interface_type = S1_U_ENODEB_GTP_U;
+      s11_modify_bearer_request->bearer_contexts_to_be_modified
+          .num_bearer_context++;
+
+      OAILOG_DEBUG_UE(
+          LOG_MME_APP, ue_context_p->emm_context._imsi64,
+          "Build MBR for ue_id %d\t bearer_id %d\t enb_teid %u\t sgw_teid %u\n",
+          ue_context_p->mme_ue_s1ap_id, bearer_id,
+          s11_modify_bearer_request->bearer_contexts_to_be_modified
+              .bearer_contexts[idx]
+              .s1_eNB_fteid.teid,
+          current_bearer_p->s_gw_fteid_s1u.teid);
     }
-    */
+
+    if (!idx) {
+      cid = ue_context_p->bearer_contexts[EBI_TO_INDEX(bearer_id)]->pdn_cx_id;
+      pdn_context = ue_context_p->pdn_contexts[cid];
+      s11_modify_bearer_request->edns_peer_ip.addr_v4.sin_addr =
+          pdn_context->s_gw_address_s11_s4.address.ipv4_address;
+      s11_modify_bearer_request->teid = pdn_context->s_gw_teid_s11_s4;
+    }
+  }
+  for (idx = 0; idx < e_rab_modification_ind->e_rab_not_to_be_modified_list.no_of_items; idx++) {
+    e_rab_id_t bearer_id = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
+    if ((current_bearer_p =
+             mme_app_get_bearer_context(ue_context_p, bearer_id)) == NULL) {
+      // useless, already tested few lines above
+      OAILOG_ERROR_UE(
+          LOG_MME_APP, ue_context_p->emm_context._imsi64,
+          "Bearer Contex for bearer_id %d does not exist for ue_id %d\n",
+          bearer_id, ue_context_p->mme_ue_s1ap_id);
+    } else {
+      s11_modify_bearer_request->bearer_contexts_to_be_modified
+          .bearer_contexts[idx]
+          .eps_bearer_id = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
+      s11_modify_bearer_request->bearer_contexts_to_be_modified
+          .bearer_contexts[idx]
+          .s1_eNB_fteid.teid = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].s1_xNB_fteid.teid;
+
+      memcpy(
+            &s11_modify_bearer_request->bearer_contexts_to_be_modified
+                 .bearer_contexts[idx]
+                 .s1_eNB_fteid,
+                 &e_rab_modification_ind->e_rab_to_be_modified_list.item[idx]
+                .s1_xNB_fteid,
+            sizeof(s11_modify_bearer_request->bearer_contexts_to_be_modified
+                .bearer_contexts[idx]
+                .s1_eNB_fteid));
+      s11_modify_bearer_request->bearer_contexts_to_be_modified
+          .bearer_contexts[idx]
+          .s1_eNB_fteid.interface_type = S1_U_ENODEB_GTP_U;
+      s11_modify_bearer_request->bearer_contexts_to_be_modified
+          .num_bearer_context++;
+
+      OAILOG_DEBUG_UE(
+          LOG_MME_APP, ue_context_p->emm_context._imsi64,
+          "Build MBR for ue_id %d\t bearer_id %d\t enb_teid %u\t sgw_teid %u\n",
+          ue_context_p->mme_ue_s1ap_id, bearer_id,
+          s11_modify_bearer_request->bearer_contexts_to_be_modified
+              .bearer_contexts[idx]
+              .s1_eNB_fteid.teid,
+          current_bearer_p->s_gw_fteid_s1u.teid);
+    }
+
+    if (!idx) {
+      cid = ue_context_p->bearer_contexts[EBI_TO_INDEX(bearer_id)]->pdn_cx_id;
+      pdn_context = ue_context_p->pdn_contexts[cid];
+      s11_modify_bearer_request->edns_peer_ip.addr_v4.sin_addr =
+          pdn_context->s_gw_address_s11_s4.address.ipv4_address;
+      s11_modify_bearer_request->teid = pdn_context->s_gw_teid_s11_s4;
+    }
+  }
+  s11_modify_bearer_request->bearer_contexts_to_be_removed
+          .num_bearer_context = 0;
+  ue_context_p->erab_mod_ind = true;
+
+  // S11 stack specific parameter. Not used in standalone epc mode
+  s11_modify_bearer_request->trxn = NULL;
+
+  message_p->ittiMsgHeader.imsi = ue_context_p->emm_context._imsi64;
+
+  OAILOG_DEBUG_UE(
+      LOG_MME_APP, ue_context_p->emm_context._imsi64,
+      "MME_APP send S11_MODIFY_BEARER_REQUEST to teid %u \n",
+      s11_modify_bearer_request->teid);
+  send_msg_to_task(&mme_app_task_zmq_ctx, TASK_SPGW, message_p);
+  ue_context_p->path_switch_req = true;
+
   OAILOG_FUNC_OUT(LOG_MME_APP);
 }
 

@@ -193,7 +193,8 @@ enum s1cause {
   S1AP_INVALID_ENB_ID,
   S1AP_CSFB_TRIGGERED,
   S1AP_NAS_UE_NOT_AVAILABLE_FOR_PS,
-  S1AP_SYSTEM_FAILURE
+  S1AP_SYSTEM_FAILURE,
+  S1AP_RADIO_MULTIPLE_E_RAB_ID
 };
 typedef struct itti_s1ap_ue_context_release_command_s {
   mme_ue_s1ap_id_t mme_ue_s1ap_id;
