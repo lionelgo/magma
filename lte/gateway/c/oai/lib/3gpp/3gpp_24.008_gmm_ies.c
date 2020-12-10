@@ -405,7 +405,8 @@ int encode_ms_network_capability_ie(
   encoded++;
 
   *(buffer + encoded) =
-      ((msnetworkcapability->up_integ_prot_support & 0x1) << 7) |  // spare coded as zero
+      ((msnetworkcapability->up_integ_prot_support & 0x1)
+       << 7) |  // spare coded as zero
       ((msnetworkcapability->gia4 & 0x1) << 6) |
       ((msnetworkcapability->gia5 & 0x1) << 5) |
       ((msnetworkcapability->gia6 & 0x1) << 4) |

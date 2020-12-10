@@ -58,7 +58,7 @@
    MOBILE_STATION_CLASSMARK_2_MAXIMUM_LENGTH +                                 \
    MOBILE_STATION_CLASSMARK_3_MAXIMUM_LENGTH +                                 \
    SUPPORTED_CODEC_LIST_MAXIMUM_LENGTH +                                       \
-   ADDITIONAL_UPDATE_TYPE_MAXIMUM_LENGTH +          \
+   ADDITIONAL_UPDATE_TYPE_MAXIMUM_LENGTH +                                     \
    UE_ADDITIONAL_SECURITY_CAPABILITY_MAXIMUM_LENGTH)
 
 /* If an optional value is present and should be encoded, the corresponding
