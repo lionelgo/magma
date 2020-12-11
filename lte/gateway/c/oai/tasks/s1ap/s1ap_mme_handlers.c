@@ -3024,8 +3024,8 @@ int s1ap_handle_paging_request(
 
 //------------------------------------------------------------------------------
 int s1ap_mme_handle_erab_modification_indication(
-    const sctp_assoc_id_t assoc_id, const sctp_stream_id_t stream,
-    S1ap_S1AP_PDU_t* pdu) {
+    s1ap_state_t* state, const sctp_assoc_id_t assoc_id,
+    const sctp_stream_id_t stream, S1ap_S1AP_PDU_t* pdu) {
   OAILOG_FUNC_IN(LOG_S1AP);
   enb_ue_s1ap_id_t enb_ue_s1ap_id               = 0;
   mme_ue_s1ap_id_t mme_ue_s1ap_id               = 0;

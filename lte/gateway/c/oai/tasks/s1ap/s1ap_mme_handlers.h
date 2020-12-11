@@ -160,8 +160,8 @@ int s1ap_handle_path_switch_req_failure(
     imsi64_t imsi64);
 
 int s1ap_mme_handle_erab_modification_indication(
-    const sctp_assoc_id_t assoc_id, const sctp_stream_id_t stream,
-    S1ap_S1AP_PDU_t* pdu);
+    s1ap_state_t* state, const sctp_assoc_id_t assoc_id,
+    const sctp_stream_id_t stream, S1ap_S1AP_PDU_t* pdu);
 
 void s1ap_mme_generate_erab_modification_confirm(
     const itti_s1ap_e_rab_modification_cnf_t* const conf);
