@@ -164,6 +164,6 @@ int s1ap_mme_handle_erab_modification_indication(
     const sctp_stream_id_t stream, S1ap_S1AP_PDU_t* pdu);
 
 void s1ap_mme_generate_erab_modification_confirm(
-    const itti_s1ap_e_rab_modification_cnf_t* const conf);
+    s1ap_state_t* state, const itti_s1ap_e_rab_modification_cnf_t* const conf);
 
 #endif /* FILE_S1AP_MME_HANDLERS_SEEN */

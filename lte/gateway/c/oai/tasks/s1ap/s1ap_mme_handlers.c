@@ -3050,11 +3050,13 @@ int s1ap_mme_handle_erab_modification_indication(
   enb_ue_s1ap_id =
       (enb_ue_s1ap_id_t)(ie->value.choice.ENB_UE_S1AP_ID & ENB_UE_S1AP_ID_MASK);
 
-  if ((ue_ref_p = s1ap_is_ue_mme_id_in_list(mme_ue_s1ap_id)) == NULL) {
+  if ((ue_ref_p = s1ap_state_get_ue_mmeid((uint32_t) mme_ue_s1ap_id)) ==
+      NULL) {
     OAILOG_DEBUG(
         LOG_S1AP,
-        "No UE is attached to this mme UE s1ap id: " MME_UE_S1AP_ID_FMT "\n",
-        mme_ue_s1ap_id);
+        "No UE is attached to this mme UE s1ap id: " MME_UE_S1AP_ID_FMT
+        " %u(10)\n",
+        (uint32_t) mme_ue_s1ap_id, (uint32_t) mme_ue_s1ap_id);
     OAILOG_FUNC_RETURN(LOG_S1AP, RETURNerror);
   }
 
@@ -3193,7 +3195,7 @@ int s1ap_mme_handle_erab_modification_indication(
 
 //------------------------------------------------------------------------------
 void s1ap_mme_generate_erab_modification_confirm(
-    const itti_s1ap_e_rab_modification_cnf_t* const conf) {
+    s1ap_state_t* state, const itti_s1ap_e_rab_modification_cnf_t* const conf) {
   uint8_t* buffer_p        = NULL;
   uint32_t length          = 0;
   ue_description_t* ue_ref = NULL;
@@ -3204,8 +3206,8 @@ void s1ap_mme_generate_erab_modification_confirm(
   OAILOG_FUNC_IN(LOG_S1AP);
   DevAssert(conf != NULL);
 
-  ue_ref = s1ap_is_ue_mme_id_in_list(conf->mme_ue_s1ap_id);
-  if (!ue_ref) {
+  if ((ue_ref = s1ap_state_get_ue_mmeid(
+      conf->mme_ue_s1ap_id)) == NULL) {
     OAILOG_ERROR(
         LOG_S1AP,
         "This mme ue s1ap id (" MME_UE_S1AP_ID_FMT
@@ -3269,30 +3271,27 @@ void s1ap_mme_generate_erab_modification_confirm(
       ASN_SEQUENCE_ADD(&e_rabmodifylistbearermodconf->list, item);
     }
   }
-  /** Encoding without allocating? */
+
   if (s1ap_mme_encode_pdu(&pdu, &buffer_p, &length) < 0) {
     OAILOG_ERROR(
-        LOG_S1AP,
-        "Failed to encode S1AP_E_RAB_MODIFICATION_CONFIRM for "
-        "UE " MME_UE_S1AP_ID_FMT ".\n",
-        conf->mme_ue_s1ap_id);
+        LOG_S1AP, "Encoding of S1ap_E_RABModificationConfirmIEs_t failed \n");
     OAILOG_FUNC_OUT(LOG_S1AP);
   }
 
   OAILOG_NOTICE(
       LOG_S1AP,
-      "Send S1AP_E_RAB_MODIFICATION_CONFIRM message MME_UE_S1AP_ID "
-      "= " MME_UE_S1AP_ID_FMT " \n",
-      (mme_ue_s1ap_id_t) conf->mme_ue_s1ap_id);
-
+      "Send S1AP E_RAB_MODIFICATION_CONFIRM Command message MME_UE_S1AP_ID "
+      "= " MME_UE_S1AP_ID_FMT " eNB_UE_S1AP_ID = " ENB_UE_S1AP_ID_FMT "\n",
+      (mme_ue_s1ap_id_t) ue_ref->mme_ue_s1ap_id,
+      (enb_ue_s1ap_id_t) ue_ref->enb_ue_s1ap_id);
   bstring b = blk2bstr(buffer_p, length);
   free(buffer_p);
   s1ap_mme_itti_send_sctp_request(
-      &b, ue_ref->enb->sctp_assoc_id, ue_ref->sctp_stream_send,
+      &b, ue_ref->sctp_assoc_id, ue_ref->sctp_stream_send,
       ue_ref->mme_ue_s1ap_id);
-
   OAILOG_FUNC_OUT(LOG_S1AP);
 }
+
 
 //----------------------------------------------------------------
 int s1ap_mme_handle_enb_configuration_transfer(

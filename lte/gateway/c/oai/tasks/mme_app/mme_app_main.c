@@ -152,7 +152,9 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
               ue_context_p);
           ue_context_p->path_switch_req = false;
         } else if (ue_context_p->erab_mod_ind){
-          // TODO
+          mme_app_handle_modify_bearer_rsp_erab_mod_ind(
+              &received_message_p->ittiMsg.s11_modify_bearer_response,
+              ue_context_p);
           ue_context_p->erab_mod_ind = false;
         }
       }

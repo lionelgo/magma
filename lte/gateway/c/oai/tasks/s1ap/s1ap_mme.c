@@ -192,7 +192,7 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
 
     case S1AP_E_RAB_MODIFICATION_CNF: {
       s1ap_mme_generate_erab_modification_confirm(
-          &S1AP_E_RAB_MODIFICATION_CNF(received_message_p));
+          state, &received_message_p->ittiMsg.s1ap_e_rab_modification_cnf);
     } break;
 
     // From MME_APP task

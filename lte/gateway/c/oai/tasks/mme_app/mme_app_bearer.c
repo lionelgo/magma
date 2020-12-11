@@ -3871,6 +3871,7 @@ void mme_app_handle_e_rab_modification_ind(
       pdn_context = ue_context_p->pdn_contexts[cid];
       s11_modify_bearer_request->edns_peer_ip.addr_v4.sin_addr =
           pdn_context->s_gw_address_s11_s4.address.ipv4_address;
+      s11_modify_bearer_request->edns_peer_ip.addr_v4.sin_family = AF_INET;
       s11_modify_bearer_request->teid = pdn_context->s_gw_teid_s11_s4;
     }
   }
@@ -3921,6 +3922,7 @@ void mme_app_handle_e_rab_modification_ind(
       pdn_context = ue_context_p->pdn_contexts[cid];
       s11_modify_bearer_request->edns_peer_ip.addr_v4.sin_addr =
           pdn_context->s_gw_address_s11_s4.address.ipv4_address;
+      s11_modify_bearer_request->edns_peer_ip.addr_v4.sin_family = AF_INET;
       s11_modify_bearer_request->teid = pdn_context->s_gw_teid_s11_s4;
     }
   }
@@ -3938,7 +3940,69 @@ void mme_app_handle_e_rab_modification_ind(
       "MME_APP send S11_MODIFY_BEARER_REQUEST to teid %u \n",
       s11_modify_bearer_request->teid);
   send_msg_to_task(&mme_app_task_zmq_ctx, TASK_SPGW, message_p);
-  ue_context_p->path_switch_req = true;
+  OAILOG_FUNC_OUT(LOG_MME_APP);
+}
+//------------------------------------------------------------------------------
+void mme_app_handle_modify_bearer_rsp_erab_mod_ind(
+    itti_s11_modify_bearer_response_t* const s11_mbr,
+    ue_mm_context_t* ue_context_p) {
+  OAILOG_FUNC_IN(LOG_MME_APP);
+  MessageDef* message_p  = NULL;
+
+  if (s11_mbr->bearer_contexts_modified.num_bearer_context ==
+      0) {
+    mme_app_handle_path_switch_req_failure(ue_context_p);
+    OAILOG_FUNC_OUT(LOG_MME_APP);
+  }
+  OAILOG_DEBUG_UE(
+      LOG_MME_APP, ue_context_p->emm_context._imsi64,
+      "Build S1AP_E_RAB_MODIFICATION_CNF for ue_id %d\n",
+      ue_context_p->mme_ue_s1ap_id);
+
+  message_p =
+      itti_alloc_new_message(TASK_MME_APP, S1AP_E_RAB_MODIFICATION_CNF);
+  if (message_p == NULL) {
+    OAILOG_ERROR_UE(
+        LOG_MME_APP, ue_context_p->emm_context._imsi64,
+        "Failed to allocate new ITTI message for E-RAB Modification Confirm "
+        "for MME UE S1AP Id: " MME_UE_S1AP_ID_FMT "\n",
+        ue_context_p->mme_ue_s1ap_id);
+    OAILOG_FUNC_OUT(LOG_MME_APP);
+  }
+
+  itti_s1ap_e_rab_modification_cnf_t *s1ap_e_rab_modification_cnf_p =
+      &message_p->ittiMsg.s1ap_e_rab_modification_cnf;
+
+  /** Set the identifiers. */
+  s1ap_e_rab_modification_cnf_p->mme_ue_s1ap_id = ue_context_p->mme_ue_s1ap_id;
+  s1ap_e_rab_modification_cnf_p->enb_ue_s1ap_id = ue_context_p->enb_ue_s1ap_id;
+
+  for (int i = 0;
+    i < s11_mbr->bearer_contexts_modified.num_bearer_context;
+    ++i) {
+    s1ap_e_rab_modification_cnf_p->e_rab_modify_list.e_rab_id[i] =
+        s11_mbr->bearer_contexts_modified.bearer_contexts[i].eps_bearer_id;
+  }
+  s1ap_e_rab_modification_cnf_p->e_rab_modify_list.no_of_items =
+      s11_mbr->bearer_contexts_modified.num_bearer_context;
+
+  for (int i = 0;
+      i < s11_mbr->bearer_contexts_marked_for_removal.num_bearer_context; ++i) {
+    s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.item[i]
+        .e_rab_id = s11_mbr->bearer_contexts_marked_for_removal.bearer_contexts[i].eps_bearer_id;
+    s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.item[i].cause.present = S1ap_Cause_PR_misc;
+    s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.item[i].cause.present = S1ap_CauseMisc_unspecified;
+  }
+  s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.no_of_items =
+      s11_mbr->bearer_contexts_marked_for_removal.num_bearer_context;
+
+  OAILOG_DEBUG_UE(
+      LOG_MME_APP, ue_context_p->emm_context._imsi64,
+      "MME_APP send E_RAB_MODIFICATION_CONFIRM to S1AP for ue_id %d \n",
+      ue_context_p->mme_ue_s1ap_id);
+
+  message_p->ittiMsgHeader.imsi = ue_context_p->emm_context._imsi64;
+  send_msg_to_task(&mme_app_task_zmq_ctx, TASK_S1AP, message_p);
 
   OAILOG_FUNC_OUT(LOG_MME_APP);
 }
