@@ -204,7 +204,7 @@ typedef struct emm_as_establish_s {
   uint32_t* t3423;                /* TAU GPRS T3423 timer   */
   void* equivalent_plmns;         /* TAU Equivalent PLMNs   */
   void* emergency_number_list;    /* TAU Emergency number list   */
-  uint8_t* eps_network_feature_support; /* TAU Network feature support   */
+  eps_network_feature_support_t* eps_network_feature_support; /* TAU Network feature support   */
   uint8_t* additional_update_result;    /* TAU Additional update result   */
   uint32_t* t3412_extended;             /* TAU GPRS timer   */
   uint8_t csfb_response; /* CSFB MT call accepted or rejected by ue */
@@ -245,7 +245,7 @@ typedef struct emm_as_data_s {
   const tai_t* tai; /* Code of the first tracking area identity the UE is
                        registered to          */
   tai_list_t tai_list;                  /* Valid field if num tai > 0 */
-  uint8_t* eps_network_feature_support; /* TAU Network feature support */
+  eps_network_feature_support_t* eps_network_feature_support; /* TAU Network feature support */
   bool switch_off;                      /* true if the UE is switched off   */
   uint8_t type;                         /* Network detach type          */
 #define EMM_AS_DATA_DELIVERED_LOWER_LAYER_FAILURE 0
