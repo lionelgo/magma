@@ -259,10 +259,11 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
           received_message_p->ittiMsg.timer_has_expired.timer_id,
           received_message_p->ittiMsg.timer_has_expired.arg);
       nw_rc_t nw_rc = nwGtpv2cProcessTimeout(
-              received_message_p->ittiMsg.timer_has_expired.arg);
+          received_message_p->ittiMsg.timer_has_expired.arg);
       if (nw_rc != NW_OK) {
         OAILOG_DEBUG(
-            LOG_S11, "Processing timeout for timer_id 0x%lx and arg %p failed\n",
+            LOG_S11,
+            "Processing timeout for timer_id 0x%lx and arg %p failed\n",
             received_message_p->ittiMsg.timer_has_expired.timer_id,
             received_message_p->ittiMsg.timer_has_expired.arg);
       }

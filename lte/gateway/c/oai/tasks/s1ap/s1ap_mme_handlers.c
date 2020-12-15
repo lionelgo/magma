@@ -3050,8 +3050,7 @@ int s1ap_mme_handle_erab_modification_indication(
   enb_ue_s1ap_id =
       (enb_ue_s1ap_id_t)(ie->value.choice.ENB_UE_S1AP_ID & ENB_UE_S1AP_ID_MASK);
 
-  if ((ue_ref_p = s1ap_state_get_ue_mmeid((uint32_t) mme_ue_s1ap_id)) ==
-      NULL) {
+  if ((ue_ref_p = s1ap_state_get_ue_mmeid((uint32_t) mme_ue_s1ap_id)) == NULL) {
     OAILOG_DEBUG(
         LOG_S1AP,
         "No UE is attached to this mme UE s1ap id: " MME_UE_S1AP_ID_FMT
@@ -3206,8 +3205,7 @@ void s1ap_mme_generate_erab_modification_confirm(
   OAILOG_FUNC_IN(LOG_S1AP);
   DevAssert(conf != NULL);
 
-  if ((ue_ref = s1ap_state_get_ue_mmeid(
-      conf->mme_ue_s1ap_id)) == NULL) {
+  if ((ue_ref = s1ap_state_get_ue_mmeid(conf->mme_ue_s1ap_id)) == NULL) {
     OAILOG_ERROR(
         LOG_S1AP,
         "This mme ue s1ap id (" MME_UE_S1AP_ID_FMT
@@ -3291,7 +3289,6 @@ void s1ap_mme_generate_erab_modification_confirm(
       ue_ref->mme_ue_s1ap_id);
   OAILOG_FUNC_OUT(LOG_S1AP);
 }
-
 
 //----------------------------------------------------------------
 int s1ap_mme_handle_enb_configuration_transfer(

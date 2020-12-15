@@ -3695,11 +3695,11 @@ void mme_app_handle_e_rab_modification_ind(
     const itti_s1ap_e_rab_modification_ind_t* const e_rab_modification_ind) {
   OAILOG_FUNC_IN(LOG_MME_APP);
   struct ue_mm_context_s* ue_context_p = NULL;
-  bearer_context_t* current_bearer_p = NULL;
-  pdn_cid_t cid                      = 0;
-  int idx                            = 0;
-  pdn_context_t* pdn_context         = NULL;
-  MessageDef* message_p              = NULL;
+  bearer_context_t* current_bearer_p   = NULL;
+  pdn_cid_t cid                        = 0;
+  int idx                              = 0;
+  pdn_context_t* pdn_context           = NULL;
+  MessageDef* message_p                = NULL;
 
   if (!e_rab_modification_ind->e_rab_to_be_modified_list.no_of_items) {
     OAILOG_NOTICE(
@@ -3754,13 +3754,11 @@ void mme_app_handle_e_rab_modification_ind(
           ue_context_p, ue_context_p->ue_context_rel_cause);
     }
     /*
-     * If the E-RAB MODIFICATION INDICATION message contains several E-RAB ID IEs
-     * set to the same value, the MME shall trigger the UE Context Release
+     * If the E-RAB MODIFICATION INDICATION message contains several E-RAB ID
+     * IEs set to the same value, the MME shall trigger the UE Context Release
      * procedure.
      */
-    for (int j = 0;
-           j < i;
-           j++) {
+    for (int j = 0; j < i; j++) {
       if (e_rab_modification_ind->e_rab_to_be_modified_list.item[i].e_rab_id ==
           e_rab_modification_ind->e_rab_to_be_modified_list.item[j].e_rab_id) {
         ue_context_p->ue_context_rel_cause = S1AP_RADIO_MULTIPLE_E_RAB_ID;
@@ -3793,15 +3791,15 @@ void mme_app_handle_e_rab_modification_ind(
       OAILOG_FUNC_OUT(LOG_MME_APP);
     }
     /*
-     * If the E-RAB MODIFICATION INDICATION message contains several E-RAB ID IEs
-     * set to the same value, the MME shall trigger the UE Context Release
+     * If the E-RAB MODIFICATION INDICATION message contains several E-RAB ID
+     * IEs set to the same value, the MME shall trigger the UE Context Release
      * procedure.
      */
-    for (int j = 0;
-           j < i;
-           j++) {
-      if (e_rab_modification_ind->e_rab_not_to_be_modified_list.item[i].e_rab_id ==
-          e_rab_modification_ind->e_rab_not_to_be_modified_list.item[j].e_rab_id) {
+    for (int j = 0; j < i; j++) {
+      if (e_rab_modification_ind->e_rab_not_to_be_modified_list.item[i]
+              .e_rab_id ==
+          e_rab_modification_ind->e_rab_not_to_be_modified_list.item[j]
+              .e_rab_id) {
         ue_context_p->ue_context_rel_cause = S1AP_RADIO_MULTIPLE_E_RAB_ID;
         mme_app_itti_ue_context_release(
             ue_context_p, ue_context_p->ue_context_rel_cause);
@@ -3824,8 +3822,11 @@ void mme_app_handle_e_rab_modification_ind(
       &message_p->ittiMsg.s11_modify_bearer_request;
   s11_modify_bearer_request->local_teid = ue_context_p->mme_teid_s11;
 
-  for (idx = 0; idx < e_rab_modification_ind->e_rab_to_be_modified_list.no_of_items; idx++) {
-    e_rab_id_t bearer_id = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
+  for (idx = 0;
+       idx < e_rab_modification_ind->e_rab_to_be_modified_list.no_of_items;
+       idx++) {
+    e_rab_id_t bearer_id =
+        e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
     if ((current_bearer_p =
              mme_app_get_bearer_context(ue_context_p, bearer_id)) == NULL) {
       // useless, already tested few lines above
@@ -3836,20 +3837,23 @@ void mme_app_handle_e_rab_modification_ind(
     } else {
       s11_modify_bearer_request->bearer_contexts_to_be_modified
           .bearer_contexts[idx]
-          .eps_bearer_id = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
+          .eps_bearer_id =
+          e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
       s11_modify_bearer_request->bearer_contexts_to_be_modified
           .bearer_contexts[idx]
-          .s1_eNB_fteid.teid = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].s1_xNB_fteid.teid;
+          .s1_eNB_fteid.teid =
+          e_rab_modification_ind->e_rab_to_be_modified_list.item[idx]
+              .s1_xNB_fteid.teid;
 
       memcpy(
-            &s11_modify_bearer_request->bearer_contexts_to_be_modified
-                 .bearer_contexts[idx]
-                 .s1_eNB_fteid,
-                 &e_rab_modification_ind->e_rab_to_be_modified_list.item[idx]
-                .s1_xNB_fteid,
-            sizeof(s11_modify_bearer_request->bearer_contexts_to_be_modified
-                .bearer_contexts[idx]
-                .s1_eNB_fteid));
+          &s11_modify_bearer_request->bearer_contexts_to_be_modified
+               .bearer_contexts[idx]
+               .s1_eNB_fteid,
+          &e_rab_modification_ind->e_rab_to_be_modified_list.item[idx]
+               .s1_xNB_fteid,
+          sizeof(s11_modify_bearer_request->bearer_contexts_to_be_modified
+                     .bearer_contexts[idx]
+                     .s1_eNB_fteid));
       s11_modify_bearer_request->bearer_contexts_to_be_modified
           .bearer_contexts[idx]
           .s1_eNB_fteid.interface_type = S1_U_ENODEB_GTP_U;
@@ -3875,8 +3879,11 @@ void mme_app_handle_e_rab_modification_ind(
       s11_modify_bearer_request->teid = pdn_context->s_gw_teid_s11_s4;
     }
   }
-  for (idx = 0; idx < e_rab_modification_ind->e_rab_not_to_be_modified_list.no_of_items; idx++) {
-    e_rab_id_t bearer_id = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
+  for (idx = 0;
+       idx < e_rab_modification_ind->e_rab_not_to_be_modified_list.no_of_items;
+       idx++) {
+    e_rab_id_t bearer_id =
+        e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
     if ((current_bearer_p =
              mme_app_get_bearer_context(ue_context_p, bearer_id)) == NULL) {
       // useless, already tested few lines above
@@ -3887,20 +3894,23 @@ void mme_app_handle_e_rab_modification_ind(
     } else {
       s11_modify_bearer_request->bearer_contexts_to_be_modified
           .bearer_contexts[idx]
-          .eps_bearer_id = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
+          .eps_bearer_id =
+          e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].e_rab_id;
       s11_modify_bearer_request->bearer_contexts_to_be_modified
           .bearer_contexts[idx]
-          .s1_eNB_fteid.teid = e_rab_modification_ind->e_rab_to_be_modified_list.item[idx].s1_xNB_fteid.teid;
+          .s1_eNB_fteid.teid =
+          e_rab_modification_ind->e_rab_to_be_modified_list.item[idx]
+              .s1_xNB_fteid.teid;
 
       memcpy(
-            &s11_modify_bearer_request->bearer_contexts_to_be_modified
-                 .bearer_contexts[idx]
-                 .s1_eNB_fteid,
-                 &e_rab_modification_ind->e_rab_to_be_modified_list.item[idx]
-                .s1_xNB_fteid,
-            sizeof(s11_modify_bearer_request->bearer_contexts_to_be_modified
-                .bearer_contexts[idx]
-                .s1_eNB_fteid));
+          &s11_modify_bearer_request->bearer_contexts_to_be_modified
+               .bearer_contexts[idx]
+               .s1_eNB_fteid,
+          &e_rab_modification_ind->e_rab_to_be_modified_list.item[idx]
+               .s1_xNB_fteid,
+          sizeof(s11_modify_bearer_request->bearer_contexts_to_be_modified
+                     .bearer_contexts[idx]
+                     .s1_eNB_fteid));
       s11_modify_bearer_request->bearer_contexts_to_be_modified
           .bearer_contexts[idx]
           .s1_eNB_fteid.interface_type = S1_U_ENODEB_GTP_U;
@@ -3926,8 +3936,8 @@ void mme_app_handle_e_rab_modification_ind(
       s11_modify_bearer_request->teid = pdn_context->s_gw_teid_s11_s4;
     }
   }
-  s11_modify_bearer_request->bearer_contexts_to_be_removed
-          .num_bearer_context = 0;
+  s11_modify_bearer_request->bearer_contexts_to_be_removed.num_bearer_context =
+      0;
   ue_context_p->erab_mod_ind = true;
 
   // S11 stack specific parameter. Not used in standalone epc mode
@@ -3947,10 +3957,9 @@ void mme_app_handle_modify_bearer_rsp_erab_mod_ind(
     itti_s11_modify_bearer_response_t* const s11_mbr,
     ue_mm_context_t* ue_context_p) {
   OAILOG_FUNC_IN(LOG_MME_APP);
-  MessageDef* message_p  = NULL;
+  MessageDef* message_p = NULL;
 
-  if (s11_mbr->bearer_contexts_modified.num_bearer_context ==
-      0) {
+  if (s11_mbr->bearer_contexts_modified.num_bearer_context == 0) {
     mme_app_handle_path_switch_req_failure(ue_context_p);
     OAILOG_FUNC_OUT(LOG_MME_APP);
   }
@@ -3959,8 +3968,7 @@ void mme_app_handle_modify_bearer_rsp_erab_mod_ind(
       "Build S1AP_E_RAB_MODIFICATION_CNF for ue_id %d\n",
       ue_context_p->mme_ue_s1ap_id);
 
-  message_p =
-      itti_alloc_new_message(TASK_MME_APP, S1AP_E_RAB_MODIFICATION_CNF);
+  message_p = itti_alloc_new_message(TASK_MME_APP, S1AP_E_RAB_MODIFICATION_CNF);
   if (message_p == NULL) {
     OAILOG_ERROR_UE(
         LOG_MME_APP, ue_context_p->emm_context._imsi64,
@@ -3970,16 +3978,15 @@ void mme_app_handle_modify_bearer_rsp_erab_mod_ind(
     OAILOG_FUNC_OUT(LOG_MME_APP);
   }
 
-  itti_s1ap_e_rab_modification_cnf_t *s1ap_e_rab_modification_cnf_p =
+  itti_s1ap_e_rab_modification_cnf_t* s1ap_e_rab_modification_cnf_p =
       &message_p->ittiMsg.s1ap_e_rab_modification_cnf;
 
   /** Set the identifiers. */
   s1ap_e_rab_modification_cnf_p->mme_ue_s1ap_id = ue_context_p->mme_ue_s1ap_id;
   s1ap_e_rab_modification_cnf_p->enb_ue_s1ap_id = ue_context_p->enb_ue_s1ap_id;
 
-  for (int i = 0;
-    i < s11_mbr->bearer_contexts_modified.num_bearer_context;
-    ++i) {
+  for (int i = 0; i < s11_mbr->bearer_contexts_modified.num_bearer_context;
+       ++i) {
     s1ap_e_rab_modification_cnf_p->e_rab_modify_list.e_rab_id[i] =
         s11_mbr->bearer_contexts_modified.bearer_contexts[i].eps_bearer_id;
   }
@@ -3987,11 +3994,16 @@ void mme_app_handle_modify_bearer_rsp_erab_mod_ind(
       s11_mbr->bearer_contexts_modified.num_bearer_context;
 
   for (int i = 0;
-      i < s11_mbr->bearer_contexts_marked_for_removal.num_bearer_context; ++i) {
+       i < s11_mbr->bearer_contexts_marked_for_removal.num_bearer_context;
+       ++i) {
     s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.item[i]
-        .e_rab_id = s11_mbr->bearer_contexts_marked_for_removal.bearer_contexts[i].eps_bearer_id;
-    s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.item[i].cause.present = S1ap_Cause_PR_misc;
-    s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.item[i].cause.present = S1ap_CauseMisc_unspecified;
+        .e_rab_id =
+        s11_mbr->bearer_contexts_marked_for_removal.bearer_contexts[i]
+            .eps_bearer_id;
+    s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.item[i]
+        .cause.present = S1ap_Cause_PR_misc;
+    s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.item[i]
+        .cause.present = S1ap_CauseMisc_unspecified;
   }
   s1ap_e_rab_modification_cnf_p->e_rab_failed_to_modify_list.no_of_items =
       s11_mbr->bearer_contexts_marked_for_removal.num_bearer_context;

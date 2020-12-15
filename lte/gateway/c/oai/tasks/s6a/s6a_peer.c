@@ -80,7 +80,7 @@ void s6a_peer_connected_cb(struct peer_info* info, void* arg) {
 }
 
 int s6a_fd_new_peer(void) {
-  int ret              = 0;
+  int ret = 0;
 #if FD_CONF_FILE_NO_CONNECT_PEERS_CONFIGURED
   struct peer_info info = {0};
 #endif
