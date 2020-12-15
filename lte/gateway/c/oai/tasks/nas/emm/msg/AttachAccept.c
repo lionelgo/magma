@@ -304,10 +304,10 @@ int encode_attach_accept(
 
   if ((attach_accept->presencemask & ATTACH_ACCEPT_EMM_CAUSE_PRESENT) ==
       ATTACH_ACCEPT_EMM_CAUSE_PRESENT) {
-    if (attach_accept->emmcause != EMM_CAUSE_SUCCESS) {
+    if (attach_accept->emmcause != (uint8_t)EMM_CAUSE_SUCCESS) {
       if ((encode_result = encode_emm_cause(
-             &attach_accept->emmcause, ATTACH_ACCEPT_EMM_CAUSE_IEI,
-             buffer + encoded, len - encoded)) < 0) {
+               &attach_accept->emmcause, ATTACH_ACCEPT_EMM_CAUSE_IEI,
+               buffer + encoded, len - encoded)) < 0) {
         // Return in case of error
         OAILOG_FUNC_RETURN(LOG_NAS_EMM, encode_result);
       } else
