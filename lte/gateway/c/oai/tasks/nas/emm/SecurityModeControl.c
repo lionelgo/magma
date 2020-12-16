@@ -324,9 +324,9 @@ int emm_proc_security_mode_control(
     smc_proc->umts_present = emm_ctx->_ue_network_capability.umts_present;
     smc_proc->gprs_present = (gea > 0);
 
-    OAILOG_DEBUG(LOG_NAS_EMM,
-                "EMM-PROC  - SMC gprs_present %d gea bits %02x\n",
-                smc_proc->gprs_present, smc_proc->gea);
+    OAILOG_DEBUG(
+        LOG_NAS_EMM, "EMM-PROC  - SMC gprs_present %d gea bits %02x\n",
+        smc_proc->gprs_present, smc_proc->gea);
 
     /*
      * Set the EPS encryption algorithms selected to the UE
