@@ -22,6 +22,7 @@
 #include "MessageType.h"
 #include "NasSecurityAlgorithms.h"
 #include "NasKeySetIdentifier.h"
+#include "UeAdditionalSecurityCapability.h"
 #include "UeSecurityCapability.h"
 #include "Nonce.h"
 #include "3gpp_23.003.h"
@@ -73,6 +74,7 @@ typedef struct security_mode_command_msg_tag {
   message_type_t messagetype;
   NasSecurityAlgorithms selectednassecurityalgorithms;
   NasKeySetIdentifier naskeysetidentifier;
+  ue_additional_security_capability_t replayedueadditionalsecuritycapabilities;
   ue_security_capability_t replayeduesecuritycapabilities;
   /* Optional fields */
   uint32_t presencemask;

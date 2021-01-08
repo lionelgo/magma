@@ -217,7 +217,7 @@ typedef struct ue_security_capability_s {
 #define UE_SECURITY_CAPABILITY_NEA6 0b00000010
 #define UE_SECURITY_CAPABILITY_NEA7 0b00000001
   uint8_t nea;
- /* NR integrity algorithms supported (octet 2) */
+  /* NR integrity algorithms supported (octet 2) */
 #define UE_SECURITY_CAPABILITY_NIA0 0b10000000
 #define UE_SECURITY_CAPABILITY_NIA1 0b01000000
 #define UE_SECURITY_CAPABILITY_NIA2 0b00100000

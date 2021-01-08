@@ -120,12 +120,15 @@ typedef struct emm_as_security_s {
   /*
    * Security Mode Command
    */
+  uint8_t nea; /* Replayed NR encryption algorithms   */
+  uint8_t nia; /* Replayed NR integrity algorithms    */
   uint8_t eea; /* Replayed EPS encryption algorithms   */
   uint8_t eia; /* Replayed EPS integrity algorithms    */
   uint8_t uea; /* Replayed UMTS encryption algorithms  */
   uint8_t ucs2;
   uint8_t uia; /* Replayed UMTS integrity algorithms   */
   uint8_t gea; /* Replayed GPRS encryption algorithms   */
+  bool nr_present;
   bool umts_present;
   bool gprs_present;
   bool imeisv_request;

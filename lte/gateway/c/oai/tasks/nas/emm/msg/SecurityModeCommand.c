@@ -124,7 +124,8 @@ int decode_security_mode_command(
 
       case SECURITY_MODE_COMMAND_REPLAYED_UE_ADDITIONAL_SECURITY_CAPABILITY_IEI:
         if ((decoded_result = decode_ue_additional_security_capability(
-                 &security_mode_command->replayeduesecuritycapabilities,
+                 &security_mode_command
+                      ->replayedueadditionalsecuritycapabilities,
                  SECURITY_MODE_COMMAND_REPLAYED_UE_ADDITIONAL_SECURITY_CAPABILITY_IEI,
                  buffer + decoded, len - decoded)) <= 0)
           return decoded_result;
@@ -227,7 +228,7 @@ int encode_security_mode_command(
        SECURITY_MODE_COMMAND_REPLAYED_UE_ADDITIONAL_SECU_CAPABILITY_PRESENT) ==
       SECURITY_MODE_COMMAND_REPLAYED_UE_ADDITIONAL_SECU_CAPABILITY_PRESENT) {
     if ((encode_result = encode_ue_additional_security_capability(
-             &security_mode_command->replayeduesecuritycapabilities,
+             &security_mode_command->replayedueadditionalsecuritycapabilities,
              SECURITY_MODE_COMMAND_REPLAYED_UE_ADDITIONAL_SECURITY_CAPABILITY_IEI,
              buffer + encoded, len - encoded)) < 0)
       // Return in case of error
