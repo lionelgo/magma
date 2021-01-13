@@ -66,6 +66,8 @@ bool mme_hss_associated = false;
 bool mme_sctp_bounded   = false;
 task_zmq_ctx_t mme_app_task_zmq_ctx;
 
+// mme_app_desc_t mme_app_desc = {.rw_lock = PTHREAD_RWLOCK_INITIALIZER, 0};
+
 static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
   zframe_t* msg_frame = zframe_recv(reader);
   assert(msg_frame);
@@ -176,6 +178,11 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
 
     case S1AP_E_RAB_REL_RSP: {
       mme_app_handle_e_rab_rel_rsp(&S1AP_E_RAB_REL_RSP(received_message_p));
+    } break;
+
+    case S1AP_E_RAB_MODIFICATION_IND: {
+      mme_app_handle_e_rab_modification_ind(
+          &S1AP_E_RAB_MODIFICATION_IND(received_message_p));
     } break;
 
     case S1AP_INITIAL_UE_MESSAGE: {

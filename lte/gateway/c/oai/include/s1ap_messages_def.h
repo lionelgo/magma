@@ -115,3 +115,9 @@ MESSAGE_DEF(
 MESSAGE_DEF(
     S1AP_PATH_SWITCH_REQUEST_FAILURE, itti_s1ap_path_switch_request_failure_t,
     s1ap_path_switch_request_failure)
+MESSAGE_DEF(
+    S1AP_E_RAB_MODIFICATION_IND, itti_s1ap_e_rab_modification_ind_t,
+    s1ap_e_rab_modification_ind)
+MESSAGE_DEF(
+    S1AP_E_RAB_MODIFICATION_CNF, itti_s1ap_e_rab_modification_cnf_t,
+    s1ap_e_rab_modification_cnf)

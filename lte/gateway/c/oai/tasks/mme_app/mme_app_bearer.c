@@ -38,6 +38,7 @@
 #include "intertask_interface.h"
 #include "mme_config.h"
 #include "mme_app_ue_context.h"
+#include "mme_app_session_context.h"
 #include "mme_app_defs.h"
 #include "mme_app_bearer_context.h"
 #include "sgw_ie_defs.h"
@@ -3687,6 +3688,138 @@ ue_mm_context_t* mme_app_get_ue_context_for_timer(
     return NULL;
   }
   return ue_context_p;
+}
+
+//------------------------------------------------------------------------------
+void mme_app_handle_e_rab_modification_ind(
+    const itti_s1ap_e_rab_modification_ind_t* const e_rab_modification_ind) {
+  OAILOG_FUNC_IN(LOG_MME_APP);
+  struct ue_mm_context_s* ue_context_p = NULL;
+  // struct ue_session_pool_s* ue_session_pool = NULL;
+  // struct pdn_context_s* pdn_context         = NULL;
+  // ebi_list_t ebi_list;
+  // MessageDef* message_p = NULL;
+
+  if (!e_rab_modification_ind->e_rab_to_be_modified_list.no_of_items) {
+    OAILOG_NOTICE(
+        LOG_MME_APP,
+        "S1AP E-RAB_MODIFICATION_IND no e-rab to be modified for "
+        "mme_ue_s1ap_id: " MME_UE_S1AP_ID_FMT "\n",
+        e_rab_modification_ind->mme_ue_s1ap_id);
+    OAILOG_FUNC_OUT(LOG_MME_APP);
+  }
+
+  // ue_context_p =
+  // mme_ue_session_pool_exists_mme_ue_s1ap_id(&mme_app_desc.mme_ue_session_pools,e_rab_modification_ind->mme_ue_s1ap_id);
+
+  ue_context_p = mme_ue_context_exists_mme_ue_s1ap_id(
+      e_rab_modification_ind->mme_ue_s1ap_id);
+
+  if (ue_context_p == NULL) {
+    OAILOG_DEBUG(
+        LOG_MME_APP,
+        "We didn't find this mme_ue_s1ap_id in list of UE: " MME_UE_S1AP_ID_FMT
+        "\n",
+        e_rab_modification_ind->mme_ue_s1ap_id);
+    OAILOG_FUNC_OUT(LOG_MME_APP);
+  }
+  /* check ETSI TS 136 413 V15.5.0 8.2.4.4 Abnormal Conditions
+   * If the E-RAB MODIFICATION INDICATION message does not contain all the
+   * E-RABs previously included in the UE Context, the MME shall trigger the UE
+   * Context Release procedure.
+   */
+
+  for (int i = 0;
+       i < e_rab_modification_ind->e_rab_to_be_modified_list.no_of_items; i++) {
+    e_rab_id_t e_rab_id =
+        e_rab_modification_ind->e_rab_to_be_modified_list.item[i].e_rab_id;
+    // bearer_context_new_t* bearer_context = NULL;
+
+    bearer_context_t* bearer_context =
+        mme_app_get_bearer_context(ue_context_p, (ebi_t) e_rab_id);
+
+    // mme_app_get_session_bearer_context_from_all(
+    //  ue_session_pool,
+    // e_rab_modification_ind->e_rab_to_be_modified_list.item[i].e_rab_id,
+    //&bearer_context);
+
+    if (!bearer_context) {
+      OAILOG_NOTICE(
+          LOG_MME_APP,
+          "S1AP E-RAB_MODIFICATION_IND no e-rab %d to be modified for "
+          "mme_ue_s1ap_id: " MME_UE_S1AP_ID_FMT " -> Releasing context...\n",
+          e_rab_modification_ind->e_rab_to_be_modified_list.item[i].e_rab_id,
+          e_rab_modification_ind->mme_ue_s1ap_id);
+
+      ue_context_p = mme_ue_context_exists_mme_ue_s1ap_id(
+          e_rab_modification_ind->mme_ue_s1ap_id);
+      // ue_context->privates.s1_ue_context_release_cause =
+      // S1AP_RADIO_UNKNOWN_E_RAB_ID;
+      mme_app_itti_ue_context_release(
+          ue_context_p, ue_context_p->ue_context_rel_cause);
+    }
+  }
+
+  for (int i = 0;
+       i < e_rab_modification_ind->e_rab_not_to_be_modified_list.no_of_items;
+       i++) {
+    bearer_context_new_t* bearer_context = NULL;
+    mme_app_get_bearer_context(
+        ue_context_p,
+        e_rab_modification_ind->e_rab_not_to_be_modified_list.item[i].e_rab_id);
+    if (!bearer_context) {
+      OAILOG_NOTICE(
+          LOG_MME_APP,
+          "S1AP E-RAB_MODIFICATION_IND no e-rab %d not to be modified for "
+          "mme_ue_s1ap_id: " MME_UE_S1AP_ID_FMT " -> Releasing context...\n",
+          e_rab_modification_ind->e_rab_not_to_be_modified_list.item[i]
+              .e_rab_id,
+          e_rab_modification_ind->mme_ue_s1ap_id);
+
+      // ue_context_t* ue_context = mme_ue_context_exists_mme_ue_s1ap_id(
+      // e_rab_modification_ind->mme_ue_s1ap_id);
+      // ue_context->privates.s1_ue_context_release_cause =
+      // S1AP_RADIO_UNKNOWN_E_RAB_ID;
+      mme_app_itti_ue_context_release(
+          ue_context_p, ue_context_p->ue_context_rel_cause);
+      OAILOG_FUNC_OUT(LOG_MME_APP);
+    }
+  }
+
+  /*
+   * If the E-RAB MODIFICATION INDICATION message contains several E-RAB ID IEs
+   * set to the same value, the MME shall trigger the UE Context Release
+   * procedure.
+   */
+  // TODO Cause = S1AP_RADIO_MULTIPLE_E_RAB_ID
+
+  /*
+    mme_app_s1ap_proc_modify_bearer_ind_t* proc =
+        mme_app_create_s1ap_procedure_modify_bearer_ind(ue_session_pool);
+    if (proc) {
+      memcpy(
+          (void*) &proc->e_rab_to_be_modified_list,
+          (void*) &e_rab_modification_ind->e_rab_to_be_modified_list,
+          sizeof(proc->e_rab_to_be_modified_list));
+
+      int ret = mme_app_run_s1ap_procedure_modify_bearer_ind(
+          proc, e_rab_modification_ind);
+      OAILOG_FUNC_OUT(LOG_MME_APP);
+    } else {
+      OAILOG_ERROR(
+          LOG_MME_APP,
+          "S1AP E-RAB_MODIFICATION_IND could not allocate S1AP "
+          "procedure for mme_ue_s1ap_id: " MME_UE_S1AP_ID_FMT "\n",
+          e_rab_modification_ind->mme_ue_s1ap_id);
+      ue_context_p = mme_ue_context_exists_mme_ue_s1ap_id(
+          e_rab_modification_ind->mme_ue_s1ap_id);
+      // ue_context->privates.s1_ue_context_release_cause = S1AP_SYSTEM_FAILURE;
+      mme_app_itti_ue_context_release(
+          ue_context_p, ue_context_p->ue_context_rel_cause);
+      OAILOG_FUNC_OUT(LOG_MME_APP);
+    }
+    */
+  OAILOG_FUNC_OUT(LOG_MME_APP);
 }
 
 //------------------------------------------------------------------------------
