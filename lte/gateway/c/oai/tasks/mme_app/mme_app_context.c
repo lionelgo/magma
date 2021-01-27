@@ -274,17 +274,8 @@ void mme_app_ue_context_free_content(ue_mm_context_t* const ue_context_p) {
   // Stop Initial context setup process guard timer,if running
   if (ue_context_p->initial_context_setup_rsp_timer.id !=
       MME_APP_TIMER_INACTIVE_ID) {
-    if (timer_remove(
-            ue_context_p->initial_context_setup_rsp_timer.id,
-            (void**) &timer_argP)) {
-      OAILOG_ERROR_UE(
-          LOG_MME_APP, ue_context_p->emm_context._imsi64,
-          "Failed to stop Initial Context Setup Rsp timer for UE id  %d \n",
-          ue_context_p->mme_ue_s1ap_id);
-    }
-    if (timer_argP) {
-      free_wrapper((void**) &timer_argP);
-    }
+    stop_timer(mme_app_task_zmq_ctx,
+        ue_context_p->initial_context_setup_rsp_timer.id);
     ue_context_p->time_ics_rsp_timer_started = 0;
     ue_context_p->initial_context_setup_rsp_timer.id =
         MME_APP_TIMER_INACTIVE_ID;
@@ -2136,17 +2127,8 @@ static void _mme_app_handle_s1ap_ue_context_release(
   // Stop Initial context setup process guard timer,if running
   if (ue_mm_context->initial_context_setup_rsp_timer.id !=
       MME_APP_TIMER_INACTIVE_ID) {
-    if (timer_remove(
-            ue_mm_context->initial_context_setup_rsp_timer.id,
-            (void**) &timer_argP)) {
-      OAILOG_ERROR_UE(
-          LOG_MME_APP, ue_mm_context->emm_context._imsi64,
-          "Failed to stop Initial Context Setup Rsp timer for UE id  %d \n",
-          ue_mm_context->mme_ue_s1ap_id);
-    }
-    if (timer_argP) {
-      free_wrapper((void**) &timer_argP);
-    }
+    stop_timer(mme_app_task_zmq_ctx,
+        ue_mm_context->initial_context_setup_rsp_timer.id);
     ue_mm_context->initial_context_setup_rsp_timer.id =
         MME_APP_TIMER_INACTIVE_ID;
     // Setting UE context release cause as Initial context setup failure

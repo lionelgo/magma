@@ -60,3 +60,7 @@ MESSAGE_DEF(
     MME_APP_DOWNLINK_DATA_CNF, itti_mme_app_dl_data_cnf_t, mme_app_dl_data_cnf)
 MESSAGE_DEF(
     MME_APP_DOWNLINK_DATA_REJ, itti_mme_app_dl_data_rej_t, mme_app_dl_data_rej)
+MESSAGE_DEF(
+    MME_APP_INITIAL_CONTEXT_SETUP_RSP_TIMER_EXPIRY,
+    mme_app_initial_context_setup_rsp_timer_expiry_t,
+    mme_app_initial_context_setup_rsp_timer_expiry)

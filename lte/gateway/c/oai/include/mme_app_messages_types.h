@@ -57,6 +57,8 @@
 #define MME_APP_UL_DATA_IND(mSGpTR) (mSGpTR)->ittiMsg.mme_app_ul_data_ind
 #define MME_APP_DL_DATA_CNF(mSGpTR) (mSGpTR)->ittiMsg.mme_app_dl_data_cnf
 #define MME_APP_DL_DATA_REJ(mSGpTR) (mSGpTR)->ittiMsg.mme_app_dl_data_rej
+#define MME_APP_INIT_CTXT_SU_RSP_TMR_EXP(mSGpTR)                               \
+  (mSGpTR)->ittiMsg.mme_app_initial_context_setup_rsp_timer_expiry
 
 typedef struct itti_mme_app_connection_establishment_cnf_s {
   mme_ue_s1ap_id_t ue_id;
@@ -151,5 +153,10 @@ typedef struct itti_mme_app_ul_data_ind_s {
   /* Indicating the cell from which the UE has sent the NAS message  */
   ecgi_t cgi;
 } itti_mme_app_ul_data_ind_t;
+
+typedef struct mme_app_initial_context_setup_rsp_timer_expiry_s {
+  mme_ue_s1ap_id_t ue_id; /* UE lower layer identifier    */
+  int              timer_id; /* czmq timer identifier    */
+} mme_app_initial_context_setup_rsp_timer_expiry_t;
 
 #endif /* FILE_MME_APP_MESSAGES_TYPES_SEEN */

@@ -149,8 +149,11 @@ void mme_app_handle_mobile_reachability_timer_expiry(
 
 void mme_app_handle_implicit_detach_timer_expiry(void* args, imsi64_t* imsi64);
 
-void mme_app_handle_initial_context_setup_rsp_timer_expiry(
-    void* args, imsi64_t* imsi64);
+int mme_app_handle_initial_context_setup_rsp_timer_expiry(
+    zloop_t* loop, int id, void* arg);
+
+int mme_app_handle_itti_initial_context_setup_rsp_timer_expiry(
+    const mme_app_initial_context_setup_rsp_timer_expiry_t * const msg);
 
 void mme_app_handle_ue_context_modification_timer_expiry(
     void* args, imsi64_t* imsi64);

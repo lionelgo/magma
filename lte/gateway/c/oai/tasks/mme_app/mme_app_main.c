@@ -231,6 +231,11 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
           &MME_APP_INITIAL_CONTEXT_SETUP_FAILURE(received_message_p));
     } break;
 
+    case MME_APP_INITIAL_CONTEXT_SETUP_RSP_TIMER_EXPIRY: {
+      mme_app_handle_itti_initial_context_setup_rsp_timer_expiry(
+          &MME_APP_INIT_CTXT_SU_RSP_TMR_EXP(received_message_p));
+    } break;
+
     case TIMER_HAS_EXPIRED: {
       /*
        * Check statistic timer
