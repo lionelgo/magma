@@ -170,41 +170,18 @@ void mme_app_ue_sgs_context_free_content(
   }
   // Stop SGS Location update timer if running
   if (sgs_context_p->ts6_1_timer.id != MME_APP_TIMER_INACTIVE_ID) {
-    if (timer_remove(sgs_context_p->ts6_1_timer.id, (void**) &timer_argP)) {
-      OAILOG_ERROR_UE(
-          LOG_MME_APP, imsi,
-          "Failed to stop SGS Location update timer for imsi\n");
-    }
-    if (timer_argP) {
-      free_wrapper((void**) &timer_argP);
-    }
+    mme_app_stop_timer(sgs_context_p->ts6_1_timer.id);
     sgs_context_p->ts6_1_timer.id = MME_APP_TIMER_INACTIVE_ID;
   }
   // Stop SGS EPS Detach indication timer if running
   if (sgs_context_p->ts8_timer.id != MME_APP_TIMER_INACTIVE_ID) {
-    if (timer_remove(sgs_context_p->ts8_timer.id, (void**) &timer_argP)) {
-      OAILOG_ERROR_UE(
-          LOG_MME_APP, imsi,
-          "Failed to stop SGS EPS Detach Indication"
-          "timer for imsi\n");
-    }
-    if (timer_argP) {
-      free_wrapper((void**) &timer_argP);
-    }
+    mme_app_stop_timer(sgs_context_p->ts8_timer.id);
     sgs_context_p->ts8_timer.id = MME_APP_TIMER_INACTIVE_ID;
   }
 
   // Stop SGS IMSI Detach indication timer if running
   if (sgs_context_p->ts9_timer.id != MME_APP_TIMER_INACTIVE_ID) {
-    if (timer_remove(sgs_context_p->ts9_timer.id, (void**) &timer_argP)) {
-      OAILOG_ERROR_UE(
-          LOG_MME_APP, imsi,
-          "Failed to stop SGS IMSI Detach Indication"
-          " timer for imsi\n");
-    }
-    if (timer_argP) {
-      free_wrapper((void**) &timer_argP);
-    }
+    mme_app_stop_timer(sgs_context_p->ts9_timer.id);
     sgs_context_p->ts9_timer.id = MME_APP_TIMER_INACTIVE_ID;
   }
   // Stop SGS Implicit IMSI Detach indication timer if running
@@ -298,17 +275,7 @@ void mme_app_ue_context_free_content(ue_mm_context_t* const ue_context_p) {
 
   // Stop ULR Response timer if running
   if (ue_context_p->ulr_response_timer.id != MME_APP_TIMER_INACTIVE_ID) {
-    timer_argP = NULL;
-    if (timer_remove(
-            ue_context_p->ulr_response_timer.id, (void**) &timer_argP)) {
-      OAILOG_ERROR_UE(
-          LOG_MME_APP, ue_context_p->emm_context._imsi64,
-          "Failed to stop ULR timer for UE id %d \n",
-          ue_context_p->mme_ue_s1ap_id);
-    }
-    if (timer_argP) {
-      free_wrapper((void**) &timer_argP);
-    }
+    mme_app_stop_timer(ue_context_p->ulr_response_timer.id);
     ue_context_p->ulr_response_timer.id = MME_APP_TIMER_INACTIVE_ID;
   }
 
@@ -862,7 +829,6 @@ void mme_remove_ue_context(
 
   // Release emm and esm context
   delete_mme_ue_state(ue_context_p->emm_context._imsi64);
-  _clear_emm_ctxt(&ue_context_p->emm_context);
   mme_app_ue_context_free_content(ue_context_p);
   // IMSI
   if (ue_context_p->emm_context._imsi64) {
@@ -878,7 +844,29 @@ void mme_remove_ue_context(
           ue_context_p->enb_ue_s1ap_id, ue_context_p->mme_ue_s1ap_id);
     }
   }
+  // filled guti
+  if ((ue_context_p->emm_context._guti.gummei.mme_code) ||
+      (ue_context_p->emm_context._guti.gummei.mme_gid) ||
+      (ue_context_p->emm_context._guti.m_tmsi) ||
+      (ue_context_p->emm_context._guti.gummei.plmn.mcc_digit1) ||
+      (ue_context_p->emm_context._guti.gummei.plmn.mcc_digit2) ||
+      (ue_context_p->emm_context._guti.gummei.plmn
+           .mcc_digit3)) {  // MCC 000 does not exist in ITU table
+    hash_rc = obj_hashtable_uint64_ts_remove(
+        mme_ue_context_p->guti_ue_context_htbl,
+        (const void* const) & ue_context_p->emm_context._guti,
+        sizeof(ue_context_p->emm_context._guti));
+    if (HASH_TABLE_OK != hash_rc)
+      OAILOG_ERROR(
+          LOG_MME_APP,
+          "UE Context not found!\n"
+          " enb_ue_s1ap_id " ENB_UE_S1AP_ID_FMT
+          " mme_ue_s1ap_id " MME_UE_S1AP_ID_FMT
+          ", GUTI  not in GUTI collection\n",
+          ue_context_p->enb_ue_s1ap_id, ue_context_p->mme_ue_s1ap_id);
+  }
 
+  _clear_emm_ctxt(&ue_context_p->emm_context);
   // eNB UE S1P UE ID
   hash_rc = hashtable_uint64_ts_remove(
       mme_ue_context_p->enb_ue_s1ap_id_ue_context_htbl,
@@ -907,28 +895,6 @@ void mme_remove_ue_context(
           ue_context_p->enb_ue_s1ap_id, ue_context_p->mme_ue_s1ap_id,
           ue_context_p->mme_teid_s11);
   }
-  // filled guti
-  if ((ue_context_p->emm_context._guti.gummei.mme_code) ||
-      (ue_context_p->emm_context._guti.gummei.mme_gid) ||
-      (ue_context_p->emm_context._guti.m_tmsi) ||
-      (ue_context_p->emm_context._guti.gummei.plmn.mcc_digit1) ||
-      (ue_context_p->emm_context._guti.gummei.plmn.mcc_digit2) ||
-      (ue_context_p->emm_context._guti.gummei.plmn
-           .mcc_digit3)) {  // MCC 000 does not exist in ITU table
-    hash_rc = obj_hashtable_uint64_ts_remove(
-        mme_ue_context_p->guti_ue_context_htbl,
-        (const void* const) & ue_context_p->emm_context._guti,
-        sizeof(ue_context_p->emm_context._guti));
-    if (HASH_TABLE_OK != hash_rc)
-      OAILOG_ERROR(
-          LOG_MME_APP,
-          "UE Context not found!\n"
-          " enb_ue_s1ap_id " ENB_UE_S1AP_ID_FMT
-          " mme_ue_s1ap_id " MME_UE_S1AP_ID_FMT
-          ", GUTI  not in GUTI collection\n",
-          ue_context_p->enb_ue_s1ap_id, ue_context_p->mme_ue_s1ap_id);
-  }
-
   // filled NAS UE ID/ MME UE S1AP ID
   if (INVALID_MME_UE_S1AP_ID != ue_context_p->mme_ue_s1ap_id) {
     hash_rc = hashtable_ts_remove(
