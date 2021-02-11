@@ -10,7 +10,7 @@ ENV C_BUILD=/build/c
 # RUN rm -Rf $MAGMA_ROOT/lte/gateway*
 
 # Add Converged MME sources to the container
-# COPY ./ $MAGMA_ROOT
+COPY ./ $MAGMA_ROOT
 
 WORKDIR /
 # Build MME executables
