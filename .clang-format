@@ -55,7 +55,7 @@ AlwaysBreakAfterReturnType: None
 IndentWrappedFunctionNames: false
 
 # template style
-AlwaysBreakTemplateDeclarations: Yes
+#AlwaysBreakTemplateDeclarations: Yes
 
 # preprocessor style
 IndentPPDirectives: None
@@ -79,9 +79,9 @@ UseTab: Never
 SpaceAfterCStyleCast: true
 SpaceAfterTemplateKeyword: false
 SpaceBeforeAssignmentOperators: true
-SpaceBeforeInheritanceColon: true
+#SpaceBeforeInheritanceColon: true
 SpaceBeforeParens: ControlStatements
-SpaceBeforeRangeBasedForLoopColon: true
+#SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 2
 SpacesInAngles: false
@@ -92,7 +92,7 @@ SpacesInSquareBrackets: false
 
 # class style
 BreakConstructorInitializers: BeforeColon
-BreakInheritanceList: BeforeColon
+#BreakInheritanceList: BeforeColon
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 4
 
