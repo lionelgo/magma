@@ -1,0 +1,14 @@
+diff --git a/lte/gateway/c/sctpd/util.cpp b/lte/gateway/c/sctpd/util.cpp
+index 92a51a538..976b06c7a 100644
+--- a/lte/gateway/c/sctpd/util.cpp
++++ b/lte/gateway/c/sctpd/util.cpp
+@@ -103,7 +103,7 @@ int set_sctp_opts(
+   event.sctp_shutdown_event    = on;
+   event.sctp_data_io_event     = on;
+ 
+-  if (setsockopt(sd, IPPROTO_SCTP, SCTP_EVENTS, &event, sizeof(event)) < 0) {
++  if (setsockopt(sd, IPPROTO_SCTP, SCTP_EVENTS, &event, 8) < 0) {
+     MLOG_perror("setsockopt");
+     return -1;
+   }
+   
