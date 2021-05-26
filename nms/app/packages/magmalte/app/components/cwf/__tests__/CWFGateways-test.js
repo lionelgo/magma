@@ -63,7 +63,7 @@ const CWF_HA_GATEWAY_1: cwf_gateway = {
   carrier_wifi: {
     allowed_gre_peers: [
       {
-        ip: '192.168.128.0/32',
+        ip: '192.168.138.0/32',
         key: 1,
       },
     ],
@@ -74,7 +74,7 @@ const CWF_HA_GATEWAY_1: cwf_gateway = {
       mem_util_threshold_pct: 0.9,
     },
     ipdr_export_dst: {
-      ip: '192.168.128.88',
+      ip: '192.168.138.88',
       port: 2040,
     },
   },

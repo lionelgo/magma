@@ -51,7 +51,7 @@ class AccessControlTestLTE(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
     INBOUND_TEST_IP = '127.0.0.1'
     OUTBOUND_TEST_IP = '127.1.0.1'
     BOTH_DIR_TEST_IP = '127.2.0.1'
@@ -141,7 +141,7 @@ class AccessControlTestLTE(unittest.TestCase):
             Ip match flows are added
         """
         # Set up subscribers
-        sub = SubContextConfig('IMSI001010000000013', '192.168.128.74',
+        sub = SubContextConfig('IMSI001010000000013', '192.168.138.74',
                                default_ambr_config, self._tbl_num)
 
         isolator = RyuDirectTableIsolator(
@@ -199,7 +199,7 @@ class AccessControlTestLTE(unittest.TestCase):
             Ip match flows are added
         """
         # Set up subscribers
-        sub = SubContextConfig('IMSI001010000000013', '192.168.128.74',
+        sub = SubContextConfig('IMSI001010000000013', '192.168.138.74',
                                default_ambr_config, self._tbl_num)
 
         isolator = RyuDirectTableIsolator(
@@ -257,7 +257,7 @@ class AccessControlTestLTE(unittest.TestCase):
             Ip match flows are added
         """
         # Set up subscribers
-        sub = SubContextConfig('IMSI001010000000013', '192.168.128.74',
+        sub = SubContextConfig('IMSI001010000000013', '192.168.138.74',
                                default_ambr_config, self._tbl_num)
 
         isolator = RyuDirectTableIsolator(
@@ -317,7 +317,7 @@ class AccessControlTestCWF(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
     INBOUND_TEST_IP = '127.0.0.1'
     OUTBOUND_TEST_IP = '127.1.0.1'
     BOTH_DIR_TEST_IP = '127.2.0.1'

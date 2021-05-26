@@ -156,7 +156,7 @@ s1aptests/test_restore_mme_config_after_sanity.py
 # s1aptests/test_ics_timer_expiry_with_mme_restart.py \
 
 # These test cases pass without memory leaks, but needs DL-route in TRF server
-# sudo /sbin/route add -net 192.168.128.0 gw 192.168.60.142
+# sudo /sbin/route add -net 192.168.138.0 gw 192.168.61.142
 #     netmask 255.255.255.0 dev eth1
 # s1aptests/test_attach_dl_udp_data.py \
 # s1aptests/test_attach_dl_tcp_data.py \

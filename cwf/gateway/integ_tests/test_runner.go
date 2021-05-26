@@ -44,9 +44,9 @@ const (
 	PipelinedRemote  = "pipelined.local"
 	DirectorydRemote = "DIRECTORYD"
 	RedisRemote      = "REDIS"
-	CwagIP           = "192.168.70.101"
-	TrafficCltIP     = "192.168.128.2"
-	IPDRControllerIP = "192.168.40.11"
+	CwagIP           = "192.168.71.101"
+	TrafficCltIP     = "192.168.138.2"
+	IPDRControllerIP = "192.168.41.11"
 	OCSPort          = 9201
 	PCRFPort         = 9202
 	OCSPort2         = 9205

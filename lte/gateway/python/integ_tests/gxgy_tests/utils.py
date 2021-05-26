@@ -70,7 +70,7 @@ class GxGyTestUtil(object):
             },
             config={
                 'bridge_name': self.BRIDGE,
-                'bridge_ip_address': '192.168.128.1',
+                'bridge_ip_address': '192.168.138.1',
                 'controller_port': self.CONTROLLER_PORT,
             },
             mconfig=None,

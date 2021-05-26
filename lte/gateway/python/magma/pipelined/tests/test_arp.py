@@ -52,10 +52,10 @@ class ArpTableTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
-    UE_BLOCK = '192.168.128.0/24'
+    BRIDGE_IP = '192.168.138.1'
+    UE_BLOCK = '192.168.138.0/24'
     UE_MAC = '5e:cc:cc:b1:49:4b'
-    UE_IP = '192.168.128.22'
+    UE_IP = '192.168.138.22'
     OTHER_MAC = '0a:00:27:00:00:02'
     OTHER_IP = '1.2.3.4'
 
@@ -204,7 +204,7 @@ class ARPTableRestTest(unittest.TestCase):
     TID = 2
     IFACE = "gtp_br0"
     MAC_DEST = "0e:9f:0f:0d:98:4e"
-    IP_DEST = "192.168.128.0"
+    IP_DEST = "192.168.138.0"
 
     def setUp(self):
         warnings.simplefilter("ignore")

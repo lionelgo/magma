@@ -111,7 +111,7 @@ func TestBuilder_Build(t *testing.T) {
 			},
 			"pipelined": &lte_mconfig.PipelineD{
 				LogLevel:      protos.LogLevel_INFO,
-				UeIpBlock:     "192.168.128.0/24", // Unused by CWF
+				UeIpBlock:     "192.168.138.0/24", // Unused by CWF
 				NatEnabled:    false,
 				DefaultRuleId: "",
 				Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -129,7 +129,7 @@ func TestBuilder_Build(t *testing.T) {
 					Msisdns: []string{"57192831"},
 				},
 				IpdrExportDst: &lte_mconfig.PipelineD_IPDRExportDst{
-					Ip:   "192.168.128.88",
+					Ip:   "192.168.138.88",
 					Port: 2040,
 				},
 			},
@@ -221,7 +221,7 @@ var defaultgwConfig = &models.GatewayCwfConfigs{
 		{IP: "1.1.1.1/24", Key: swag.Uint32(111)},
 	},
 	IpdrExportDst: &models.IpdrExportDst{
-		IP:   "192.168.128.88",
+		IP:   "192.168.138.88",
 		Port: 2040,
 	},
 }

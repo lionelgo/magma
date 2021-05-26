@@ -197,7 +197,7 @@ export const DEFAULT_GATEWAY_CONFIG: lte_gateway = {
   apn_resources: {},
   cellular: {
     epc: {
-      ip_block: '192.168.128.0/24',
+      ip_block: '192.168.138.0/24',
       nat_enabled: true,
       dns_primary: '',
       dns_secondary: '',

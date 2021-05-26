@@ -115,7 +115,7 @@ class EnforcementStatsTest(unittest.TestCase):
             },
             config={
                 'bridge_name': self.BRIDGE,
-                'bridge_ip_address': '192.168.128.1',
+                'bridge_ip_address': '192.168.138.1',
                 'enforcement': {
                     'poll_interval': 2,
                     'default_drop_flow_name': self.DEFAULT_DROP_FLOW_NAME
@@ -164,7 +164,7 @@ class EnforcementStatsTest(unittest.TestCase):
         fake_controller_setup(self.enforcement_controller,
                               self.enforcement_stats_controller)
         imsi = 'IMSI001010000000013'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         num_pkts_tx_match = 128
         num_pkts_rx_match = 256
 
@@ -267,7 +267,7 @@ class EnforcementStatsTest(unittest.TestCase):
             "about.sha.ddih.org", lambda: redirect_ips, max_age=42
         )
         imsi = 'IMSI010000000088888'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         flow_list = [FlowDescription(match=FlowMatch())]
         policy = VersionedPolicy(
             rule=PolicyRule(
@@ -334,7 +334,7 @@ class EnforcementStatsTest(unittest.TestCase):
         fake_controller_setup(self.enforcement_controller,
                               self.enforcement_stats_controller)
         imsi = 'IMSI001010000000013'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
 
         flow_list = [FlowDescription(
             match=FlowMatch(
@@ -489,7 +489,7 @@ class EnforcementStatsTest(unittest.TestCase):
         fake_controller_setup(self.enforcement_controller,
                               self.enforcement_stats_controller)
         imsi = 'IMSI001010000000013'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         num_pkts_tx_match = 128
 
         flow_list = [FlowDescription(
@@ -583,7 +583,7 @@ class EnforcementStatsTest(unittest.TestCase):
         fake_controller_setup(self.enforcement_controller,
                               self.enforcement_stats_controller)
         imsi = 'IMSI001010000000013'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         num_pkts_tx_match = 128
 
         flow_list = [FlowDescription(

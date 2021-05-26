@@ -335,7 +335,7 @@ func generateS6aProxyConfig() *servicers.S6aProxyConfig {
 		},
 		ServerCfg: &diameter.DiameterServerConfig{
 			DiameterServerConnConfig: diameter.DiameterServerConnConfig{
-				Addr:     diamAddr,   // use "192.168.60.145:3868" to send diam messages to OAI HSS VM
+				Addr:     diamAddr,   // use "192.168.61.145:3868" to send diam messages to OAI HSS VM
 				Protocol: TCPorSCTP}, // tcp/sctp
 		},
 		PlmnIds: plmn_filter.PlmnIdVals{},
@@ -353,7 +353,7 @@ func generateS6aProxyConfigWithPLMNs() *servicers.S6aProxyConfig {
 		},
 		ServerCfg: &diameter.DiameterServerConfig{
 			DiameterServerConnConfig: diameter.DiameterServerConnConfig{
-				Addr:     diamAddr,   // use "192.168.60.145:3868" to send diam messages to OAI HSS VM
+				Addr:     diamAddr,   // use "192.168.61.145:3868" to send diam messages to OAI HSS VM
 				Protocol: TCPorSCTP}, // tcp/sctp
 		},
 		PlmnIds: plmn_filter.GetPlmnVals([]string{"00101", "00102"}),

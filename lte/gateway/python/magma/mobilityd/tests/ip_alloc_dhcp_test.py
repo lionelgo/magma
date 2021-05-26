@@ -84,7 +84,7 @@ class DhcpIPAllocEndToEndTest(unittest.TestCase):
         dhcp_gw_info = self._dhcp_allocator._store.dhcp_gw_info
         dhcp_store = self._dhcp_allocator._store.dhcp_store
 
-        self.assertEqual(str(dhcp_gw_info.get_gw_ip()), "192.168.128.211")
+        self.assertEqual(str(dhcp_gw_info.get_gw_ip()), "192.168.138.211")
         self._dhcp_allocator.release_ip_address(sid1, ip1)
 
         # wait for DHCP release
@@ -103,9 +103,9 @@ class DhcpIPAllocEndToEndTest(unittest.TestCase):
         self.assertEqual(self._dhcp_allocator.list_added_ip_blocks(), [])
 
         ip1, _ = self._dhcp_allocator.alloc_ip_address("IMSI02918")
-        self.assertEqual(str(ip1), "192.168.128.146")
+        self.assertEqual(str(ip1), "192.168.138.146")
         self.assertEqual(self._dhcp_allocator.list_added_ip_blocks(),
-                         [ip_network('192.168.128.0/24')])
+                         [ip_network('192.168.138.0/24')])
 
         ip2, _ = self._dhcp_allocator.alloc_ip_address("IMSI029192")
         self.assertNotEqual(ip1, ip2)
@@ -120,14 +120,14 @@ class DhcpIPAllocEndToEndTest(unittest.TestCase):
                                 ip_type=IPType.DHCP)
         self._dhcp_allocator.ip_allocator.release_ip(ip_unallocated)
         self.assertEqual(self._dhcp_allocator.list_added_ip_blocks(),
-                         [ip_network('192.168.128.0/24')])
+                         [ip_network('192.168.138.0/24')])
 
         sid4 = "IMSI54321"
         ip4, _ = self._dhcp_allocator.alloc_ip_address(sid4)
         threading.Event().wait(1)
         self._dhcp_allocator.release_ip_address(sid4, ip4)
         self.assertEqual(self._dhcp_allocator.list_added_ip_blocks(),
-                         [ip_network('192.168.128.0/24')])
+                         [ip_network('192.168.138.0/24')])
 
         # wait for DHCP release
         threading.Event().wait(7)

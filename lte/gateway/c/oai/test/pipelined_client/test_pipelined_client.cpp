@@ -41,10 +41,10 @@ std::string convert_to_ipv6_host_format(IPAddress req_ipv6_addr) {
 
 // utility testcase-1
 TEST(test_classifier_rpc, test_utility_update_request_ipv4) {
-  std::string enb_ipv4_addr_str = "192.168.60.141";
+  std::string enb_ipv4_addr_str = "192.168.61.141";
   struct in_addr enb_ipv4_addr;
 
-  std::string ue_ipv4_addr_str = "192.168.128.11";
+  std::string ue_ipv4_addr_str = "192.168.138.11";
   struct in_addr ue_ipv4_addr;
 
   uint32_t in_teid  = 100;
@@ -83,8 +83,8 @@ TEST(test_classifier_rpc, test_utility_update_request_ipv4) {
 
 // utility testcase-2
 TEST(test_classifier_rpc, test_utility_proto_ip_flow_dl) {
-  std::string dst_ip_addr_str = "192.168.60.141";
-  std::string src_ip_addr_str = "192.168.128.11";
+  std::string dst_ip_addr_str = "192.168.61.141";
+  std::string src_ip_addr_str = "192.168.138.11";
   struct ip_flow_dl flow_dl;
   IPFlowDL req_flow_dl;
 

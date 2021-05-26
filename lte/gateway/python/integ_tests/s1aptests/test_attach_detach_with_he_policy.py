@@ -76,7 +76,7 @@ class TestAttachDetachWithHE(unittest.TestCase):
 
             # UL Flow description #1
             ulFlow1 = {
-                "ipv4_dst": "192.168.129.42",  # IPv4 destination address
+                "ipv4_dst": "192.168.139.42",  # IPv4 destination address
                 "tcp_dst_port": 5002,  # TCP dest port
                 "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
                 "direction": FlowMatch.UPLINK,  # Direction
@@ -106,7 +106,7 @@ class TestAttachDetachWithHE(unittest.TestCase):
             time.sleep(5)
             imsi = "IMSI" + "".join([str(i) for i in req.imsi])
 
-            he_domain1 = "192.168.129.42"
+            he_domain1 = "192.168.139.42"
             assert utils.he_count_record_of_imsi_to_domain(imsi, he_domain1) == 0
 
             print(

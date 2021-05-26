@@ -563,11 +563,11 @@ func TestListSubscribers(t *testing.T) {
 					Mobility: []*subscriberModels.SubscriberIPAllocation{
 						{
 							Apn: "magma.apn",
-							IP:  "192.168.128.134",
+							IP:  "192.168.138.134",
 						},
 						{
 							Apn: "oai.ipv4",
-							IP:  "192.168.128.174",
+							IP:  "192.168.138.174",
 						},
 					},
 					Directory: &subscriberModels.SubscriberDirectoryRecord{
@@ -835,11 +835,11 @@ func TestListSubscribersV2(t *testing.T) {
 				Mobility: []*subscriberModels.SubscriberIPAllocation{
 					{
 						Apn: "magma.apn",
-						IP:  "192.168.128.134",
+						IP:  "192.168.138.134",
 					},
 					{
 						Apn: "oai.ipv4",
-						IP:  "192.168.128.174",
+						IP:  "192.168.138.174",
 					},
 				},
 				Directory: &subscriberModels.SubscriberDirectoryRecord{
@@ -1028,11 +1028,11 @@ func TestGetSubscriber(t *testing.T) {
 				Mobility: []*subscriberModels.SubscriberIPAllocation{
 					{
 						Apn: "magma.apn",
-						IP:  "192.168.128.134",
+						IP:  "192.168.138.134",
 					},
 					{
 						Apn: "oai.ipv4",
-						IP:  "192.168.128.174",
+						IP:  "192.168.138.174",
 					},
 				},
 				Directory: &subscriberModels.SubscriberDirectoryRecord{
@@ -1142,11 +1142,11 @@ func TestListSubscriberStates(t *testing.T) {
 				Mobility: []*subscriberModels.SubscriberIPAllocation{
 					{
 						Apn: "magma.apn",
-						IP:  "192.168.128.134",
+						IP:  "192.168.138.134",
 					},
 					{
 						Apn: "oai.ipv4",
-						IP:  "192.168.128.174",
+						IP:  "192.168.138.174",
 					},
 				},
 				Directory: &subscriberModels.SubscriberDirectoryRecord{
@@ -1245,11 +1245,11 @@ func TestGetSubscriberState(t *testing.T) {
 			Mobility: []*subscriberModels.SubscriberIPAllocation{
 				{
 					Apn: "magma.apn",
-					IP:  "192.168.128.134",
+					IP:  "192.168.138.134",
 				},
 				{
 					Apn: "oai.ipv4",
-					IP:  "192.168.128.174",
+					IP:  "192.168.138.174",
 				},
 			},
 			Directory: &subscriberModels.SubscriberDirectoryRecord{

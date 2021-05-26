@@ -58,7 +58,7 @@ class RedirectTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP_ADDRESS = '192.168.128.1'
+    BRIDGE_IP_ADDRESS = '192.168.138.1'
     # TODO test for multiple incoming requests (why we match on tcp ports)
 
     @classmethod
@@ -137,7 +137,7 @@ class RedirectTest(unittest.TestCase):
             "about.sha.ddih.org", lambda: redirect_ips, max_age=42
         )
         imsi = 'IMSI010000000088888'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         flow_list = [FlowDescription(match=FlowMatch())]
         policy = VersionedPolicy(
             rule=PolicyRule(
@@ -224,7 +224,7 @@ class RedirectTest(unittest.TestCase):
         fake_controller_setup(self.enforcement_controller)
         redirect_ip = "54.12.31.42"
         imsi = 'IMSI012000000088888'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         flow_list = [FlowDescription(match=FlowMatch())]
         policy = VersionedPolicy(
             rule=PolicyRule(

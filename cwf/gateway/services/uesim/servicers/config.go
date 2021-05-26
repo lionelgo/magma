@@ -25,8 +25,8 @@ import (
 )
 
 const (
-	defaultRadiusAuthAddress = "192.168.70.101:1812"
-	defaultRadiusAcctAddress = "192.168.70.101:1813"
+	defaultRadiusAuthAddress = "192.168.71.101:1812"
+	defaultRadiusAcctAddress = "192.168.71.101:1813"
 	defaultRadiusSecret      = "123456"
 	defaultCwagTestBr        = "cwag_test_br0"
 	defaultBrMac             = "76-02-5B-80-EC-44"

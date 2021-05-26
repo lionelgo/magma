@@ -40,9 +40,9 @@ class RoutingTableParseTests(unittest.TestCase):
         0.0.0.0         10.0.2.2        0.0.0.0         UG    0      0        0 eth0
         10.0.2.0        0.0.0.0         255.255.255.0   U     0      0        0 eth0
         169.254.0.0     0.0.0.0         255.255.0.0     U     1000   0        0 eth0
-        192.168.60.0    0.0.0.0         255.255.255.0   U     0      0        0 eth1
-        192.168.128.0   0.0.0.0         255.255.255.0   U     0      0        0 gtp_br0
-        192.168.129.0   0.0.0.0         255.255.255.0   U     0      0        0 eth2
+        192.168.61.0    0.0.0.0         255.255.255.0   U     0      0        0 eth1
+        192.168.138.0   0.0.0.0         255.255.255.0   U     0      0        0 gtp_br0
+        192.168.139.0   0.0.0.0         255.255.255.0   U     0      0        0 eth2
         ''').strip().encode('ascii')
 
         expected = routing_table.RouteCommandResult(
@@ -67,19 +67,19 @@ class RoutingTableParseTests(unittest.TestCase):
                     network_interface_id='eth0',
                 )._asdict(),
                 routing_table.Route(
-                    destination_ip='192.168.60.0',
+                    destination_ip='192.168.61.0',
                     gateway_ip='0.0.0.0',
                     genmask='255.255.255.0',
                     network_interface_id='eth1',
                 )._asdict(),
                 routing_table.Route(
-                    destination_ip='192.168.128.0',
+                    destination_ip='192.168.138.0',
                     gateway_ip='0.0.0.0',
                     genmask='255.255.255.0',
                     network_interface_id='gtp_br0',
                 )._asdict(),
                 routing_table.Route(
-                    destination_ip='192.168.129.0',
+                    destination_ip='192.168.139.0',
                     gateway_ip='0.0.0.0',
                     genmask='255.255.255.0',
                     network_interface_id='eth2',

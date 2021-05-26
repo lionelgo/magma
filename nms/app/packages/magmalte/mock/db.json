@@ -25,7 +25,7 @@
         "mpk_dogfooding_magma_1": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "non_eps_service": {
@@ -147,7 +147,7 @@
                   },
                   {
                     "ip_addresses": [
-                      "192.168.128.1/24"
+                      "192.168.138.1/24"
                     ],
                     "mac_address": "a6:64:5f:9f:63:4f",
                     "network_interface_id": "gtp_br0",
@@ -220,7 +220,7 @@
                     "network_interface_id": "eth0"
                   },
                   {
-                    "destination_ip": "192.168.128.0",
+                    "destination_ip": "192.168.138.0",
                     "gateway_ip": "0.0.0.0",
                     "genmask": "255.255.255.0",
                     "network_interface_id": "gtp_br0"
@@ -308,7 +308,7 @@
         "mpk_dogfooding_roof12_1": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "non_eps_service": {
@@ -346,7 +346,7 @@
         "mpk_dogfooding_roof18_1": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "non_eps_service": {
@@ -384,7 +384,7 @@
         "mpk_dogfooding_tiplab_1": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "non_eps_service": {
@@ -471,7 +471,7 @@
                   },
                   {
                     "ip_addresses": [
-                      "192.168.128.1/24"
+                      "192.168.138.1/24"
                     ],
                     "mac_address": "f2:d4:15:f3:aa:40",
                     "network_interface_id": "gtp_br0",
@@ -517,7 +517,7 @@
                     "network_interface_id": "tun0"
                   },
                   {
-                    "destination_ip": "192.168.128.0",
+                    "destination_ip": "192.168.138.0",
                     "gateway_ip": "0.0.0.0",
                     "genmask": "255.255.255.0",
                     "network_interface_id": "gtp_br0"
@@ -586,7 +586,7 @@
         "usa_agw_headspin_001": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "ran": {
@@ -657,7 +657,7 @@
                   },
                   {
                     "ip_addresses": [
-                      "192.168.128.1/24"
+                      "192.168.138.1/24"
                     ],
                     "mac_address": "8e:26:97:94:c4:45",
                     "network_interface_id": "gtp_br0",
@@ -700,7 +700,7 @@
                     "network_interface_id": "eth0"
                   },
                   {
-                    "destination_ip": "192.168.128.0",
+                    "destination_ip": "192.168.138.0",
                     "gateway_ip": "0.0.0.0",
                     "genmask": "255.255.255.0",
                     "network_interface_id": "gtp_br0"
@@ -767,7 +767,7 @@
         "usa_agw_headspin_itl": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "ran": {
@@ -786,7 +786,7 @@
         "usa_agw_headspin_sb_lab": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "ran": {
@@ -805,7 +805,7 @@
         "usa_fb_sblab_pf2_agw_2": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "ran": {
@@ -824,7 +824,7 @@
         "usa_mpk_agw_wr_01": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "ran": {
@@ -902,7 +902,7 @@
                   },
                   {
                     "ip_addresses": [
-                      "192.168.128.1/24"
+                      "192.168.138.1/24"
                     ],
                     "mac_address": "ee:f4:86:15:60:4e",
                     "network_interface_id": "gtp_br0",
@@ -957,7 +957,7 @@
                     "network_interface_id": "eth1"
                   },
                   {
-                    "destination_ip": "192.168.128.0",
+                    "destination_ip": "192.168.138.0",
                     "gateway_ip": "0.0.0.0",
                     "genmask": "255.255.255.0",
                     "network_interface_id": "gtp_br0"
@@ -1042,7 +1042,7 @@
         "usa_mpk_summit_02": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "non_eps_service": {
@@ -1117,7 +1117,7 @@
                   },
                   {
                     "ip_addresses": [
-                      "192.168.128.1/24"
+                      "192.168.138.1/24"
                     ],
                     "mac_address": "7e:83:86:e7:78:4a",
                     "network_interface_id": "gtp_br0",
@@ -1173,7 +1173,7 @@
                     "network_interface_id": "eth0"
                   },
                   {
-                    "destination_ip": "192.168.128.0",
+                    "destination_ip": "192.168.138.0",
                     "gateway_ip": "0.0.0.0",
                     "genmask": "255.255.255.0",
                     "network_interface_id": "gtp_br0"
@@ -1260,7 +1260,7 @@
         "usa_nrg_agw2_pf2": {
           "cellular": {
             "epc": {
-              "ip_block": "192.168.128.0/24",
+              "ip_block": "192.168.138.0/24",
               "nat_enabled": true
             },
             "ran": {
@@ -1511,7 +1511,7 @@
                   },
                   {
                     "ip_addresses": [
-                      "192.168.128.1/24"
+                      "192.168.138.1/24"
                     ],
                     "mac_address": "72:86:63:2a:71:4c",
                     "network_interface_id": "gtp_br0",
@@ -1542,7 +1542,7 @@
                     "network_interface_id": "eth0"
                   },
                   {
-                    "destination_ip": "192.168.128.0",
+                    "destination_ip": "192.168.138.0",
                     "gateway_ip": "0.0.0.0",
                     "genmask": "255.255.255.0",
                     "network_interface_id": "gtp_br0"
@@ -1943,7 +1943,7 @@
             "msisdn": "",
             "apn": "internet",
             "session_start_time": "1607415561",
-            "ipv4": "192.168.128.214"
+            "ipv4": "192.168.138.214"
           }
         ]
 
@@ -1996,7 +1996,7 @@
             "msisdn": "",
             "apn": "internet",
             "session_start_time": "11",
-            "ipv4": "192.168.128.214"
+            "ipv4": "192.168.138.214"
           }
         ]
 
@@ -2049,7 +2049,7 @@
             "msisdn": "",
             "apn": "internet",
             "session_start_time": "1607415287",
-            "ipv4": "192.168.128.214"
+            "ipv4": "192.168.138.214"
           }
         ]
 
@@ -2102,7 +2102,7 @@
             "msisdn": "",
             "apn": "internet",
             "session_start_time": "1607415281",
-            "ipv4": "192.168.128.214"
+            "ipv4": "192.168.138.214"
           }
         ]
 

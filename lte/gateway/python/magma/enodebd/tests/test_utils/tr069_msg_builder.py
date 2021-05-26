@@ -110,7 +110,7 @@ class Tr069MessageBuilder:
         val_list.append(cls.get_parameter_value_struct(
             name='InternetGatewayDevice.ManagementServer.ConnectionRequestURL',
             val_type='string',
-            data='http://192.168.60.248:7547/25dbc91d31276f0cb03391160531ecae',
+            data='http://192.168.61.248:7547/25dbc91d31276f0cb03391160531ecae',
         ))
         msg.ParameterList = models.ParameterValueList()
         msg.ParameterList.ParameterValueStruct = val_list
@@ -174,7 +174,7 @@ class Tr069MessageBuilder:
         val_list.append(cls.get_parameter_value_struct(
             name='Device.ManagementServer.ConnectionRequestURL',
             val_type='string',
-            data='http://192.168.60.248:7547/25dbc91d31276f0cb03391160531ecae',
+            data='http://192.168.61.248:7547/25dbc91d31276f0cb03391160531ecae',
         ))
         msg.ParameterList = models.ParameterValueList()
         msg.ParameterList.ParameterValueStruct = val_list
@@ -304,7 +304,7 @@ class Tr069MessageBuilder:
         param_val_list.append(cls.get_parameter_value_struct(
             name='Device.Services.FAPService.1.FAPControl.LTE.Gateway.S1SigLinkServerList',
             val_type='string',
-            data='"192.168.60.142"',
+            data='"192.168.61.142"',
         ))
         # perf mgmt enable
         param_val_list.append(cls.get_parameter_value_struct(
@@ -331,7 +331,7 @@ class Tr069MessageBuilder:
         param_val_list.append(cls.get_parameter_value_struct(
             name='Device.Services.FAPService.1.PerfMgmt.Config.1.URL',
             val_type='string',
-            data='http://192.168.60.142:8081/'
+            data='http://192.168.61.142:8081/'
         ))
         param_val_list.append(cls.get_parameter_value_struct(
             name='Device.Services.FAPService.1.CellConfig.LTE.EPC.TAC',
@@ -443,7 +443,7 @@ class Tr069MessageBuilder:
         param_val_list.append(cls.get_parameter_value_struct(
             name='Device.Services.FAPService.1.FAPControl.LTE.Gateway.S1SigLinkServerList',
             val_type='string',
-            data='"192.168.60.142"',
+            data='"192.168.61.142"',
         ))
         if not exclude_num_plmns:
             param_val_list.append(cls.get_parameter_value_struct(
@@ -482,7 +482,7 @@ class Tr069MessageBuilder:
         param_val_list.append(cls.get_parameter_value_struct(
             name='Device.FAP.PerfMgmt.Config.1.URL',
             val_type='string',
-            data='http://192.168.60.142:8081/'
+            data='http://192.168.61.142:8081/'
         ))
         param_val_list.append(cls.get_parameter_value_struct(
             name='Device.Services.FAPService.1.CellConfig.LTE.EPC.TAC',
@@ -592,7 +592,7 @@ class Tr069MessageBuilder:
         param_val_list.append(cls.get_parameter_value_struct(
             name='InternetGatewayDevice.Services.FAPService.1.FAPControl.LTE.Gateway.S1SigLinkServerList',
             val_type='string',
-            data='"192.168.60.142"',
+            data='"192.168.61.142"',
         ))
         param_val_list.append(cls.get_parameter_value_struct(
             name='InternetGatewayDevice.Services.FAPService.1.CellConfig.LTE.EPC.PLMNListNumberOfEntries',
@@ -630,7 +630,7 @@ class Tr069MessageBuilder:
         param_val_list.append(cls.get_parameter_value_struct(
             name='InternetGatewayDevice.FAP.PerfMgmt.Config.1.URL',
             val_type='string',
-            data='http://192.168.60.142:8081/'
+            data='http://192.168.61.142:8081/'
         ))
         param_val_list.append(cls.get_parameter_value_struct(
             name='InternetGatewayDevice.Services.FAPService.1.CellConfig.LTE.EPC.TAC',

@@ -45,7 +45,7 @@ class CreditTrackingTest(unittest.TestCase):
         Initiate subscriber, return 1 static policy, send traffic to match the
         policy, verify update is sent, terminate subscriber
         """
-        sub1 = SubContextConfig('IMSI001010000088888', '192.168.128.74', 4)
+        sub1 = SubContextConfig('IMSI001010000088888', '192.168.138.74', 4)
         quota = 1024  # bytes
 
         self.test_util.controller.mock_create_session = Mock(
@@ -93,7 +93,7 @@ class CreditTrackingTest(unittest.TestCase):
     def test_input_output(self):
         """
         """
-        sub1 = SubContextConfig('IMSI001010000088888', '192.168.128.74', 4)
+        sub1 = SubContextConfig('IMSI001010000088888', '192.168.138.74', 4)
         quota = 1024  # bytes
 
         # return only rx (downlink) packets
@@ -190,7 +190,7 @@ class CreditTrackingTest(unittest.TestCase):
         policy, verify update is sent, return final credits, use up final
         credits, ensure that no traffic can be sent
         """
-        sub1 = SubContextConfig('IMSI001010000088888', '192.168.128.74', 4)
+        sub1 = SubContextConfig('IMSI001010000088888', '192.168.138.74', 4)
         quota = 1024  # bytes
 
         self.test_util.controller.mock_create_session = Mock(
@@ -277,7 +277,7 @@ class CreditTrackingTest(unittest.TestCase):
         subs = [
             SubContextConfig(
                 'IMSI0010100000888{}'.format(i),
-                '192.168.128.{}'.format(i),
+                '192.168.138.{}'.format(i),
                 4,
             ) for i in range(32)]
         quota = 1024  # bytes

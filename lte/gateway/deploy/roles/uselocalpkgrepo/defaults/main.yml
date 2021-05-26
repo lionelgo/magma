@@ -12,6 +12,6 @@
 # limitations under the License.
 ################################################################################
 
-repohost: 192.168.60.194
+repohost: 192.168.61.194
 distro: stretch-test
 component: main

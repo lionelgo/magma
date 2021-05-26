@@ -112,7 +112,7 @@ static_resources:
     filter_chains:
     - filter_chain_match:
         source_prefix_ranges:
-        - address_prefix: 192.168.128.0
+        - address_prefix: 192.168.138.0
           prefix_len: 24
       filters:
       - name: envoy.filters.network.http_connection_manager

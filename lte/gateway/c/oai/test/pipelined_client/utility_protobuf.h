@@ -40,8 +40,8 @@ class UpdateRequestV4 {
   UESessionSet update_request;
 
   UpdateRequestV4(
-      uint32_t set_ue_state, const std::string enb_str = "192.168.60.141",
-      const std::string ue_str = "192.168.128.11", uint32_t incoming_teid = 100,
+      uint32_t set_ue_state, const std::string enb_str = "192.168.61.141",
+      const std::string ue_str = "192.168.138.11", uint32_t incoming_teid = 100,
       uint32_t outgoing_teid = 200, uint32_t out_vlan = 0)
       : enb_v4(enb_str),
         ue_v4(ue_str),
@@ -150,8 +150,8 @@ class FlowDLOps {
         udp_dst_port_(0),
         udp_src_port_(0),
         ip_proto_(6),
-        dst_v4_("192.168.60.141"),
-        src_v4_("192.168.128.11") {}
+        dst_v4_("192.168.61.141"),
+        src_v4_("192.168.138.11") {}
 
   struct ip_flow_dl get_flow_dl() {
     return flow_dl_;

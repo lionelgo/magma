@@ -73,7 +73,7 @@ class RestartResilienceTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP_ADDRESS = '192.168.128.1'
+    BRIDGE_IP_ADDRESS = '192.168.138.1'
     DEFAULT_DROP_FLOW_NAME = '(┛ಠ_ಠ)┛彡┻━┻'
 
     def _wait_func(self, stat_names):
@@ -258,7 +258,7 @@ class RestartResilienceTest(unittest.TestCase):
 
         imsi1 = 'IMSI010000000088888'
         imsi2 = 'IMSI010000000012345'
-        sub2_ip = '192.168.128.74'
+        sub2_ip = '192.168.138.74'
         flow_list1 = [
             FlowDescription(
                 match=FlowMatch(
@@ -416,7 +416,7 @@ class RestartResilienceTest(unittest.TestCase):
             pass
 
         imsi = 'IMSI001010000000013'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         num_pkts_tx_match = 128
         num_pkts_rx_match = 256
 
@@ -548,7 +548,7 @@ class RestartResilienceTest(unittest.TestCase):
             "about.sha.ddih.org", lambda: redirect_ips, max_age=42
         )
         imsi = 'IMSI010000000088888'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         flow_list = [FlowDescription(match=FlowMatch())]
         policy = PolicyRule(
             id='redir_test', priority=3, flow_list=flow_list,

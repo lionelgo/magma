@@ -110,18 +110,18 @@
   "pipelined": {
    "@type": "type.googleapis.com/magma.mconfig.PipelineD",
    "logLevel": "INFO",
-   "ueIpBlock": "192.168.128.0/24",
+   "ueIpBlock": "192.168.138.0/24",
    "natEnabled": true,
    "defaultRuleId": "default_rule_1",
    "services": [
       "ENFORCEMENT"
    ],
    "ipdrExportDst": {
-     "ip": "192.168.40.12",
+     "ip": "192.168.41.12",
      "port": 4740
    },
    "allowedGrePeers": [
-    {"ip": "192.168.70.102"}
+    {"ip": "192.168.71.102"}
    ],
    "liUes": {}
   },

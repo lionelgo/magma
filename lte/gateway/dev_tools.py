@@ -112,7 +112,7 @@ def _register_agw(network_type: str):
         id=gw_id, name=md_gw.name, description=md_gw.description,
         magmad=md_gw.magmad, tier=md_gw.tier,
         cellular=GatewayCellularConfig(
-            epc=GatewayEPCConfig(ip_block='192.168.128.0/24',
+            epc=GatewayEPCConfig(ip_block='192.168.138.0/24',
                                  nat_enabled=True),
             ran=GatewayRANConfig(pci=260, transmit_enabled=True),
         ),

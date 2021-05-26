@@ -81,7 +81,7 @@ services:
     command: >
       sh -c "
         until ovs-vsctl get interface cwag_patch ofport; do echo "waiting"; sleep 1; done &&
-        ifconfig cwag_br0 192.168.128.1 netmask 255.255.255.0 up &&
+        ifconfig cwag_br0 192.168.138.1 netmask 255.255.255.0 up &&
         set bridge cwag_br0 protocols=protocols=OpenFlow10,OpenFlow13,OpenFlow14 other-config:disable-in-band=true &&
         /usr/bin/ovs-vsctl set-controller cwag_br0 tcp:127.0.0.1:6633 &&
         /usr/bin/ovs-vsctl set-fail-mode cwag_br0 secure &&

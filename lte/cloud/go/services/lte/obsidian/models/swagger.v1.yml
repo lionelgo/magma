@@ -1954,7 +1954,7 @@ definitions:
         minLength: 5
         maxLength: 49
         x-nullable: false
-        example: '192.168.128.0/24'
+        example: '192.168.138.0/24'
       ipv6_block:
         type: string
         x-nullable: false

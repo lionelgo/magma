@@ -4,7 +4,7 @@ auto uplink_br0
 # Add L3 OVS switch gtp_br0 with gtp0, veth0_ovs, and int_nat_peer
 allow-ovs gtp_br0
 iface gtp_br0 inet static
-    address 192.168.128.1
+    address 192.168.138.1
     netmask 255.255.255.0
     pre-up ip link add proxy_port type veth peer name proxy_port_ns || true
     pre-up ip link set proxy_port up || true

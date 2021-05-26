@@ -709,7 +709,7 @@ class MagmadUtil(object):
 
         self._data = {
             "user": "vagrant",
-            "host": "192.168.60.142",
+            "host": "192.168.61.142",
             "password": "vagrant",
             "command": "test",
         }
@@ -1185,7 +1185,7 @@ class SpgwUtil(object):
 
         # UL Flow description #2
         ulFlow2 = {
-            "ipv4_dst": "192.168.129.42/24",  # IPv4 destination address
+            "ipv4_dst": "192.168.139.42/24",  # IPv4 destination address
             "tcp_dst_port": 5002,  # TCP dest port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.UPLINK,  # Direction
@@ -1193,7 +1193,7 @@ class SpgwUtil(object):
 
         # UL Flow description #3
         ulFlow3 = {
-            "ipv4_dst": "192.168.129.42",  # IPv4 destination address
+            "ipv4_dst": "192.168.139.42",  # IPv4 destination address
             "tcp_dst_port": 5003,  # TCP dest port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.UPLINK,  # Direction
@@ -1201,7 +1201,7 @@ class SpgwUtil(object):
 
         # UL Flow description #4
         ulFlow4 = {
-            "ipv4_dst": "192.168.129.42",  # IPv4 destination address
+            "ipv4_dst": "192.168.139.42",  # IPv4 destination address
             "tcp_dst_port": 5004,  # TCP dest port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.UPLINK,  # Direction
@@ -1209,7 +1209,7 @@ class SpgwUtil(object):
 
         # DL Flow description #1
         dlFlow1 = {
-            "ipv4_src": "192.168.129.42",  # IPv4 source address
+            "ipv4_src": "192.168.139.42",  # IPv4 source address
             "tcp_src_port": 5001+port_idx,  # TCP source port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.DOWNLINK,  # Direction
@@ -1225,7 +1225,7 @@ class SpgwUtil(object):
 
         # DL Flow description #3
         dlFlow3 = {
-            "ipv4_src": "192.168.129.64/26",  # IPv4 source address
+            "ipv4_src": "192.168.139.64/26",  # IPv4 source address
             "tcp_src_port": 5003+port_idx,  # TCP source port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.DOWNLINK,  # Direction
@@ -1233,7 +1233,7 @@ class SpgwUtil(object):
 
         # DL Flow description #4
         dlFlow4 = {
-            "ipv4_src": "192.168.129.42/16",  # IPv4 source address
+            "ipv4_src": "192.168.139.42/16",  # IPv4 source address
             "tcp_src_port": 5004+port_idx,  # TCP source port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.DOWNLINK,  # Direction
@@ -1305,7 +1305,7 @@ class SpgwUtil(object):
                       in case of multiple dedicated bearers"""
         # UL Flow description #1
         ulFlow1 = {
-            "ipv4_dst": "192.168.129.42/24",  # IPv4 destination address
+            "ipv4_dst": "192.168.139.42/24",  # IPv4 destination address
             "tcp_dst_port": 5001,  # TCP dest port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.UPLINK,  # Direction
@@ -1321,7 +1321,7 @@ class SpgwUtil(object):
 
         # DL Flow description #1
         dlFlow1 = {
-            "ipv4_src": "192.168.129.42",  # IPv4 source address
+            "ipv4_src": "192.168.139.42",  # IPv4 source address
             "tcp_src_port": 5001+port_idx,  # TCP source port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.DOWNLINK,  # Direction

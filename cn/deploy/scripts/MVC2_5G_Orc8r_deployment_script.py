@@ -164,9 +164,9 @@ def get_magmadev_vm_ip():
 #Deleting route information
 def del_route(pwd):
     myprint("WARNING", "*****Trying to Un-install all 3 magma Virtual Machines*****")
-    cmd = "{ sleep 0.1; echo '%s'; } | script -q -c 'sudo route del -net 192.168.60.0 netmask 255.255.255.0 dev br0' /dev/null" % pwd
+    cmd = "{ sleep 0.1; echo '%s'; } | script -q -c 'sudo route del -net 192.168.61.0 netmask 255.255.255.0 dev br0' /dev/null" % pwd
     execute_cmd(cmd)
-    cmd = "{ sleep 0.1; echo '%s'; } | script -q -c 'sudo route del -net 192.168.129.0 netmask 255.255.255.0 dev br1' /dev/null" % pwd
+    cmd = "{ sleep 0.1; echo '%s'; } | script -q -c 'sudo route del -net 192.168.139.0 netmask 255.255.255.0 dev br1' /dev/null" % pwd
     execute_cmd(cmd)
 
 #Deleting iptables rules
@@ -583,9 +583,9 @@ def add_route_info(pwd):
     execute_cmd(cmd)
     cmd = "{ sleep 0.1; echo '%s'; } | script -q -c 'sudo ifconfig br1 up' /dev/null" % pwd
     execute_cmd(cmd)
-    cmd = "{ sleep 0.1; echo '%s'; } | script -q -c 'sudo route add -net 192.168.60.0 netmask 255.255.255.0 dev br0' /dev/null" % pwd
+    cmd = "{ sleep 0.1; echo '%s'; } | script -q -c 'sudo route add -net 192.168.61.0 netmask 255.255.255.0 dev br0' /dev/null" % pwd
     execute_cmd(cmd)
-    cmd = "{ sleep 0.1; echo '%s'; } | script -q -c 'sudo route add -net 192.168.129.0 netmask 255.255.255.0 dev br1' /dev/null" % pwd
+    cmd = "{ sleep 0.1; echo '%s'; } | script -q -c 'sudo route add -net 192.168.139.0 netmask 255.255.255.0 dev br1' /dev/null" % pwd
     execute_cmd(cmd)
 
 #Updating iptables to forward VM traffic

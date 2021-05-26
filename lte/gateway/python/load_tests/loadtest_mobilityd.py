@@ -78,7 +78,7 @@ def _setup_ip_block(client):
     for block in ip_blocks_rsp.ip_block_list:
         remove_blocks_req.ip_blocks.append(block)
     client.RemoveIPBlock(remove_blocks_req)
-    ip_block = ipaddress.ip_network('192.168.128.0/20')
+    ip_block = ipaddress.ip_network('192.168.138.0/20')
     client.AddIPBlock(IPBlock(version=IPBlock.IPV4,
                               net_address=ip_block.network_address.packed,
                               prefix_len=ip_block.prefixlen))

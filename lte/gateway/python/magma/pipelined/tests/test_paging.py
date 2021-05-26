@@ -47,9 +47,9 @@ class PagingTest(unittest.TestCase):
     IFACE = 'testing_br'
     MAC_1 = '5e:cc:cc:b1:49:4b'
     MAC_2 = '0a:00:27:00:00:02'
-    BRIDGE_IP = '192.168.128.1'
-    EnodeB_IP = '192.168.60.141'
-    Dst_nat = '192.168.129.42'
+    BRIDGE_IP = '192.168.138.1'
+    EnodeB_IP = '192.168.61.141'
+    Dst_nat = '192.168.139.42'
     CLASSIFIER_CONTROLLER_ID = 5
 
     @classmethod
@@ -122,7 +122,7 @@ class PagingTest(unittest.TestCase):
         # install the specific flows test case.
         self.classifier_controller._delete_all_flows()
 
-        ue_ip_addr = "192.168.128.30"
+        ue_ip_addr = "192.168.138.30"
         self.classifier_controller._install_paging_flow(IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                         200, True) 
 
@@ -135,7 +135,7 @@ class PagingTest(unittest.TestCase):
         """
            Delete the paging flow from table 0
         """
-        ue_ip_addr = "192.168.128.30"
+        ue_ip_addr = "192.168.138.30"
         self.classifier_controller._remove_paging_flow(IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')))
 
         snapshot_verifier = SnapshotVerifier(self, self.BRIDGE,
@@ -151,17 +151,17 @@ class PagingTest(unittest.TestCase):
         # install the specific flows test case.
         self.classifier_controller._delete_all_flows() 
 
-        ue_ip_addr = "192.168.128.30"
+        ue_ip_addr = "192.168.138.30"
         self.classifier_controller._install_paging_flow(IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                         200, True)
         # Create a set of packets
         pkt_sender = ScapyPacketInjector(self.BRIDGE)
         eth = Ether(dst=self.MAC_1, src=self.MAC_2)
-        ip = IP(src=self.Dst_nat, dst='192.168.128.30')
+        ip = IP(src=self.Dst_nat, dst='192.168.138.30')
         o_udp = UDP(sport=2152, dport=2152)
         i_udp = UDP(sport=1111, dport=2222)
         i_tcp = TCP(seq=1, sport=1111, dport=2222)
-        i_ip = IP(src='192.168.60.142', dst=self.EnodeB_IP)
+        i_ip = IP(src='192.168.61.142', dst=self.EnodeB_IP)
 
         gtp_packet_udp = eth / ip / o_udp / GTP_U_Header(teid=0x1, length=28,gtp_type=255) / i_ip / i_udp
         gtp_packet_tcp = eth / ip / o_udp / GTP_U_Header(teid=0x1, length=68, gtp_type=255) / i_ip / i_tcp
@@ -171,7 +171,7 @@ class PagingTest(unittest.TestCase):
             FlowQuery(self._tbl_num, self.testing_controller,
                       match=MagmaMatch(tunnel_id=1, in_port=32768)),
             FlowQuery(self._tbl_num, self.testing_controller,
-                      match=MagmaMatch(ipv4_dst='192.168.128.30'))
+                      match=MagmaMatch(ipv4_dst='192.168.138.30'))
         ]
         # =========================== Verification ===========================
         # Verify 2 flows installed for classifier table (2 pkts matched)

@@ -7,7 +7,7 @@ tun_id=$6
 
 LOC="$dir/$tun_id"
 
-tgt_ip="192.168.128.1"
+tgt_ip="192.168.138.1"
 
 function stop() {
   ovs-vsctl --db=unix:$LOC/db.sock del-br br0

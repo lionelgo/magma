@@ -176,7 +176,7 @@ func newDefaultGatewayConfig() *lteModels.GatewayCellularConfigs {
 		},
 		Epc: &lteModels.GatewayEpcConfigs{
 			NatEnabled: swag.Bool(true),
-			IPBlock:    "192.168.128.0/24",
+			IPBlock:    "192.168.138.0/24",
 		},
 		NonEpsService: &lteModels.GatewayNonEpsConfigs{
 			CsfbMcc:              "001",

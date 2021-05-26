@@ -37,7 +37,7 @@ class InternalPktIpfixExportTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
     DPI_PORT = 'mon1'
     DPI_IP = '1.1.1.1'
 
@@ -81,7 +81,7 @@ class InternalPktIpfixExportTest(unittest.TestCase):
             },
             config={
                 'bridge_name': cls.BRIDGE,
-                'bridge_ip_address': '192.168.128.1',
+                'bridge_ip_address': '192.168.138.1',
                 'internal_ip_subnet': '192.168.0.0/16',
                 'nat_iface': 'eth2',
                 'enodeb_iface': 'eth1',

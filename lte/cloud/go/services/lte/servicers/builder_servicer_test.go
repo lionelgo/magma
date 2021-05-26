@@ -109,7 +109,7 @@ func TestBuilder_Build(t *testing.T) {
 		},
 		"mobilityd": &lte_mconfig.MobilityD{
 			LogLevel: protos.LogLevel_INFO,
-			IpBlock:  "192.168.128.0/24",
+			IpBlock:  "192.168.138.0/24",
 		},
 		"mme": &lte_mconfig.MME{
 			LogLevel:                 protos.LogLevel_INFO,
@@ -131,7 +131,7 @@ func TestBuilder_Build(t *testing.T) {
 		},
 		"pipelined": &lte_mconfig.PipelineD{
 			LogLevel:      protos.LogLevel_INFO,
-			UeIpBlock:     "192.168.128.0/24",
+			UeIpBlock:     "192.168.138.0/24",
 			NatEnabled:    true,
 			DefaultRuleId: "",
 			Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -178,7 +178,7 @@ func TestBuilder_Build(t *testing.T) {
 	setEPCNetworkServices([]string{"metering"}, &nw)
 	expected["pipelined"] = &lte_mconfig.PipelineD{
 		LogLevel:      protos.LogLevel_INFO,
-		UeIpBlock:     "192.168.128.0/24",
+		UeIpBlock:     "192.168.138.0/24",
 		NatEnabled:    true,
 		DefaultRuleId: "",
 		Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -308,7 +308,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 		},
 		"mobilityd": &lte_mconfig.MobilityD{
 			LogLevel:        protos.LogLevel_INFO,
-			IpBlock:         "192.168.128.0/24",
+			IpBlock:         "192.168.138.0/24",
 			IpAllocatorType: lte_mconfig.MobilityD_IP_POOL,
 			StaticIpEnabled: false,
 			MultiApnIpAlloc: false,
@@ -332,7 +332,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 		},
 		"pipelined": &lte_mconfig.PipelineD{
 			LogLevel:      protos.LogLevel_INFO,
-			UeIpBlock:     "192.168.128.0/24",
+			UeIpBlock:     "192.168.138.0/24",
 			NatEnabled:    false,
 			DefaultRuleId: "",
 			Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -370,7 +370,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 	setEPCNetworkIPAllocator(&nw, lte_models.DHCPBroadcastAllocationMode, false, false)
 	expected["mobilityd"] = &lte_mconfig.MobilityD{
 		LogLevel:        protos.LogLevel_INFO,
-		IpBlock:         "192.168.128.0/24",
+		IpBlock:         "192.168.138.0/24",
 		IpAllocatorType: lte_mconfig.MobilityD_DHCP,
 		StaticIpEnabled: false,
 	}
@@ -381,7 +381,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 	setEPCNetworkIPAllocator(&nw, lte_models.NATAllocationMode, false, false)
 	expected["mobilityd"] = &lte_mconfig.MobilityD{
 		LogLevel:        protos.LogLevel_INFO,
-		IpBlock:         "192.168.128.0/24",
+		IpBlock:         "192.168.138.0/24",
 		IpAllocatorType: lte_mconfig.MobilityD_IP_POOL,
 		StaticIpEnabled: false,
 	}
@@ -392,7 +392,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 	setEPCNetworkIPAllocator(&nw, lte_models.NATAllocationMode, true, false)
 	expected["mobilityd"] = &lte_mconfig.MobilityD{
 		LogLevel:        protos.LogLevel_INFO,
-		IpBlock:         "192.168.128.0/24",
+		IpBlock:         "192.168.138.0/24",
 		IpAllocatorType: lte_mconfig.MobilityD_IP_POOL,
 		StaticIpEnabled: true,
 	}
@@ -403,7 +403,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 	setEPCNetworkIPAllocator(&nw, lte_models.DHCPBroadcastAllocationMode, true, false)
 	expected["mobilityd"] = &lte_mconfig.MobilityD{
 		LogLevel:        protos.LogLevel_INFO,
-		IpBlock:         "192.168.128.0/24",
+		IpBlock:         "192.168.138.0/24",
 		IpAllocatorType: lte_mconfig.MobilityD_DHCP,
 		StaticIpEnabled: true,
 	}
@@ -415,7 +415,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 	setEPCNetworkIPAllocator(&nw, lte_models.DHCPBroadcastAllocationMode, true, true)
 	expected["mobilityd"] = &lte_mconfig.MobilityD{
 		LogLevel:        protos.LogLevel_INFO,
-		IpBlock:         "192.168.128.0/24",
+		IpBlock:         "192.168.138.0/24",
 		IpAllocatorType: lte_mconfig.MobilityD_DHCP,
 		StaticIpEnabled: true,
 		MultiApnIpAlloc: true,
@@ -438,7 +438,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 	}
 	expected["pipelined"] = &lte_mconfig.PipelineD{
 		LogLevel:      protos.LogLevel_INFO,
-		UeIpBlock:     "192.168.128.0/24",
+		UeIpBlock:     "192.168.138.0/24",
 		NatEnabled:    false,
 		DefaultRuleId: "",
 		Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -467,7 +467,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 	}
 	expected["pipelined"] = &lte_mconfig.PipelineD{
 		LogLevel:      protos.LogLevel_INFO,
-		UeIpBlock:     "192.168.128.0/24",
+		UeIpBlock:     "192.168.138.0/24",
 		NatEnabled:    false,
 		DefaultRuleId: "",
 		Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -497,7 +497,7 @@ func TestBuilder_Build_NonNat(t *testing.T) {
 	}
 	expected["pipelined"] = &lte_mconfig.PipelineD{
 		LogLevel:      protos.LogLevel_INFO,
-		UeIpBlock:     "192.168.128.0/24",
+		UeIpBlock:     "192.168.138.0/24",
 		NatEnabled:    false,
 		DefaultRuleId: "",
 		Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -574,7 +574,7 @@ func TestBuilder_Build_BaseCase(t *testing.T) {
 		},
 		"mobilityd": &lte_mconfig.MobilityD{
 			LogLevel: protos.LogLevel_INFO,
-			IpBlock:  "192.168.128.0/24",
+			IpBlock:  "192.168.138.0/24",
 		},
 		"mme": &lte_mconfig.MME{
 			LogLevel:                 protos.LogLevel_INFO,
@@ -595,7 +595,7 @@ func TestBuilder_Build_BaseCase(t *testing.T) {
 		},
 		"pipelined": &lte_mconfig.PipelineD{
 			LogLevel:      protos.LogLevel_INFO,
-			UeIpBlock:     "192.168.128.0/24",
+			UeIpBlock:     "192.168.138.0/24",
 			NatEnabled:    true,
 			DefaultRuleId: "",
 			Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -706,7 +706,7 @@ func TestBuilder_Build_FederatedBaseCase(t *testing.T) {
 		},
 		"mobilityd": &lte_mconfig.MobilityD{
 			LogLevel: protos.LogLevel_INFO,
-			IpBlock:  "192.168.128.0/24",
+			IpBlock:  "192.168.138.0/24",
 		},
 		"mme": &lte_mconfig.MME{
 			LogLevel:                 protos.LogLevel_INFO,
@@ -738,7 +738,7 @@ func TestBuilder_Build_FederatedBaseCase(t *testing.T) {
 		},
 		"pipelined": &lte_mconfig.PipelineD{
 			LogLevel:      protos.LogLevel_INFO,
-			UeIpBlock:     "192.168.128.0/24",
+			UeIpBlock:     "192.168.138.0/24",
 			NatEnabled:    true,
 			DefaultRuleId: "",
 			Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -861,7 +861,7 @@ func TestBuilder_BuildInheritedProperties(t *testing.T) {
 		},
 		"mobilityd": &lte_mconfig.MobilityD{
 			LogLevel: protos.LogLevel_INFO,
-			IpBlock:  "192.168.128.0/24",
+			IpBlock:  "192.168.138.0/24",
 		},
 		"mme": &lte_mconfig.MME{
 			LogLevel:                 protos.LogLevel_INFO,
@@ -883,7 +883,7 @@ func TestBuilder_BuildInheritedProperties(t *testing.T) {
 		},
 		"pipelined": &lte_mconfig.PipelineD{
 			LogLevel:      protos.LogLevel_INFO,
-			UeIpBlock:     "192.168.128.0/24",
+			UeIpBlock:     "192.168.138.0/24",
 			NatEnabled:    true,
 			DefaultRuleId: "",
 			Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -984,7 +984,7 @@ func TestBuilder_BuildUnmanagedEnbConfig(t *testing.T) {
 		},
 		"mobilityd": &lte_mconfig.MobilityD{
 			LogLevel: protos.LogLevel_INFO,
-			IpBlock:  "192.168.128.0/24",
+			IpBlock:  "192.168.138.0/24",
 		},
 		"mme": &lte_mconfig.MME{
 			LogLevel:                 protos.LogLevel_INFO,
@@ -1006,7 +1006,7 @@ func TestBuilder_BuildUnmanagedEnbConfig(t *testing.T) {
 		},
 		"pipelined": &lte_mconfig.PipelineD{
 			LogLevel:      protos.LogLevel_INFO,
-			UeIpBlock:     "192.168.128.0/24",
+			UeIpBlock:     "192.168.138.0/24",
 			NatEnabled:    true,
 			DefaultRuleId: "",
 			Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -1110,7 +1110,7 @@ func TestBuilder_Build_MMEPool(t *testing.T) {
 		},
 		"mobilityd": &lte_mconfig.MobilityD{
 			LogLevel: protos.LogLevel_INFO,
-			IpBlock:  "192.168.128.0/24",
+			IpBlock:  "192.168.138.0/24",
 		},
 		"mme": &lte_mconfig.MME{
 			LogLevel:                 protos.LogLevel_INFO,
@@ -1131,7 +1131,7 @@ func TestBuilder_Build_MMEPool(t *testing.T) {
 		},
 		"pipelined": &lte_mconfig.PipelineD{
 			LogLevel:      protos.LogLevel_INFO,
-			UeIpBlock:     "192.168.128.0/24",
+			UeIpBlock:     "192.168.138.0/24",
 			NatEnabled:    true,
 			DefaultRuleId: "",
 			Services: []lte_mconfig.PipelineD_NetworkServices{
@@ -1214,7 +1214,7 @@ func newDefaultGatewayConfig() *lte_models.GatewayCellularConfigs {
 		},
 		Epc: &lte_models.GatewayEpcConfigs{
 			NatEnabled: swag.Bool(true),
-			IPBlock:    "192.168.128.0/24",
+			IPBlock:    "192.168.138.0/24",
 		},
 		NonEpsService: &lte_models.GatewayNonEpsConfigs{
 			CsfbMcc:              "001",
@@ -1242,7 +1242,7 @@ func newGatewayConfigNonNat(vlan string, sgi_ip string, sgi_gw string) *lte_mode
 		},
 		Epc: &lte_models.GatewayEpcConfigs{
 			NatEnabled:                 swag.Bool(false),
-			IPBlock:                    "192.168.128.0/24",
+			IPBlock:                    "192.168.138.0/24",
 			SgiManagementIfaceVlan:     vlan,
 			SgiManagementIfaceStaticIP: sgi_ip,
 			SgiManagementIfaceGw:       sgi_gw,

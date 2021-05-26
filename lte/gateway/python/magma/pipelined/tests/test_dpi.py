@@ -35,7 +35,7 @@ from magma.pipelined.tests.pipelined_test_util import (
 class DPITest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
     DPI_PORT = 'mon1'
     DPI_IP = '1.1.1.1'
 

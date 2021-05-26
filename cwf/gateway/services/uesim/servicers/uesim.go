@@ -39,7 +39,7 @@ const (
 	networkIDPlaceholder = "magma"
 	blobTypePlaceholder  = "uesim"
 	trafficMSS           = "1300"
-	trafficSrvIP         = "192.168.129.42"
+	trafficSrvIP         = "192.168.139.42"
 	trafficSrvSSHport    = "22"
 	numRetries           = 10
 	retryDelay           = 1000 * time.Millisecond

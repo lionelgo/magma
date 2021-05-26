@@ -15,5 +15,5 @@
 # For more information about the OpenAirInterface (OAI) Software Alliance:
 #      contact@openairinterface.org
 ################################################################################
-s@12.1.1.0@192.168.128.0@
+s@12.1.1.0@192.168.138.0@
 s@SNAT = "yes"@SNAT = "no"@

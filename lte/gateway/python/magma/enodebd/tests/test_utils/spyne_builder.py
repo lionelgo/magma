@@ -17,7 +17,7 @@ from spyne.server.wsgi import WsgiMethodContext
 
 
 def get_spyne_context_with_ip(
-    req_ip: str = "192.168.60.145",
+    req_ip: str = "192.168.61.145",
 ) -> WsgiMethodContext:
     with mock.patch('spyne.server.wsgi.WsgiApplication') as MockTransport:
         MockTransport.req_env = {"REMOTE_ADDR": req_ip}

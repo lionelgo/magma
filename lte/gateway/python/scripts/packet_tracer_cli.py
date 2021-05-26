@@ -108,7 +108,7 @@ def create_parser():
 
     uplink.add_argument('tun_src', help='Tunnel src ip', default='')
     uplink.add_argument('-tun_dst', help='Tunnel dst ip',
-                        default='192.168.128.1')
+                        default='192.168.138.1')
     uplink.add_argument('-tun_id', help='Tunnel id(key)', default='')
     uplink.set_defaults(direction='OUT')
     dlink.set_defaults(direction='IN')

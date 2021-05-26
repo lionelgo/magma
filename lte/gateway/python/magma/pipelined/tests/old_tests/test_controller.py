@@ -88,8 +88,8 @@ class BaseMagmaTest:
         SRC_PORT = "test_left"
         DST_PORT = "test_right"
         TEST_NETMASK = "255.255.255.0"
-        TEST_IPS = {'test_left': "192.168.70.1", "test_right": "192.168.80.1"}
-        TEST_NETS = {'test_left': IPNetwork("192.168.70.0/24"),
+        TEST_IPS = {'test_left': "192.168.71.1", "test_right": "192.168.80.1"}
+        TEST_NETS = {'test_left': IPNetwork("192.168.71.0/24"),
                      'test_right': IPNetwork("192.168.80.0/24")}
 
         def setUp(self):

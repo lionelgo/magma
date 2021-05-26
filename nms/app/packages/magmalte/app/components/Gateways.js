@@ -100,7 +100,7 @@ export default function Gateways() {
         name,
         description,
         cellular: {
-          epc: {nat_enabled: true, ip_block: '192.168.128.0/24'},
+          epc: {nat_enabled: true, ip_block: '192.168.138.0/24'},
           ran: {pci: 260, transmit_enabled: false},
           non_eps_service: undefined,
         },

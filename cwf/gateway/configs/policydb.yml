@@ -18,7 +18,7 @@ enable_streaming: True
 
 # Captive Portal URL to redirect the subscribers
 # If the portal is running locally, use DNSd to resolve the host to
-# 192.168.128.1
+# 192.168.138.1
 captive_portal_url: http://example.com
 
 # Config to use captive portal only for selected subscribers.
@@ -27,7 +27,7 @@ captive_portal_url: http://example.com
 # The default value of '' directs all users to the portal
 subscriber_profile_substr_match: ''
 
-# Interface for finding the local ip (ie 192.168.128.1)
+# Interface for finding the local ip (ie 192.168.138.1)
 bridge_interface: gtp_br0
 
 # Static rule name for captive_portal redirect
