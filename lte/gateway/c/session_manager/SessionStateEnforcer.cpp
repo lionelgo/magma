@@ -483,7 +483,7 @@ bool SessionStateEnforcer::static_rule_init() {
   reqpdr1.set_pdr_version(1);
   reqpdr1.set_pdr_state(PdrState::INSTALL);
 
-  reqpdr1.mutable_pdi()->set_ue_ip_adr("192.168.128.11");
+  reqpdr1.mutable_pdi()->set_ue_ip_adr("192.168.138.11");
   reqpdr1.mutable_pdi()->set_net_instance("uplink");
   reqpdr1.set_o_h_remo_desc(0);
   reqpdr1.mutable_set_gr_far()->add_far_action_to_apply(Value);
@@ -512,7 +512,7 @@ bool SessionStateEnforcer::static_rule_init() {
   reqpdr2.set_pdr_version(1);
   reqpdr2.set_pdr_state(PdrState::INSTALL);
   reqpdr2.mutable_pdi()->set_src_interface(1);
-  reqpdr2.mutable_pdi()->set_ue_ip_adr("192.168.128.11");
+  reqpdr2.mutable_pdi()->set_ue_ip_adr("192.168.138.11");
   reqpdr2.mutable_set_gr_far()->add_far_action_to_apply(Value);
   reqpdr2.mutable_set_gr_far()->set_far_id(2);
   reqpdr2.mutable_set_gr_far()->set_far_id(count);
@@ -524,7 +524,7 @@ bool SessionStateEnforcer::static_rule_init() {
   reqpdr2.mutable_set_gr_far()
       ->mutable_fwd_parm()
       ->mutable_outr_head_cr()
-      ->set_gnb_ipv4_adr("192.168.60.141");
+      ->set_gnb_ipv4_adr("192.168.61.141");
   // Filling qos params
   reqpdr2.mutable_pdi()->set_net_instance("downlink");
   reqpdr2.mutable_activate_flow_req()->mutable_request_origin()->set_type(
@@ -552,11 +552,11 @@ bool SessionStateEnforcer::static_rule_init() {
   pdr_map_.insert(std::pair<std::string, uint32_t>("IMSI001222333", 2));
   reqpdr1.set_pdr_id(++count);
   reqpdr1.mutable_set_gr_far()->set_far_id(count);
-  reqpdr1.mutable_pdi()->set_ue_ip_adr("192.168.128.12");
+  reqpdr1.mutable_pdi()->set_ue_ip_adr("192.168.138.12");
   GlobalRuleList.insert_rule(3, reqpdr1);
   reqpdr2.set_pdr_id(++count);
   reqpdr2.mutable_set_gr_far()->set_far_id(count);
-  reqpdr2.mutable_pdi()->set_ue_ip_adr("192.168.128.12");
+  reqpdr2.mutable_pdi()->set_ue_ip_adr("192.168.138.12");
   reqpdr2.mutable_set_gr_far()
       ->mutable_fwd_parm()
       ->mutable_outr_head_cr()
@@ -566,11 +566,11 @@ bool SessionStateEnforcer::static_rule_init() {
   pdr_map_.insert(std::pair<std::string, uint32_t>("imsi00000000002", 4));
   reqpdr1.set_pdr_id(++count);
   reqpdr1.mutable_set_gr_far()->set_far_id(count);
-  reqpdr1.mutable_pdi()->set_ue_ip_adr("192.168.128.13");
+  reqpdr1.mutable_pdi()->set_ue_ip_adr("192.168.138.13");
   GlobalRuleList.insert_rule(5, reqpdr1);
   reqpdr2.set_pdr_id(++count);
   reqpdr2.mutable_set_gr_far()->set_far_id(count);
-  reqpdr2.mutable_pdi()->set_ue_ip_adr("192.168.128.13");
+  reqpdr2.mutable_pdi()->set_ue_ip_adr("192.168.138.13");
   reqpdr2.mutable_set_gr_far()
       ->mutable_fwd_parm()
       ->mutable_outr_head_cr()
@@ -580,11 +580,11 @@ bool SessionStateEnforcer::static_rule_init() {
   pdr_map_.insert(std::pair<std::string, uint32_t>("imsi00000000003", 6));
   reqpdr1.set_pdr_id(++count);
   reqpdr1.mutable_set_gr_far()->set_far_id(count);
-  reqpdr1.mutable_pdi()->set_ue_ip_adr("192.168.128.14");
+  reqpdr1.mutable_pdi()->set_ue_ip_adr("192.168.138.14");
   GlobalRuleList.insert_rule(7, reqpdr1);
   reqpdr2.set_pdr_id(++count);
   reqpdr2.mutable_set_gr_far()->set_far_id(count);
-  reqpdr2.mutable_pdi()->set_ue_ip_adr("192.168.128.14");
+  reqpdr2.mutable_pdi()->set_ue_ip_adr("192.168.138.14");
   reqpdr2.mutable_set_gr_far()
       ->mutable_fwd_parm()
       ->mutable_outr_head_cr()

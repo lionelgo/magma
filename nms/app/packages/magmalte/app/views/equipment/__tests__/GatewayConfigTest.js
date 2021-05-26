@@ -343,7 +343,7 @@ describe('<AddEditGatewayButton />', () => {
           epc: {
             dns_primary: '',
             dns_secondary: '',
-            ip_block: '192.168.128.0/24',
+            ip_block: '192.168.138.0/24',
             nat_enabled: true,
             sgi_management_iface_gw: '',
             sgi_management_iface_static_ip: '',
@@ -463,7 +463,7 @@ describe('<AddEditGatewayButton />', () => {
       gatewayId: 'testGatewayID1',
       networkId: 'test',
       config: {
-        ip_block: '192.168.128.0/24',
+        ip_block: '192.168.138.0/24',
         nat_enabled: false,
         dns_primary: '',
         dns_secondary: '',
@@ -573,7 +573,7 @@ describe('<AddEditGatewayButton />', () => {
             records: [],
           },
           epc: {
-            ip_block: '192.168.128.0/24',
+            ip_block: '192.168.138.0/24',
             nat_enabled: false,
             dns_primary: '',
             dns_secondary: '',
@@ -669,7 +669,7 @@ describe('<AddEditGatewayButton />', () => {
           records: [],
         },
         epc: {
-          ip_block: '192.168.128.0/24',
+          ip_block: '192.168.138.0/24',
           nat_enabled: false,
           dns_primary: '',
           dns_secondary: '',

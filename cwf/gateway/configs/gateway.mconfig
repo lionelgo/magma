@@ -21,7 +21,7 @@
     "pipelined": {
       "@type": "type.googleapis.com/magma.mconfig.PipelineD",
       "logLevel": "INFO",
-      "ueIpBlock": "192.168.128.0/24",
+      "ueIpBlock": "192.168.138.0/24",
       "natEnabled": false,
       "apps": [],
       "services": [

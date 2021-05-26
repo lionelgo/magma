@@ -216,7 +216,7 @@ def integ_test(gateway_host=None, test_host=None, trf_host=None,
 
     # Setup the gateway: use the provided gateway if given, else default to the
     # vagrant machine
-    gateway_ip = '192.168.60.142'
+    gateway_ip = '192.168.61.142'
 
 
     if not gateway_host:
@@ -283,7 +283,7 @@ def run_integ_tests(tests=None):
     $ make integ_test TESTS=s1aptests/test_attach_detach.py
     """
     test_host = vagrant_setup("magma_test", destroy_vm=False)
-    gateway_ip = '192.168.60.142'
+    gateway_ip = '192.168.61.142'
     if tests:
         tests = "TESTS=" + tests
 
@@ -406,7 +406,7 @@ def load_test(gateway_host=None, destroy_vm=True):
         gateway_ip = gateway_host.split('@')[1].split(':')[0]
     else:
         gateway_host = vagrant_setup('magma', destroy_vm)
-        gateway_ip = '192.168.60.142'
+        gateway_ip = '192.168.61.142'
 
     execute(_build_magma)
     execute(_start_gateway)
@@ -484,7 +484,7 @@ def _start_trfserver():
     local('ssh -f -i %s -o UserKnownHostsFile=/dev/null'
           ' -o StrictHostKeyChecking=no -tt %s -p %s'
           ' sh -c "sudo ethtool --offload eth1 rx off tx off; sudo ethtool --offload eth2 rx off tx off; '
-          'nohup sudo /usr/local/bin/traffic_server.py 192.168.60.144 62462 > /dev/null 2>&1";'
+          'nohup sudo /usr/local/bin/traffic_server.py 192.168.61.144 62462 > /dev/null 2>&1";'
           'stty cbreak'
           % (key, host, port))
 
@@ -498,7 +498,7 @@ def _make_integ_tests():
         run('make')
 
 
-def _run_integ_tests(gateway_ip='192.168.60.142', tests=None):
+def _run_integ_tests(gateway_ip='192.168.61.142', tests=None):
     """ Run the integration tests
 
     For now, just run a single basic test
@@ -533,7 +533,7 @@ def _run_integ_tests(gateway_ip='192.168.60.142', tests=None):
           % (key, host, port, gateway_ip, tests))
 
 
-def _run_load_tests(gateway_ip='192.168.60.142'):
+def _run_load_tests(gateway_ip='192.168.61.142'):
     """
     Run the load tests on given gateway IP.
 

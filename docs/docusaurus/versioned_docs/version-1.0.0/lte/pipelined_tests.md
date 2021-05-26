@@ -85,7 +85,7 @@ test_setup = TestSetup(
     },
     config={
         'bridge_name': cls.BRIDGE,
-        'bridge_ip_address': '192.168.128.1',
+        'bridge_ip_address': '192.168.138.1',
         'nat_iface': 'eth2',
         'enodeb_iface': 'eth1'
     },
@@ -106,7 +106,7 @@ cls.testing_controller = testing_controller_reference.result()
 ```
 # Setup subscriber info imsi, ip and a PolicyRule
 imsi = 'IMSI010000000088888'
-sub_ip = '192.168.128.74'
+sub_ip = '192.168.138.74'
 flow_list1 = [FlowDescription(
     match=FlowMatch(
         ipv4_dst='45.10.0.0/24', direction=FlowMatch.UPLINK),

@@ -37,7 +37,7 @@ class LIMirrorTest(unittest.TestCase):
     LI_LOCAL_IFACE = 'local_li0'
     LI_DST_IFACE = 'dst_li0'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
     LI_LOCAL_IP = '1.1.1.1'
     LI_DST_IP = '2.2.3.3'
 

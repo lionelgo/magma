@@ -97,7 +97,7 @@ class UEMacAddressTest(unittest.TestCase):
                 },
             },
             mconfig=PipelineD(
-                ue_ip_block='192.168.128.0/24',
+                ue_ip_block='192.168.138.0/24',
             ),
             loop=None,
             service_manager=cls.service_manager,

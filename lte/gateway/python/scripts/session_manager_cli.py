@@ -45,7 +45,7 @@ from orc8r.protos.common_pb2 import Void
 
 @grpc_wrapper
 def send_create_session(client, args):
-    sub1 = SubContextConfig("IMSI" + args.imsi, "192.168.128.74", 4)
+    sub1 = SubContextConfig("IMSI" + args.imsi, "192.168.138.74", 4)
 
     try:
         create_account_in_PCRF(args.imsi)
@@ -264,7 +264,7 @@ def create_parser():
         help="List of 6-tuples: "
              "[direction,protocol,src_ip,src_port,dst_ip,dst_port] "
              "separated by ';',e.g., "
-             "UL,6,192.168.50.1,0,192.168.40.2,12345;DL,1,8.8.8.8,0,192.168.50.1,0",
+             "UL,6,192.168.50.1,0,192.168.41.2,12345;DL,1,8.8.8.8,0,192.168.50.1,0",
     )
     create_session_parser.add_argument(
         "qos",

@@ -36,7 +36,7 @@ from ryu.lib import hub
 class UplinkBridgeTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
 
     UPLINK_BRIDGE = 'upt_br0'
 
@@ -100,7 +100,7 @@ class UplinkBridgeTest(unittest.TestCase):
 class UplinkBridgeWithNonNATTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
 
     UPLINK_BRIDGE = 'upt_br0'
     UPLINK_DHCP = 'test_dhcp0'
@@ -200,7 +200,7 @@ class UplinkBridgeWithNonNATTest(unittest.TestCase):
 class UplinkBridgeWithNonNATTestVlan(unittest.TestCase):
     BRIDGE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
 
     UPLINK_BRIDGE = 'upt_br0'
     UPLINK_DHCP = 'test_dhcp0'
@@ -303,7 +303,7 @@ class UplinkBridgeWithNonNATTestVlan(unittest.TestCase):
 class UplinkBridgeWithNonNATTest_IP_VLAN(unittest.TestCase):
     BRIDGE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
 
     UPLINK_BRIDGE = 'upt_br0'
     UPLINK_DHCP = 'test_dhcp0'
@@ -403,7 +403,7 @@ class UplinkBridgeWithNonNATTest_IP_VLAN(unittest.TestCase):
 class UplinkBridgeWithNonNATTest_IP_VLAN_GW(unittest.TestCase):
     BRIDGE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
 
     UPLINK_BRIDGE = 'upt_br0'
     UPLINK_DHCP = 'test_dhcp0'
@@ -510,7 +510,7 @@ class UplinkBridgeWithNonNatUplinkConnect_Test(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
     SCRIPT_PATH = "/home/vagrant/magma/lte/gateway/python/magma/mobilityd/"
     NET_SW_BR = "net_sw_up1"
     UPLINK_DHCP = "tino_dhcp"
@@ -622,7 +622,7 @@ class UplinkBridgeWithNonNatUplinkConnect_Test(unittest.TestCase):
 class UplinkBridgeTestNatIPAddr(unittest.TestCase):
     BRIDGE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
     BRIDGE_ETH_PORT = "eth_t1"
     UPLINK_BRIDGE = 'upt_br0'
     SGi_IP="1.6.5.77"

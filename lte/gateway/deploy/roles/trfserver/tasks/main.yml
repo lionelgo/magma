@@ -81,5 +81,5 @@
   lineinfile:
     dest: /home/{{ ansible_user }}/.bashrc
     state: present
-    line: "alias trfgen-server='sudo traffic_server.py 192.168.60.144 62462'"
+    line: "alias trfgen-server='sudo traffic_server.py 192.168.61.144 62462'"
   when: preburn

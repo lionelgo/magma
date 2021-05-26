@@ -73,7 +73,7 @@ func init() {
 	flag.StringVar(&imsi, "imsi", "001010000000031", "imsi")
 	flag.StringVar(&sid, "sid", "1234", "session id")
 	flag.StringVar(&ueIP, "ue_ip", "192.168.1.1", "UE IPv4 address")
-	flag.StringVar(&spgwIP, "spgw_ip", "192.168.128.1", "SPGW IPv4 address")
+	flag.StringVar(&spgwIP, "spgw_ip", "192.168.138.1", "SPGW IPv4 address")
 	flag.StringVar(&ratingGroupString, "rating_groups", "1,2:200,33", "Rating groups to request credit for (comma separated)")
 	flag.Uint64Var(&usedCredit, "used_credit", 10000000, "# of bytes to report as used in CCR-Update and Terminate")
 	flag.BoolVar(&wait, "wait", true, "wait for key input in between calls")

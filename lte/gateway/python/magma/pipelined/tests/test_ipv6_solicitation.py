@@ -54,10 +54,10 @@ class IPV6RouterSolicitationTableTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
-    UE_BLOCK = '192.168.128.0/24'
+    BRIDGE_IP = '192.168.138.1'
+    UE_BLOCK = '192.168.138.0/24'
     UE_MAC = '5e:cc:cc:b1:49:4b'
-    UE_IP = '192.168.128.22'
+    UE_IP = '192.168.138.22'
     OTHER_MAC = '0a:00:27:00:00:02'
     OTHER_IP = '1.2.3.4'
 

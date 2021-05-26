@@ -986,7 +986,7 @@ definitions:
         minLength: 5
         maxLength: 49
         x-nullable: false
-        example: '192.168.128.0/32'
+        example: '192.168.138.0/32'
       key:
         type: integer
         format: uint32
@@ -1030,7 +1030,7 @@ definitions:
         type: string
         format: ipv4
         x-nullable: false
-        example: '192.168.128.88'
+        example: '192.168.138.88'
       port:
         type: integer
         format: uint32
@@ -1190,4 +1190,4 @@ definitions:
         minLength: 5
         maxLength: 49
         x-nullable: false
-        example: '192.168.128.0/32'
+        example: '192.168.138.0/32'

@@ -36,7 +36,7 @@ const (
 		"service1": {
 		  "@type": "type.googleapis.com/magma.mconfig.Service1Config",
 		  "str1": "bla",
-		  "str2": "192.168.128.1",
+		  "str2": "192.168.138.1",
 		  "uint1": 1,
 		  "uint2": 2,
 		  "strarr": []
@@ -126,7 +126,7 @@ func TestGatewayMconfigRefresh(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	expectedStr2 := "192.168.128.1"
+	expectedStr2 := "192.168.138.1"
 	if s1cfg.Str2 != expectedStr2 {
 		t.Fatalf("service1 String2 Mismatch %s != %s", s1cfg.Str2, expectedStr2)
 	}

@@ -122,7 +122,7 @@ class EnforcementTableTest(unittest.TestCase):
             },
             config={
                 'bridge_name': cls.BRIDGE,
-                'bridge_ip_address': '192.168.128.1',
+                'bridge_ip_address': '192.168.138.1',
                 'nat_iface': 'eth2',
                 'enodeb_iface': 'eth1',
                 'qos': {'enable': False},
@@ -160,7 +160,7 @@ class EnforcementTableTest(unittest.TestCase):
         """
         fake_controller_setup(self.enforcement_controller)
         imsi = 'IMSI010000000088888'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         flow_list1 = [FlowDescription(
             match=FlowMatch(
                 ip_dst=convert_ipv4_str_to_ip_proto('45.10.0.0/24'),
@@ -266,7 +266,7 @@ class EnforcementTableTest(unittest.TestCase):
         """
         fake_controller_setup(self.enforcement_controller)
         imsi = 'IMSI000000000000001'
-        sub_ip = '192.168.128.45'
+        sub_ip = '192.168.138.45'
         flow_list = [FlowDescription(
             match=FlowMatch(
                 ip_src=convert_ipv4_str_to_ip_proto('9999.0.0.0/24')),
@@ -306,7 +306,7 @@ class EnforcementTableTest(unittest.TestCase):
         """
         fake_controller_setup(self.enforcement_controller)
         imsi = 'IMSI208950000000001'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         flow_list1 = [FlowDescription(
             match=FlowMatch(
                 ip_src=convert_ipv4_str_to_ip_proto('15.0.0.0/24'),
@@ -394,7 +394,7 @@ class EnforcementTableTest(unittest.TestCase):
             )
         # =========================== Subscriber 1 ===========================
         sub_context1 = RyuDirectSubscriberContext(
-            'IMSI208950001111111', '192.168.128.5',
+            'IMSI208950001111111', '192.168.138.5',
             self.enforcement_controller, self._tbl_num
         ).add_policy(policy)
         isolator1 = RyuDirectTableIsolator(
@@ -418,7 +418,7 @@ class EnforcementTableTest(unittest.TestCase):
 
         # =========================== Subscriber 2 ===========================
         sub_context2 = RyuDirectSubscriberContext(
-            'IMSI911500451242001', '192.168.128.100',
+            'IMSI911500451242001', '192.168.138.100',
             self.enforcement_controller, self._tbl_num
         ).add_policy(
             VersionedPolicy(

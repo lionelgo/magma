@@ -37,7 +37,7 @@ import (
 )
 
 const (
-	DefaultUeIpBlock = "192.168.128.0/24"
+	DefaultUeIpBlock = "192.168.138.0/24"
 )
 
 var networkServicesByName = map[string]lte_mconfig.PipelineD_NetworkServices{

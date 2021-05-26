@@ -88,7 +88,7 @@ var marshaledSrc = `{
    "services": [
     "ENFORCEMENT"
    ],
-   "ueIpBlock": "192.168.128.0/24"
+   "ueIpBlock": "192.168.138.0/24"
   },
   "redirectd": {
    "@type": "type.googleapis.com/magma.mconfig.RedirectD",
@@ -128,7 +128,7 @@ var pipelinedExpectedVal = `{
  "services": [
   "ENFORCEMENT"
  ],
- "ueIpBlock": "192.168.128.0/24"
+ "ueIpBlock": "192.168.138.0/24"
 }`
 
 func TestMconfigMarshal(t *testing.T) {

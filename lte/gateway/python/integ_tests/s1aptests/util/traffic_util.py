@@ -61,7 +61,7 @@ class TrafficUtil(object):
     _trfgen_tests = ()
 
     # Traffic setup
-    _remote_ip = ipaddress.IPv4Address("192.168.129.42")
+    _remote_ip = ipaddress.IPv4Address("192.168.139.42")
 
     def __init__(self):
         """ Initialize the trfgen library and its callbacks """
@@ -92,7 +92,7 @@ class TrafficUtil(object):
         # Configuration for triggering shell commands in TRF server VM
         self._cmd_data = {
             "user": "vagrant",
-            "host": "192.168.60.144",
+            "host": "192.168.61.144",
             "password": "vagrant",
             "command": "test",
         }
@@ -126,8 +126,8 @@ class TrafficUtil(object):
     def update_dl_route(self, ue_ip_block):
         """ Update downlink route in TRF server """
         ret_code = self.exec_command(
-            "sudo ip route flush via 192.168.129.1 && sudo ip route "
-            "replace " + ue_ip_block + " via 192.168.129.1 dev eth2"
+            "sudo ip route flush via 192.168.139.1 && sudo ip route "
+            "replace " + ue_ip_block + " via 192.168.139.1 dev eth2"
         )
         if ret_code != 0:
             return False
@@ -279,7 +279,7 @@ class TrafficTest(object):
 
     # Remote iperf3 superserver (IP, port) tuple. Port 62462 is chosen because
     # 'MAGMA' translates to 62462 on a 12-key phone pad
-    _remote_server = ('192.168.60.144', 62462)
+    _remote_server = ('192.168.61.144', 62462)
 
     def __init__(self, test_runner, instances, test_ids):
         ''' Creates a new TrafficTest object for running the test instance(s)

@@ -34,7 +34,7 @@ const testMmconfigJsonV1 = `{
     "mobilityd": {
       "@type": "type.googleapis.com/magma.mconfig.MobilityD",
       "logLevel": "INFO",
-      "ipBlock": "192.168.128.0/24"
+      "ipBlock": "192.168.138.0/24"
     },
     "does_not_exist_1": {
       "@type": "type.googleapis.com/magma.mconfig.DoesNotExist",

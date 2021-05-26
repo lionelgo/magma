@@ -43,7 +43,7 @@ class StateMachineManagerTests(TestCase):
         in an Inform message under any expected param path.
         """
         manager = self._get_manager()
-        ctx = get_spyne_context_with_ip("192.168.60.145")
+        ctx = get_spyne_context_with_ip("192.168.61.145")
         inform_msg = models.Inform(
             DeviceId=models.DeviceIdStruct(
                 Manufacturer='Unused',
@@ -78,8 +78,8 @@ class StateMachineManagerTests(TestCase):
 
     def test_handle_two_ips(self):
         manager = self._get_manager()
-        ctx1 = get_spyne_context_with_ip("192.168.60.145")
-        ctx2 = get_spyne_context_with_ip("192.168.60.99")
+        ctx1 = get_spyne_context_with_ip("192.168.61.145")
+        ctx2 = get_spyne_context_with_ip("192.168.61.99")
 
         ##### Start session for the first IP #####
         # Send an Inform message, wait for an InformResponse
@@ -150,7 +150,7 @@ class StateMachineManagerTests(TestCase):
         eNB devices.
         """
         manager = self._get_manager_multi_enb()
-        ip1 = "192.168.60.145"
+        ip1 = "192.168.61.145"
         ctx1 = get_spyne_context_with_ip(ip1)
         inform_msg = Tr069MessageBuilder.get_inform('48BF74',
                                                     'BaiBS_RTS_3.1.6',
@@ -159,7 +159,7 @@ class StateMachineManagerTests(TestCase):
         self.assertTrue(isinstance(resp1, models.InformResponse),
                         'Should respond with an InformResponse')
 
-        ip2 = "192.168.60.146"
+        ip2 = "192.168.61.146"
         ctx2 = get_spyne_context_with_ip(ip2)
         inform_msg = Tr069MessageBuilder.get_inform('48BF74',
                                                     'BaiBS_RTS_3.1.6',
@@ -173,7 +173,7 @@ class StateMachineManagerTests(TestCase):
         manager = self._get_manager()
 
         # Send an Inform
-        ip1 = "192.168.60.145"
+        ip1 = "192.168.61.145"
         ctx1 = get_spyne_context_with_ip(ip1)
         inform_msg = Tr069MessageBuilder.get_inform('48BF74',
                                                     'BaiBS_RTS_3.1.6',
@@ -184,7 +184,7 @@ class StateMachineManagerTests(TestCase):
         handler1 = manager.get_handler_by_ip(ip1)
 
         # Send an Inform from the same serial, but different IP
-        ip2 = "192.168.60.99"
+        ip2 = "192.168.61.99"
         ctx2 = get_spyne_context_with_ip(ip2)
         inform_msg = Tr069MessageBuilder.get_inform('48BF74',
                                                     'BaiBS_RTS_3.1.6',
@@ -201,7 +201,7 @@ class StateMachineManagerTests(TestCase):
 
     def test_serial_change(self) -> None:
         manager = self._get_manager()
-        ip = "192.168.60.145"
+        ip = "192.168.61.145"
 
         # Send an Inform
         ctx1 = get_spyne_context_with_ip(ip)
@@ -230,7 +230,7 @@ class StateMachineManagerTests(TestCase):
 
     def test_inform_from_baicells_qafb(self) -> None:
         manager = self._get_manager()
-        ip = "192.168.60.145"
+        ip = "192.168.61.145"
 
         # Send an Inform
         ctx1 = get_spyne_context_with_ip(ip)
@@ -243,7 +243,7 @@ class StateMachineManagerTests(TestCase):
 
     def test_inform_from_unrecognized(self) -> None:
         manager = self._get_manager()
-        ip = "192.168.60.145"
+        ip = "192.168.61.145"
 
         # Send an Inform
         ctx1 = get_spyne_context_with_ip(ip)

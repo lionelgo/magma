@@ -199,7 +199,7 @@ $ ./pipelined_cli.py enforcement activate_dynamic_rule --imsi IMSI12345 --rule_i
 $ venvsudo ./pipelined_cli.py enforcement display_flows
 ```
 
-- `fake_user.py` can be used to debug Pipelined without an eNodeB. It creates a fake_user OVS port and an interface with the same name and IP (10.10.10.10). Any traffic sent through the interface would traverse the pipeline, as if its sent from a user ip (192.168.128.200 by default).
+- `fake_user.py` can be used to debug Pipelined without an eNodeB. It creates a fake_user OVS port and an interface with the same name and IP (10.10.10.10). Any traffic sent through the interface would traverse the pipeline, as if its sent from a user ip (192.168.138.200 by default).
     - Example:
 
 ```bash

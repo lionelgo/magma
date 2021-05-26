@@ -181,7 +181,7 @@ def register_gateway(url: str, network_id: str, hardware_id: str, tier_id: str):
     if found:
         print(f"XWF-M Gateway exists already - {hardware_id}")
     else:
-        grePeer = AllowedGREPeers(ip="192.168.128.2", key=100)
+        grePeer = AllowedGREPeers(ip="192.168.138.2", key=100)
         data = Gateway(
 	    name=socket.gethostname().strip(),
 	    description=f"XWFM Gateway {gid}",

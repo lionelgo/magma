@@ -44,8 +44,8 @@ class CWFRestartResilienceTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP_ADDRESS = '192.168.128.1'
-    UE_BLOCK = '192.168.128.0/24'
+    BRIDGE_IP_ADDRESS = '192.168.138.1'
+    UE_BLOCK = '192.168.138.0/24'
     DPI_PORT = 'mon1'
     DPI_IP = '1.1.1.1'
 

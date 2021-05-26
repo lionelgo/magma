@@ -60,7 +60,7 @@ Example event data:
   "stream_name": "sessiond",
   "event_type": "session_created",
   "tag": "IMSI001010000000099",
-  "value": {"apn": "oai.ipv4", "imei": "", "imsi": "IMSI001010000000099", "ip_addr": "192.168.128.96", "mac_addr": "", "msisdn": "", "pdp_start_time": 1598803879, "session_id": "IMSI001010000000099-736956", "spgw_ip": "10.0.2.1"
+  "value": {"apn": "oai.ipv4", "imei": "", "imsi": "IMSI001010000000099", "ip_addr": "192.168.138.96", "mac_addr": "", "msisdn": "", "pdp_start_time": 1598803879, "session_id": "IMSI001010000000099-736956", "spgw_ip": "10.0.2.1"
 }
 ```
 As can be seen with this example, `value` holds the event specific data.

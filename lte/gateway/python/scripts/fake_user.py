@@ -149,7 +149,7 @@ def main():
     # Create fake_user
     subparser = subparsers.add_parser('create', help='Creates the fake_user')
     subparser.add_argument('--user_ip', help='IP address to use for the user',
-                           default='192.168.128.200')
+                           default='192.168.138.200')
     subparser.add_argument('--iface_ip', help='IP address of the interface',
                            default='10.10.10.10')
     subparser.add_argument('--imsi', help='IMSI the user', default='IMSI12345')

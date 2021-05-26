@@ -328,11 +328,11 @@ def create_pg_services_parser(apps):
     subcmd.add_argument('--priority', help='priority for rule',
                         type=int, default=10)
     subcmd.add_argument('--ue_ipv4_addr', help='UE IPv4 address ',
-                         default='192.168.128.11')
+                         default='192.168.138.11')
     subcmd.add_argument('--ue_ipv6_addr', help='UE IPv6 address ',
                          default='')
     subcmd.add_argument('--enb_ip_addr', help='IP address of ENB Node',
-                         default='192.168.60.141')
+                         default='192.168.61.141')
     subcmd.add_argument('--apn', help='APN for accessing net',
                         default="magma.com")
     subcmd.add_argument('--vlan', help='Vlan Configuration for out ports',

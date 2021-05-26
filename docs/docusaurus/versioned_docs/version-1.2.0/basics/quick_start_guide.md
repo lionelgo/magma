@@ -17,8 +17,8 @@ register your local access gateway with your local cloud for management.
 
 We will be spinning up a virtual machine and some docker containers for this
 full setup, so you'll probably want to do this on a system with at least 8GB
-of memory. Our development VM's are in the 192.168.60.0/24, 192.168.128.0/24 and
-192.168.129.0/24 address spaces, so make sure that you don't have anything
+of memory. Our development VM's are in the 192.168.61.0/24, 192.168.138.0/24 and
+192.168.139.0/24 address spaces, so make sure that you don't have anything
 running which hijacks those (e.g. VPN).
 
 In the following steps, note the prefix in terminal commands. `HOST` means to

@@ -45,7 +45,7 @@ def ansible_setup(hoststr, ansible_group, playbook,
     Setup the specified ansible machine
 
     hoststr: the host string of the target host
-             e.g. vagrant@192.168.60.10:22
+             e.g. vagrant@192.168.61.10:22
 
     ansible_group: The group the deploy targets
              e.g. "dev"

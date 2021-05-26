@@ -93,11 +93,11 @@ class CreateMMESessionUtils(ABC):
         if (flow_dl == "ENABLE"):
             dest_ip = IPAddress(
                 version=IPAddress.IPV4,
-                address=socket.inet_pton(socket.AF_INET, "192.168.128.12"),
+                address=socket.inet_pton(socket.AF_INET, "192.168.138.12"),
             )
             src_ip = IPAddress(
                 version=IPAddress.IPV4,
-                address=socket.inet_pton(socket.AF_INET, "192.168.129.64"),
+                address=socket.inet_pton(socket.AF_INET, "192.168.139.64"),
             )
 
             params = 71

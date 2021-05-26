@@ -63,7 +63,7 @@ class InOutNonNatTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
     SCRIPT_PATH = "/home/vagrant/magma/lte/gateway/python/magma/mobilityd/"
     NON_NAT_ARP_EGRESS_PORT = "tinouplink_p0"
     UPLINK_BR = "up_inout_br0"
@@ -165,7 +165,7 @@ class InOutNonNatTest(unittest.TestCase):
         )
 
         BridgeTools.create_bridge(cls.BRIDGE, cls.IFACE)
-        subprocess.Popen(["ifconfig", cls.UPLINK_BR, "192.168.128.41"]).wait()
+        subprocess.Popen(["ifconfig", cls.UPLINK_BR, "192.168.138.41"]).wait()
         cls.thread = start_ryu_app_thread(test_setup)
         cls.inout_controller = inout_controller_reference.result()
 
@@ -186,7 +186,7 @@ class InOutNonNatTest(unittest.TestCase):
                                        gw_mac_addr="33:44:55:ff:ff:ff")
         # wait for atleast one iteration of the ARP probe.
 
-        ip_addr = ipaddress.ip_address("192.168.128.211")
+        ip_addr = ipaddress.ip_address("192.168.138.211")
         vlan = ""
         mocked_set_mobilityd_gw_info(IPAddress(address=ip_addr.packed,
                                                version=IPBlock.IPV4),
@@ -344,7 +344,7 @@ class InOutTestNonNATBasicFlows(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
 
     @classmethod
     def setUpClass(cls):

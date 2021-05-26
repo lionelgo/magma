@@ -58,6 +58,6 @@ DEFAULT_GATEWAY_CELLULAR_CONFIG = swagger_client.GatewayCellularConfigs(
     ),
     epc=swagger_client.GatewayEpcConfigs(
         nat_enabled=True,
-        ip_block='192.168.128.0/24',
+        ip_block='192.168.138.0/24',
     ),
 )

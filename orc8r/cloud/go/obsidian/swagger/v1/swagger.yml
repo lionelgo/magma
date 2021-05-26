@@ -7075,7 +7075,7 @@ definitions:
   allowed_gre_peer:
     properties:
       ip:
-        example: 192.168.128.0/32
+        example: 192.168.138.0/32
         maxLength: 49
         minLength: 5
         type: string
@@ -7480,7 +7480,7 @@ definitions:
     description: Configuration for HA Gateway pair in a Carrier Wifi Network
     properties:
       transport_virtual_ip:
-        example: 192.168.128.0/32
+        example: 192.168.138.0/32
         maxLength: 49
         minLength: 5
         type: string
@@ -8494,7 +8494,7 @@ definitions:
         minLength: 5
         type: string
       ip_block:
-        example: 192.168.128.0/24
+        example: 192.168.138.0/24
         maxLength: 49
         minLength: 5
         type: string
@@ -9150,7 +9150,7 @@ definitions:
   ipdr_export_dst:
     properties:
       ip:
-        example: 192.168.128.88
+        example: 192.168.138.88
         format: ipv4
         type: string
         x-nullable: false

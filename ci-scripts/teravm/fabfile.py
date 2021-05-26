@@ -113,12 +113,12 @@ def upgrade_teravm(
 ):
     """
     Upgrade teravm vms feg, agw.
-    This will be run by a cron job on magma-driver(192.168.60.109) in teraVM.
+    This will be run by a cron job on magma-driver(192.168.61.109) in teraVM.
     magma-driver is the control vm in teraVM. It will run a cron job that
     upgrades and runs teraVM tests automatically.
 
     Alternatively, this script can be run from a local machine that is on TIP
-    lab VPN to 192.168.60.0/24. When run manually, a hash can be provided to
+    lab VPN to 192.168.61.0/24. When run manually, a hash can be provided to
     specify what are the hash of the images that it should pull and use to
     upgrade test vms.
 

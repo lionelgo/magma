@@ -51,7 +51,7 @@ class TestWrapper(object):
     #  mask value 17, max allowed UE IP addresses = ((2^(32-17)) - 13) = 32755
     # Decreasing the mask value will provide more UE IP addresses in the free
     # IP address pool
-    TEST_IP_BLOCK = "192.168.128.0/24"
+    TEST_IP_BLOCK = "192.168.138.0/24"
     MSX_S1_RETRY = 2
 
     def __init__(

@@ -49,7 +49,7 @@ class TestMetricsExport(unittest.TestCase):
     on a set IP and port and waits for gateway metrics to export via the cloud.
     """
 
-    TEST_VM_IP = '192.168.60.141'
+    TEST_VM_IP = '192.168.61.141'
     TEST_VM_PORT = 8081
     METRIC_TIMEOUT = 120  # 2 minutes
 

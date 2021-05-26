@@ -40,9 +40,9 @@ class ClassifierTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
-    EnodeB_IP = "192.168.60.178"
-    EnodeB2_IP = "192.168.60.190"
+    BRIDGE_IP = '192.168.138.1'
+    EnodeB_IP = "192.168.61.178"
+    EnodeB2_IP = "192.168.61.190"
     MTR_IP = "10.0.2.10"
     @classmethod
     def setUpClass(cls):
@@ -137,14 +137,14 @@ class ClassifierTest(unittest.TestCase):
         BridgeTools.add_ovs_port(self.BRIDGE, buf, "40")
 
         seid1 = 5000
-        ue_ip_addr = "192.168.128.30"
+        ue_ip_addr = "192.168.138.30"
         ip_flow_dl = IPFlowDL(set_params=0)
         self.classifier_controller.add_tunnel_flows(65525, 1, 100000,
                                                     IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                     self.EnodeB_IP, seid1, True, ip_flow_dl=ip_flow_dl)
 
         seid2 = 5001
-        ue_ip_addr = "192.168.128.31"
+        ue_ip_addr = "192.168.138.31"
         self.classifier_controller.add_tunnel_flows(65525, 2,100001,
                                                     IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                     self.EnodeB_IP, seid2, True, ip_flow_dl=ip_flow_dl)
@@ -156,12 +156,12 @@ class ClassifierTest(unittest.TestCase):
 
     def test_detach_tunnel_flows(self):
 
-        ue_ip_addr = "192.168.128.30"
+        ue_ip_addr = "192.168.138.30"
         ip_flow_dl = IPFlowDL(set_params=0)
         self.classifier_controller.delete_tunnel_flows(1, IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                        ip_flow_dl=ip_flow_dl)
 
-        ue_ip_addr = "192.168.128.31"
+        ue_ip_addr = "192.168.138.31"
         self.classifier_controller.delete_tunnel_flows(2, IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                        ip_flow_dl=ip_flow_dl)
 
@@ -183,7 +183,7 @@ class ClassifierTest(unittest.TestCase):
         BridgeTools.add_ovs_port(self.BRIDGE, buf, "40")
 
         seid1 = 5000
-        ue_ip_addr = "192.168.128.30"
+        ue_ip_addr = "192.168.138.30"
         ip_flow_dl = IPFlowDL(set_params=0)
         self.classifier_controller.add_tunnel_flows(65525, 1, 100000,
                                                     IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
@@ -196,12 +196,12 @@ class ClassifierTest(unittest.TestCase):
         BridgeTools.add_ovs_port(self.BRIDGE, buf, "41")
 
         seid2 = 5001
-        ue_ip_addr = "192.168.128.31"
+        ue_ip_addr = "192.168.138.31"
         self.classifier_controller.add_tunnel_flows(65525, 2,100001,
                                                     IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                     self.EnodeB2_IP, seid2, True, ip_flow_dl=ip_flow_dl)
 
-        ue_ip_addr = "192.168.128.51"
+        ue_ip_addr = "192.168.138.51"
         self.classifier_controller.add_tunnel_flows(65525, 5,1001,
                                                     IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                     self.EnodeB2_IP, seid2, True, ip_flow_dl=ip_flow_dl)
@@ -213,16 +213,16 @@ class ClassifierTest(unittest.TestCase):
 
     def test_detach_multi_tunnel_flows(self):
 
-        ue_ip_addr = "192.168.128.30"
+        ue_ip_addr = "192.168.138.30"
         ip_flow_dl = IPFlowDL(set_params=0)
         self.classifier_controller.delete_tunnel_flows(1, IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                        self.EnodeB_IP, ip_flow_dl=ip_flow_dl)
 
-        ue_ip_addr = "192.168.128.31"
+        ue_ip_addr = "192.168.138.31"
         self.classifier_controller.delete_tunnel_flows(2, IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                        self.EnodeB2_IP, ip_flow_dl=ip_flow_dl)
 
-        ue_ip_addr = "192.168.128.51"
+        ue_ip_addr = "192.168.138.51"
         self.classifier_controller.delete_tunnel_flows(5, IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                        self.EnodeB2_IP, ip_flow_dl=ip_flow_dl)
 
@@ -274,12 +274,12 @@ class ClassifierTest(unittest.TestCase):
     def test_discard_tunnel_flows(self):
         ip_flow_dl = IPFlowDL(set_params=0)
         self.classifier_controller._delete_all_flows()
-        ue_ip_addr = "192.168.128.80"
+        ue_ip_addr = "192.168.138.80"
         self.classifier_controller._discard_tunnel_flows(3,
                                                          IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                          ip_flow_dl=ip_flow_dl)
 
-        ue_ip_addr = "192.168.128.82"
+        ue_ip_addr = "192.168.138.82"
         self.classifier_controller._discard_tunnel_flows(4,
                                                          IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                          ip_flow_dl=ip_flow_dl)
@@ -308,11 +308,11 @@ class ClassifierTest(unittest.TestCase):
         # install the specific flows test case.
         self.test_detach_default_tunnel_flows()
         ip_flow_dl = IPFlowDL(set_params=0)
-        ue_ip_addr = "192.168.128.80"
+        ue_ip_addr = "192.168.138.80"
         self.classifier_controller._resume_tunnel_flows(3,
                                                         IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                         ip_flow_dl=ip_flow_dl)
-        ue_ip_addr = "192.168.128.82"
+        ue_ip_addr = "192.168.138.82"
         self.classifier_controller._resume_tunnel_flows(4,
                                                         IPAddress(version=IPAddress.IPV4,address=ue_ip_addr.encode('utf-8')),
                                                         ip_flow_dl=ip_flow_dl)

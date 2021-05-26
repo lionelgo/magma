@@ -28,7 +28,7 @@ class TestOvsGtp(unittest.TestCase):
     TEST_NETMASK = "255.255.255.0"
     SRC_NAME = "test_int0"
     DST_NAME = "test_int1"
-    TEST_IPS = {SRC_NAME: "192.168.70.2", DST_NAME: "192.168.70.3"}
+    TEST_IPS = {SRC_NAME: "192.168.71.2", DST_NAME: "192.168.71.3"}
     GTP_C_PORT = 2123
 
     def setUp(self):

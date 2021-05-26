@@ -673,7 +673,7 @@ export function EPCEdit(props: Props) {
           <AltFormField label={'IP Block'}>
             <OutlinedInput
               data-testid="ipBlock"
-              placeholder="192.168.128.0/24"
+              placeholder="192.168.138.0/24"
               type="string"
               fullWidth={true}
               value={EPCConfig.ip_block}

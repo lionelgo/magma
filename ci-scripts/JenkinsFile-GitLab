@@ -282,7 +282,7 @@ pipeline {
                   echo "Known issue with magma-custom.io public key?"
                 }
                 sh('cd lte/gateway && vagrant ssh magma_trfserver -c "sudo apt install --yes psmisc net-tools iproute"')
-                sh('cd lte/gateway && vagrant ssh magma_trfserver -c "sudo ip route add 192.168.128.0/24 via 192.168.129.1 dev eth2"')
+                sh('cd lte/gateway && vagrant ssh magma_trfserver -c "sudo ip route add 192.168.138.0/24 via 192.168.139.1 dev eth2"')
             }
           }
         }
@@ -297,7 +297,7 @@ pipeline {
                 sh('cd lte/gateway && vagrant ssh magma_trfserver -c "sudo ethtool --offload eth1 rx off tx off && sudo ethtool --offload eth2 rx off tx off"')
                 echo "Starting the Traffic server in foreground"
                 try {
-                  sh('cd lte/gateway && vagrant ssh magma_trfserver -c "sudo traffic_server.py 192.168.60.144 62462"')
+                  sh('cd lte/gateway && vagrant ssh magma_trfserver -c "sudo traffic_server.py 192.168.61.144 62462"')
                 } catch (Exception e) {
                   echo "Moving on!"
                 }
@@ -464,7 +464,7 @@ pipeline {
           sh('cd lte/gateway && vagrant ssh magma -c "nohup sudo tcpdump -i any port 36412 or port 2123 -w ~/magma/archives/magma_run_s1ap_tester_s11.pcap > /dev/null & sleep 1"')
           // making sure the TRF server is up
           echo "Remove unnecessary route"
-          sh('cd lte/gateway && vagrant ssh magma_trfserver -c "sudo ip route del 192.168.128.0/24 via 192.168.129.1 dev eth2"')
+          sh('cd lte/gateway && vagrant ssh magma_trfserver -c "sudo ip route del 192.168.138.0/24 via 192.168.139.1 dev eth2"')
           sh('cd lte/gateway && vagrant reload magma_test')
           // making sure the TRF server is up
           sh "sleep 60"

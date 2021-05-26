@@ -3,8 +3,8 @@ tun_id=$2
 ue_ip=$3
 tun_id_in=$4
 
-eth1_ip=192.168.60.142
-enb_ip=192.168.60.141
+eth1_ip=192.168.61.142
+enb_ip=192.168.61.141
 
 LOC="/var/ovs/"
 

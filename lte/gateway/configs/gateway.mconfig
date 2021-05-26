@@ -3,7 +3,7 @@
     "mobilityd": {
       "@type": "type.googleapis.com/magma.mconfig.MobilityD",
       "logLevel": "INFO",
-      "ipBlock": "192.168.128.0/24",
+      "ipBlock": "192.168.138.0/24",
       "ipv6Block": "fdee:5:6c::/48",
       "ipv6PrefixAllocationType": "RANDOM",
       "ip_allocator_type": "IP_POOL",
@@ -64,7 +64,7 @@
     "pipelined": {
       "@type": "type.googleapis.com/magma.mconfig.PipelineD",
       "logLevel": "INFO",
-      "ueIpBlock": "192.168.128.0/24",
+      "ueIpBlock": "192.168.138.0/24",
       "natEnabled": true,
       "apps": [],
       "services": [

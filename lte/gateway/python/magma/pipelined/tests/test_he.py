@@ -66,10 +66,10 @@ class HeTableTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
-    UE_BLOCK = '192.168.128.0/24'
+    BRIDGE_IP = '192.168.138.1'
+    UE_BLOCK = '192.168.138.0/24'
     UE_MAC = '5e:cc:cc:b1:49:4b'
-    UE_IP = '192.168.128.22'
+    UE_IP = '192.168.138.22'
     OTHER_MAC = '0a:00:27:00:00:02'
     OTHER_IP = '1.2.3.4'
     VETH = 'tveth'
@@ -452,7 +452,7 @@ class EnforcementTableHeTest(unittest.TestCase):
             },
             config={
                 'bridge_name': cls.BRIDGE,
-                'bridge_ip_address': '192.168.128.1',
+                'bridge_ip_address': '192.168.138.1',
                 'nat_iface': 'eth2',
                 'enodeb_iface': 'eth1',
                 'qos': {'enable': False},
@@ -489,7 +489,7 @@ class EnforcementTableHeTest(unittest.TestCase):
         fake_controller_setup(self.enforcement_controller)
 
         imsi = 'IMSI010000000088888'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         flow_list1 = [FlowDescription(
             match=FlowMatch(
                 ip_dst=convert_ipv4_str_to_ip_proto('45.10.0.0/24'),

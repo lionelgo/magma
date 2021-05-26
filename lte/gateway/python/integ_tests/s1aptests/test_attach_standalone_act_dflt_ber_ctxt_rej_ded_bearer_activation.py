@@ -54,7 +54,7 @@ class TestAttachStandaloneActvDfltBearCtxtRejDedBerActivation(
         }
         # UL Flow description #1
         ulFlow1 = {
-            "ipv4_dst": "192.168.129.42",  # IPv4 destination address
+            "ipv4_dst": "192.168.139.42",  # IPv4 destination address
             "tcp_dst_port": 5002,  # TCP dest port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.UPLINK,  # Direction
@@ -62,7 +62,7 @@ class TestAttachStandaloneActvDfltBearCtxtRejDedBerActivation(
 
         # UL Flow description #2
         ulFlow2 = {
-            "ipv4_dst": "192.168.129.42",  # IPv4 destination address
+            "ipv4_dst": "192.168.139.42",  # IPv4 destination address
             "tcp_dst_port": 5001,  # TCP dest port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.UPLINK,  # Direction
@@ -70,7 +70,7 @@ class TestAttachStandaloneActvDfltBearCtxtRejDedBerActivation(
 
         # UL Flow description #3
         ulFlow3 = {
-            "ipv4_dst": "192.168.129.64",  # IPv4 destination address
+            "ipv4_dst": "192.168.139.64",  # IPv4 destination address
             "tcp_dst_port": 5003,  # TCP dest port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.UPLINK,  # Direction
@@ -78,7 +78,7 @@ class TestAttachStandaloneActvDfltBearCtxtRejDedBerActivation(
 
         # UL Flow description #4
         ulFlow4 = {
-            "ipv4_dst": "192.168.129.42",  # IPv4 destination address
+            "ipv4_dst": "192.168.139.42",  # IPv4 destination address
             "tcp_dst_port": 5004,  # TCP dest port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.UPLINK,  # Direction
@@ -86,7 +86,7 @@ class TestAttachStandaloneActvDfltBearCtxtRejDedBerActivation(
 
         # DL Flow description #1
         dlFlow1 = {
-            "ipv4_src": "192.168.129.42",  # IPv4 source address
+            "ipv4_src": "192.168.139.42",  # IPv4 source address
             "tcp_src_port": 5001,  # TCP source port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.DOWNLINK,  # Direction
@@ -94,7 +94,7 @@ class TestAttachStandaloneActvDfltBearCtxtRejDedBerActivation(
 
         # DL Flow description #2
         dlFlow2 = {
-            "ipv4_src": "192.168.129.64",  # IPv4 source address
+            "ipv4_src": "192.168.139.64",  # IPv4 source address
             "tcp_src_port": 5002,  # TCP source port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.DOWNLINK,  # Direction
@@ -102,14 +102,14 @@ class TestAttachStandaloneActvDfltBearCtxtRejDedBerActivation(
 
         # DL Flow description #3
         dlFlow3 = {
-            "ipv4_src": "192.168.129.64",  # IPv4 source address
+            "ipv4_src": "192.168.139.64",  # IPv4 source address
             "tcp_src_port": 5003,  # TCP source port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.DOWNLINK,  # Direction
         }
         # DL Flow description #4
         dlFlow4 = {
-            "ipv4_src": "192.168.129.42",  # IPv4 source address
+            "ipv4_src": "192.168.139.42",  # IPv4 source address
             "tcp_src_port": 5004,  # TCP source port
             "ip_proto": FlowMatch.IPPROTO_TCP,  # Protocol Type
             "direction": FlowMatch.DOWNLINK,  # Direction

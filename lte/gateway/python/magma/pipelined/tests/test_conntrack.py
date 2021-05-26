@@ -45,7 +45,7 @@ class ConntrackTest(unittest.TestCase):
     BRIDGE = 'testing_br'
     IFACE = 'testing_br'
     MAC_DEST = "5e:cc:cc:b1:49:4b"
-    BRIDGE_IP = '192.168.128.1'
+    BRIDGE_IP = '192.168.138.1'
     INBOUND_TEST_IP = '127.0.0.1'
     OUTBOUND_TEST_IP = '127.1.0.1'
     BOTH_DIR_TEST_IP = '127.2.0.1'

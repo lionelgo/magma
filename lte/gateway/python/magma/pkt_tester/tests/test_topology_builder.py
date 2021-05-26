@@ -39,7 +39,7 @@ class TestTopologyBuilder(unittest.TestCase):
     TEST_BRIDGE_NAME = "test_br"
     TEST_INT_PREFIX = "test_int"
     TEST_NETMASK = "255.255.255.0"
-    TEST_IP_PREFIX = "192.168.70."
+    TEST_IP_PREFIX = "192.168.71."
 
     def setUp(self):
         # Sanity check the env.

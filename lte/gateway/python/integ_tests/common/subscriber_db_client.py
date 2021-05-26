@@ -219,7 +219,7 @@ class SubscriberDbCassandra(SubscriberDbClient):
     """
     Handle subscriber action by making calls to Cassandra database of OAI HSS
     """
-    HSS_IP = '192.168.60.153'
+    HSS_IP = '192.168.61.153'
     HSS_USER = 'vagrant'
     IDENTITY_FILE = '$HOME/.ssh/id_rsa'
     CASSANDRA_SERVER_IP = '127.0.0.1'

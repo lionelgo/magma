@@ -105,7 +105,7 @@ class GYTableTest(unittest.TestCase):
                 'setup_type': 'CWF',
                 'allow_unknown_arps': False,
                 'bridge_name': cls.BRIDGE,
-                'bridge_ip_address': '192.168.128.1',
+                'bridge_ip_address': '192.168.138.1',
                 'internal_ip_subnet': '192.168.0.0/16',
                 'nat_iface': 'eth2',
                 'enodeb_iface': 'eth1',
@@ -116,7 +116,7 @@ class GYTableTest(unittest.TestCase):
                 'clean_restart': True,
             },
             mconfig=PipelineD(
-                ue_ip_block='192.168.128.0/24'
+                ue_ip_block='192.168.138.0/24'
             ),
             loop=None,
             service_manager=cls.service_manager,
@@ -147,7 +147,7 @@ class GYTableTest(unittest.TestCase):
         """
         fake_controller_setup(self.gy_controller)
         imsi = 'IMSI010000000088888'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         redirect_ips = ["185.128.101.5", "185.128.121.4"]
         self.gy_controller._redirect_manager._dns_cache.get(
             "about.sha.ddih.org", lambda: redirect_ips, max_age=42
@@ -199,7 +199,7 @@ class GYTableTest(unittest.TestCase):
         """
         fake_controller_setup(self.gy_controller)
         imsi = 'IMSI010000000088888'
-        sub_ip = '192.168.128.74'
+        sub_ip = '192.168.138.74'
         flow_list1 = [FlowDescription(
             match=FlowMatch(
                 ip_dst=convert_ipv4_str_to_ip_proto('8.8.8.0/24'),

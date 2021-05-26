@@ -17,12 +17,12 @@
         "@type": "type.googleapis.com/magma.mconfig.PipelineD",
         "allowedGrePeers": [
             {
-                "ip": "192.168.128.2",
+                "ip": "192.168.138.2",
                 "key": 1000
             }
         ],
         "logLevel": "INFO",
-        "ueIpBlock": "192.168.128.0/24"
+        "ueIpBlock": "192.168.138.0/24"
     },
     "radiusd": {
       "@type": "type.googleapis.com/magma.mconfig.RadiusdConfig",
