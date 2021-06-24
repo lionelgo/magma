@@ -74,6 +74,14 @@ MME :
         S1AP_OUTCOME_TIMER = 10;
     };
 
+    GTPV2C :
+    {
+        PORT = 2123;
+        N3 = 3;
+        # Message time-out (milliseconds)
+        T3_MS = 1000;
+    };
+    
     # ------- MME served GUMMEIs
     # MME code DEFAULT  size = 8 bits
     # MME GROUP ID size = 16 bits

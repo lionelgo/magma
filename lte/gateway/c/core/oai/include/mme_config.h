@@ -251,6 +251,12 @@ typedef struct s1ap_config_s {
   uint8_t outcome_drop_timer_sec;
 } s1ap_config_t;
 
+typedef struct gtpv2c_config_s {
+  uint16_t port;
+  uint16_t n3;
+  uint16_t t3_ms;
+} gtpv2c_config_t;
+
 typedef struct ip_s {
   bstring if_name_s1_mme;
   struct in_addr s1_mme_v4;
@@ -396,6 +402,7 @@ typedef struct mme_config_s {
   service303_data_t service303_config;
   sctp_config_t sctp_config;
   s1ap_config_t s1ap_config;
+  gtpv2c_config_t gtpv2c_config;
   s6a_config_t s6a_config;
   itti_config_t itti_config;
   nas_config_t nas_config;

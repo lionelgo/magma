@@ -9,12 +9,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+add_compile_options(-std=c++14)
+
 set(S1AP_C_DIR ${PROJECT_BINARY_DIR}/tasks/s1ap/r15)
 set(NGAP_C_DIR ${PROJECT_BINARY_DIR}/tasks/ngap/r16)
 include_directories(${S1AP_C_DIR})
 include_directories(${NGAP_C_DIR})
 
-add_library(TASK_UDP udp_primitives_server.c)
+add_library(TASK_UDP udp.cpp)
 
 target_link_libraries(TASK_UDP
     LIB_BSTR LIB_HASHTABLE

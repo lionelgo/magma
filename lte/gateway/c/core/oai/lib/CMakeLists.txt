@@ -23,5 +23,5 @@ if (EMBEDDED_SGW)
     add_subdirectory(pipelined_client) # LIB_PIPELINED_CLIENT
   endif (ENABLE_OPENFLOW)
 else (EMBEDDED_SGW)
-  add_subdirectory(gtpv2-c) # LIB_GTPV2C
+  add_subdirectory(gtpv2c) # LIB_GTPV2C
 endif (EMBEDDED_SGW)

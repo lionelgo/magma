@@ -45,6 +45,7 @@ set(COMMON_SRC
     backtrace.c
     common_types.c
     conversions.c
+    conversions.cpp
     digest.c
     dynamic_memory_check.c
     enum_string.c

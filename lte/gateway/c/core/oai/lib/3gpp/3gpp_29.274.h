@@ -123,6 +123,13 @@ typedef enum gtpv2c_cause_value_e {
       116,  ///< Multiple PDN connections for a given APN not allowed.
   LATE_OVERLAPPING_REQUEST =
       121,  ///< If the response message has not been received yet..
+  TIMED_OUT_REQUEST                                   = 122,
+  UE_IS_TEMPORARILY_NOT_REACHABLE_DUE_TO_POWER_SAVING = 123,
+  RELOCATION_FAILURE_DUE_TO_NAS_MESSAGE_REDIRECTION   = 124,
+  UE_NOT_AUTHORISED_BY_OCS_OR_EXTERNAL_AAA_SERVER     = 125,
+  MULTIPLE_ACCESSES_TO_A_PDN_CONNECTION_NOT_ALLOWED   = 126,
+  REQUEST_REJECTED_DUE_TO_UE_CAPABILITY               = 127,
+  S1_U_PATH_FAILURE                                   = 128,
   SGW_CAUSE_MAX
 } gtpv2c_cause_value_t;
 
@@ -223,7 +230,16 @@ typedef enum interface_type_e {
   SGW_GTP_U_UL_DATA_FORWARDING,
   SN_SGSN_GTP_U,
   S2B_EPDG_GTP_C,
-  INTERFACE_TYPE_MAX = S2B_EPDG_GTP_C
+  S2B_U_EPDG_GTP_U,
+  S2B_PGW_GTP_C,
+  S2B_U_PGW_GTP_U,
+  S2A_TWAN_GTP_U,
+  S2A_TWAN_GTP_C,
+  S2A_PGW_GTP_C,
+  S2A_PGW_GTP_U,
+  S11_MME_GTP_U,
+  S11_SGW_GTP_U,
+  INTERFACE_TYPE_MAX = S11_SGW_GTP_U
 } interface_type_t;
 
 typedef struct fteid_s {
