@@ -11,6 +11,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+extern "C" {
+#include "intertask_interface.h"
+#include "log.h"
+}
+
 #include <string.h>
 #include <string>
 #include "3gpp_29.274cc.h"
@@ -344,169 +349,154 @@ gtpv2c_msg::gtpv2c_msg(const gtpv2c_create_session_request& gtp_ies)
   ies = {};
   set_message_type(GTP_CREATE_SESSION_REQUEST);
 
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_IMSI) {
-    std::shared_ptr<gtpv2c_imsi_ie> sie(new gtpv2c_imsi_ie(gtp_ies.imsi));
+  if (gtp_ies.imsi.first) {
+    std::shared_ptr<gtpv2c_imsi_ie> sie(
+        new gtpv2c_imsi_ie(gtp_ies.imsi.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_MSISDN) {
-    std::shared_ptr<gtpv2c_msisdn_ie> sie(new gtpv2c_msisdn_ie(gtp_ies.msisdn));
+  if (gtp_ies.msisdn.first) {
+    std::shared_ptr<gtpv2c_msisdn_ie> sie(
+        new gtpv2c_msisdn_ie(gtp_ies.msisdn.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_MEI) {
-    std::shared_ptr<gtpv2c_mei_ie> sie(new gtpv2c_mei_ie(gtp_ies.mei));
+  if (gtp_ies.mei.first) {
+    std::shared_ptr<gtpv2c_mei_ie> sie(new gtpv2c_mei_ie(gtp_ies.mei.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_ULI) {
+  if (gtp_ies.uli.first) {
     std::shared_ptr<gtpv2c_user_location_information_ie> sie(
-        new gtpv2c_user_location_information_ie(gtp_ies.uli));
+        new gtpv2c_user_location_information_ie(gtp_ies.uli.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_SERVING_NETWORK) {
+  if (gtp_ies.serving_network.first) {
     std::shared_ptr<gtpv2c_serving_network_ie> sie(
-        new gtpv2c_serving_network_ie(gtp_ies.serving_network));
+        new gtpv2c_serving_network_ie(gtp_ies.serving_network.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_RAT_TYPE) {
+  if (gtp_ies.rat_type.first) {
     std::shared_ptr<gtpv2c_rat_type_ie> sie(
-        new gtpv2c_rat_type_ie(gtp_ies.rat_type));
+        new gtpv2c_rat_type_ie(gtp_ies.rat_type.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_INDICATION_FLAGS) {
+  if (gtp_ies.indication_flags.first) {
     std::shared_ptr<gtpv2c_indication_ie> sie(
-        new gtpv2c_indication_ie(gtp_ies.indication_flags));
+        new gtpv2c_indication_ie(gtp_ies.indication_flags.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_SENDER_FTEID_FOR_CONTROL_PLANE) {
+  if (gtp_ies.sender_fteid_for_cp.first) {
     std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-        new gtpv2c_fully_qualified_teid_ie(gtp_ies.sender_fteid_for_cp));
+        new gtpv2c_fully_qualified_teid_ie(gtp_ies.sender_fteid_for_cp.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_PGW_S5S8_ADDRESS_FOR_CONTROL_PLANE) {
+  if (gtp_ies.pgw_s5s8_address_for_cp.first) {
     std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-        new gtpv2c_fully_qualified_teid_ie(gtp_ies.pgw_s5s8_address_for_cp));
+        new gtpv2c_fully_qualified_teid_ie(
+            gtp_ies.pgw_s5s8_address_for_cp.second));
     sie.get()->tlv.set_instance(1);
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_APN) {
+  if (gtp_ies.apn.first) {
     std::shared_ptr<gtpv2c_access_point_name_ie> sie(
-        new gtpv2c_access_point_name_ie(gtp_ies.apn));
+        new gtpv2c_access_point_name_ie(gtp_ies.apn.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_SELECTION_MODE) {
+  if (gtp_ies.selection_mode.first) {
     std::shared_ptr<gtpv2c_selection_mode_ie> sie(
-        new gtpv2c_selection_mode_ie(gtp_ies.selection_mode));
+        new gtpv2c_selection_mode_ie(gtp_ies.selection_mode.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_PDN_TYPE) {
+  if (gtp_ies.pdn_type.first) {
     std::shared_ptr<gtpv2c_pdn_type_ie> sie(
-        new gtpv2c_pdn_type_ie(gtp_ies.pdn_type));
+        new gtpv2c_pdn_type_ie(gtp_ies.pdn_type.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_PAA) {
-    std::shared_ptr<gtpv2c_paa_ie> sie(new gtpv2c_paa_ie(gtp_ies.paa));
+  if (gtp_ies.paa.first) {
+    std::shared_ptr<gtpv2c_paa_ie> sie(new gtpv2c_paa_ie(gtp_ies.paa.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_APN_RESTRICTION) {
+  if (gtp_ies.apn_restriction.first) {
     std::shared_ptr<gtpv2c_apn_restriction_ie> sie(
-        new gtpv2c_apn_restriction_ie(gtp_ies.apn_restriction));
+        new gtpv2c_apn_restriction_ie(gtp_ies.apn_restriction.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_APN_AMBR) {
+  if (gtp_ies.ambr.first) {
     std::shared_ptr<gtpv2c_aggregate_maximum_bit_rate_ie> sie(
-        new gtpv2c_aggregate_maximum_bit_rate_ie(gtp_ies.ambr));
+        new gtpv2c_aggregate_maximum_bit_rate_ie(gtp_ies.ambr.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_LINKED_EPS_BEARER_ID) {
+  if (gtp_ies.linked_eps_bearer_id.first) {
     std::shared_ptr<gtpv2c_eps_bearer_id_ie> sie(
-        new gtpv2c_eps_bearer_id_ie(gtp_ies.linked_eps_bearer_id));
+        new gtpv2c_eps_bearer_id_ie(gtp_ies.linked_eps_bearer_id.second));
     add_ie(sie);
   }
   // if (gtp_ies.ie_presence_mask &
   // GTPV2C_CREATE_SESSION_REQUEST_PR_IE_TRUSTED_WLAN_MODE_INDICATION) {}
-  if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_PCO) {
-    std::shared_ptr<gtpv2c_pco_ie> sie(new gtpv2c_pco_ie(gtp_ies.pco));
+  if (gtp_ies.pco.first) {
+    std::shared_ptr<gtpv2c_pco_ie> sie(new gtpv2c_pco_ie(gtp_ies.pco.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_BEARER_CONTEXTS_TO_BE_CREATED) {
-    if (gtp_ies.bearer_contexts_to_be_created.size() > 0) {
-      for (auto i : gtp_ies.bearer_contexts_to_be_created) {
+  if (gtp_ies.bearer_contexts_to_be_created.first) {
+    if (gtp_ies.bearer_contexts_to_be_created.second.size() > 0) {
+      for (auto i : gtp_ies.bearer_contexts_to_be_created.second) {
         gtpv2c_grouped_ie* gie = new gtpv2c_grouped_ie(GTP_IE_BEARER_CONTEXT);
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_EPS_BEARER_ID) {
+        if (i.eps_bearer_id.first) {
           std::shared_ptr<gtpv2c_eps_bearer_id_ie> sie(
-              new gtpv2c_eps_bearer_id_ie(i.eps_bearer_id));
+              new gtpv2c_eps_bearer_id_ie(i.eps_bearer_id.second));
           gie->add_ie(sie);
         }
         // TODO if (i.ie_presence_mask &
         // GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_TFT)
         // {std::shared_ptr<gtpv2c_traffic_flow_template_ie> sie(new
         // gtpv2c_traffic_flow_template_ie(i.ambr)); gie->add_ie(sie);}
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_S1_U_ENB_FTEID) {
+        if (i.s1_u_enb_fteid.first) {
           std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-              new gtpv2c_fully_qualified_teid_ie(i.s1_u_enb_fteid));
+              new gtpv2c_fully_qualified_teid_ie(i.s1_u_enb_fteid.second));
           gie->add_ie(sie);
         }
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_S4_U_SGSN_FTEID) {
+        if (i.s4_u_sgsn_fteid.first) {
           std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-              new gtpv2c_fully_qualified_teid_ie(i.s4_u_sgsn_fteid));
+              new gtpv2c_fully_qualified_teid_ie(i.s4_u_sgsn_fteid.second));
           sie.get()->tlv.set_instance(1);
           gie->add_ie(sie);
         }
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_S5_S8_U_SGW_FTEID) {
+        if (i.s5_s8_u_sgw_fteid.first) {
           std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-              new gtpv2c_fully_qualified_teid_ie(i.s5_s8_u_sgw_fteid));
+              new gtpv2c_fully_qualified_teid_ie(i.s5_s8_u_sgw_fteid.second));
           sie.get()->tlv.set_instance(2);
           gie->add_ie(sie);
         }
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_S5_S8_U_PGW_FTEID) {
+        if (i.s5_s8_u_pgw_fteid.first) {
           std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-              new gtpv2c_fully_qualified_teid_ie(i.s5_s8_u_pgw_fteid));
+              new gtpv2c_fully_qualified_teid_ie(i.s5_s8_u_pgw_fteid.second));
           sie.get()->tlv.set_instance(3);
           gie->add_ie(sie);
         }
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_S12_RNC_FTEID) {
+        if (i.s12_rnc_fteid.first) {
           std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-              new gtpv2c_fully_qualified_teid_ie(i.s12_rnc_fteid));
+              new gtpv2c_fully_qualified_teid_ie(i.s12_rnc_fteid.second));
           sie.get()->tlv.set_instance(4);
           gie->add_ie(sie);
         }
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_S2B_U_EPDG_FTEID) {
+        if (i.s2b_u_epdg_fteid.first) {
           std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-              new gtpv2c_fully_qualified_teid_ie(i.s2b_u_epdg_fteid));
+              new gtpv2c_fully_qualified_teid_ie(i.s2b_u_epdg_fteid.second));
           sie.get()->tlv.set_instance(5);
           gie->add_ie(sie);
         }
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_S2A_U_TWAN_FTEID) {
+        if (i.s2a_u_twan_fteid.first) {
           std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-              new gtpv2c_fully_qualified_teid_ie(i.s2a_u_twan_fteid));
+              new gtpv2c_fully_qualified_teid_ie(i.s2a_u_twan_fteid.second));
           sie.get()->tlv.set_instance(6);
           gie->add_ie(sie);
         }
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_BEARER_LEVEL_QOS) {
+        if (i.bearer_level_qos.first) {
           std::shared_ptr<gtpv2c_bearer_qos_ie> sie(
-              new gtpv2c_bearer_qos_ie(i.bearer_level_qos));
+              new gtpv2c_bearer_qos_ie(i.bearer_level_qos.second));
           gie->add_ie(sie);
         }
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_CREATED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_S11_U_MME_FTEID) {
+        if (i.s11_u_mme_fteid.first) {
           std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-              new gtpv2c_fully_qualified_teid_ie(i.s11_u_mme_fteid));
+              new gtpv2c_fully_qualified_teid_ie(i.s11_u_mme_fteid.second));
           sie.get()->tlv.set_instance(7);
           gie->add_ie(sie);
         }
@@ -515,22 +505,19 @@ gtpv2c_msg::gtpv2c_msg(const gtpv2c_create_session_request& gtp_ies)
       }
     }
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_BEARER_CONTEXTS_TO_BE_REMOVED) {
-    if (gtp_ies.bearer_contexts_to_be_removed.size() > 0) {
-      for (auto i : gtp_ies.bearer_contexts_to_be_removed) {
+  if (gtp_ies.bearer_contexts_to_be_removed.first) {
+    if (gtp_ies.bearer_contexts_to_be_removed.second.size() > 0) {
+      for (auto i : gtp_ies.bearer_contexts_to_be_removed.second) {
         gtpv2c_grouped_ie* gie = new gtpv2c_grouped_ie(GTP_IE_BEARER_CONTEXT);
         gie->tlv.set_instance(1);
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_REMOVED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_EPS_BEARER_ID) {
+        if (i.eps_bearer_id.first) {
           std::shared_ptr<gtpv2c_eps_bearer_id_ie> sie(
-              new gtpv2c_eps_bearer_id_ie(i.eps_bearer_id));
+              new gtpv2c_eps_bearer_id_ie(i.eps_bearer_id.second));
           gie->add_ie(sie);
         }
-        if (i.ie_presence_mask &
-            GTPV2C_BEARER_CONTEXT_TO_BE_REMOVED_WITHIN_CREATE_SESSION_REQUEST_PR_IE_S4_U_SGSN_FTEID) {
+        if (i.s4_u_sgsn_fteid.first) {
           std::shared_ptr<gtpv2c_fully_qualified_teid_ie> sie(
-              new gtpv2c_fully_qualified_teid_ie(i.s4_u_sgsn_fteid));
+              new gtpv2c_fully_qualified_teid_ie(i.s4_u_sgsn_fteid.second));
           gie->add_ie(sie);
         }
         std::shared_ptr<gtpv2c_grouped_ie> sie(gie);
@@ -543,16 +530,14 @@ gtpv2c_msg::gtpv2c_msg(const gtpv2c_create_session_request& gtp_ies)
   // GTPV2C_CREATE_SESSION_REQUEST_PR_IE_TRACE_INFORMATION) {} if
   // (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_RECOVERY)
   // {}
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_MME_FQ_CSID) {
+  if (gtp_ies.mme_fq_csid.first) {
     std::shared_ptr<gtpv2c_fq_csid_ie> sie(
-        new gtpv2c_fq_csid_ie(gtp_ies.mme_fq_csid));
+        new gtpv2c_fq_csid_ie(gtp_ies.mme_fq_csid.second));
     add_ie(sie);
   }
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_SGW_FQ_CSID) {
+  if (gtp_ies.sgw_fq_csid.first) {
     std::shared_ptr<gtpv2c_fq_csid_ie> sie(
-        new gtpv2c_fq_csid_ie(gtp_ies.sgw_fq_csid));
+        new gtpv2c_fq_csid_ie(gtp_ies.sgw_fq_csid.second));
     sie.get()->tlv.set_instance(1);
     add_ie(sie);
   }
@@ -563,10 +548,9 @@ gtpv2c_msg::gtpv2c_msg(const gtpv2c_create_session_request& gtp_ies)
   // GTPV2C_CREATE_SESSION_REQUEST_PR_IE_TWAN_FQ_CSID)
   // {std::shared_ptr<gtpv2c_fq_csid_ie> sie(new gtpv2c_fq_csid_ie(gtp_ies.));
   // add_ie(sie);}
-  if (gtp_ies.ie_presence_mask &
-      GTPV2C_CREATE_SESSION_REQUEST_PR_IE_UE_TIME_ZONE) {
+  if (gtp_ies.ue_time_zone.first) {
     std::shared_ptr<gtpv2c_ue_time_zone_ie> sie(
-        new gtpv2c_ue_time_zone_ie(gtp_ies.ue_time_zone));
+        new gtpv2c_ue_time_zone_ie(gtp_ies.ue_time_zone.second));
     add_ie(sie);
   }
   // if (gtp_ies.ie_presence_mask & GTPV2C_CREATE_SESSION_REQUEST_PR_IE_UCI)

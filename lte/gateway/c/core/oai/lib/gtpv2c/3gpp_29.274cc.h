@@ -14,15 +14,9 @@ limitations under the License.
 #ifndef FILE_3GPP_29_274_HPP_SEEN
 #define FILE_3GPP_29_274_HPP_SEEN
 
-
 #include "3gpp_29.274-compat.h"
 #include "msg_gtpv2c.h"
 #include "serializable.h"
-
-extern "C" {
-#include "intertask_interface.h"
-#include "log.h"
-}
 
 #include <arpa/inet.h>
 #include <cstring>
@@ -258,12 +252,12 @@ class gtpv2c_msg_header : public stream_serializable {
   }
 
   gtpv2c_msg_header& operator=(gtpv2c_msg_header other) {
-    u1 = other.u1;
-    message_type=  other.message_type;
-    message_length = other.message_length;
-    teid = other.teid;
+    u1              = other.u1;
+    message_type    = other.message_type;
+    message_length  = other.message_length;
+    teid            = other.teid;
     sequence_number = other.sequence_number;
-    u2 = other.u2;
+    u2              = other.u2;
     return *this;
   }
 
@@ -354,7 +348,7 @@ class gtpv2c_msg : public gtpv2c_msg_header {
 
   gtpv2c_msg& operator=(gtpv2c_msg other) {
     remote_port = other.remote_port;
-    ies = other.ies;
+    ies         = other.ies;
     return *this;
   }
 
@@ -1584,7 +1578,7 @@ class protocol_or_container_id : public stream_serializable {
         protocol_id_contents((const char*) p.contents->data, p.length) {}
 
   protocol_or_container_id& operator=(protocol_or_container_id other) {
-    protocol_id = other.protocol_id;
+    protocol_id                    = other.protocol_id;
     length_of_protocol_id_contents = other.length_of_protocol_id_contents;
     std::swap(protocol_id_contents, other.protocol_id_contents);
     return *this;
@@ -3351,14 +3345,14 @@ class gtpv2c_user_location_information_ie : public gtpv2c_ie {
   gtpv2c_user_location_information_ie& operator=(
       gtpv2c_user_location_information_ie other) {
     this->gtpv2c_ie::operator=(other);
-    u1 = other.u1;
-    cgi = other.cgi;
-    sai = other.sai;
-    rai = other.rai;
-    tai = other.tai;
-    ecgi = other.ecgi;
-    lai = other.lai;
-    macro_enodeb_id = other.macro_enodeb_id;
+    u1                       = other.u1;
+    cgi                      = other.cgi;
+    sai                      = other.sai;
+    rai                      = other.rai;
+    tai                      = other.tai;
+    ecgi                     = other.ecgi;
+    lai                      = other.lai;
+    macro_enodeb_id          = other.macro_enodeb_id;
     extended_macro_enodeb_id = other.extended_macro_enodeb_id;
     return *this;
   }
@@ -3519,10 +3513,10 @@ class gtpv2c_fully_qualified_teid_ie : public gtpv2c_ie {
   gtpv2c_fully_qualified_teid_ie& operator=(
       gtpv2c_fully_qualified_teid_ie other) {
     this->gtpv2c_ie::operator=(other);
-    u1 = other.u1;
-    teid_gre_key = other.teid_gre_key;
-    ipv4_address = other.ipv4_address;
-    ipv6_address = other.ipv6_address;
+    u1                       = other.u1;
+    teid_gre_key             = other.teid_gre_key;
+    ipv4_address             = other.ipv4_address;
+    ipv6_address             = other.ipv6_address;
     return *this;
   }
   //--------
@@ -3890,7 +3884,7 @@ class gtpv2c_fq_csid_ie : public gtpv2c_ie {
   }
   //--------
   void to_core_type(fq_csid_t& f) {
-    f                                = {0};
+    f                                = {};
     f.fq_csid_ie_hdr.node_id_type    = u1.bf.node_id_type;
     f.fq_csid_ie_hdr.number_of_csids = u1.bf.number_of_csids;
     switch (u1.bf.node_id_type) {

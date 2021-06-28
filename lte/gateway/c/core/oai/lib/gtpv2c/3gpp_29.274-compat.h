@@ -17,6 +17,7 @@ extern "C" {
 #include "3gpp_24.007.h"
 #include "3gpp_24.008.h"
 #include "3gpp_29.274.h"
+#include "sgw_ie_defs.h"
 #include "common_types.h"
 }
 #include "conversions2.h"
@@ -421,6 +422,19 @@ struct gtpc_imsi_s {
     memcpy(u1.b, i.u1.b, sizeof(u1.b));
   }
 
+  gtpc_imsi_s(const Imsi_t& i) : gtpc_imsi_s() {
+    num_digits = i.length;
+    int di     = IMSI_BCD8_SIZE - 1 - (15 - i.length);
+    for (int si = i.length; si >= 0; --si) {
+      if (si & 0x01) {
+        u1.b[di] = i.digit[si];
+      } else {
+        u1.b[di] = u1.b[di] | (i.digit[si] << 4);
+        di--;
+      }
+    }
+  }
+
   std::string toString() const {
     std::string s = {};
     int l_i       = 0;
@@ -504,6 +518,24 @@ typedef struct gtpc_cause_s {
   uint8_t filler : 1;
   uint8_t offending_ie_type;
   uint16_t offending_ie_length;
+  gtpc_cause_s()
+      : cause_value(0),
+        pce(0),
+        bce(0),
+        cs(0),
+        offending_ie_instance(0),
+        filler(0),
+        offending_ie_type(0),
+        offending_ie_length(0) {}
+  gtpc_cause_s(const gtpv2c_cause_t& c)
+      : cause_value(c.cause_value),
+        pce(c.pce),
+        bce(c.bce),
+        cs(c.cs),
+        offending_ie_instance(c.offending_ie_instance),
+        filler(0),
+        offending_ie_type(c.offending_ie_type),
+        offending_ie_length(c.offending_ie_length) {}
 } gtpc_cause_t;
 //------------------------------------------------------------------------------
 // 8.5 recovery
@@ -664,6 +696,19 @@ struct gtpc_msisdn_s {
 
   gtpc_msisdn_s(const gtpc_msisdn_s& i) : num_digits(i.num_digits) {
     memcpy(u1.b, i.u1.b, sizeof(u1.b));
+  }
+
+  gtpc_msisdn_s(const Msisdn_t& i) : num_digits(i.length) {
+    num_digits = i.length;
+    int di     = MSISDN_LENGTH - 1 - (15 - i.length);
+    for (int si = i.length; si >= 0; --si) {
+      if (si & 0x01) {
+        u1.b[di] = i.digit[si];
+      } else {
+        u1.b[di] = u1.b[di] | (i.digit[si] << 4);
+        di--;
+      }
+    }
   }
 
   std::string toString() const {
@@ -1592,7 +1637,7 @@ enum gtpc_node_id_type_e {
                          ///< to MME by operator
 };
 
-// Values of Number of CSID other than 1 are only employed in the Delete PDN
+// Values of Number of CSID other than 1 are only used in the Delete PDN
 // Connection Set Request.
 typedef struct fq_csid_s {
   struct fq_csid_ie_hdr_t {
@@ -1610,6 +1655,21 @@ typedef struct fq_csid_s {
   } fq_csid_ie_hdr;
 #define PDN_CONNECTION_SET_IDENTIFIER_MAX 15
   uint16_t pdn_connection_set_identifier[PDN_CONNECTION_SET_IDENTIFIER_MAX];
+
+  fq_csid_s() {
+    fq_csid_ie_hdr.node_id_type    = GTPC_GLOBAL_UNICAST_IPv4;
+    fq_csid_ie_hdr.number_of_csids = 0;
+    // set all union bits to 0
+    fq_csid_ie_hdr.node_id.unicast_ipv6 = in6addr_any;
+  }
+  fq_csid_s(const FQ_CSID_t& f) {
+    fq_csid_ie_hdr.node_id_type      = f.node_id_type;
+    fq_csid_ie_hdr.number_of_csids   = 1;
+    pdn_connection_set_identifier[0] = f.csid;
+    memcpy(
+        (void*) &fq_csid_ie_hdr.node_id, &f.node_id,
+        sizeof(fq_csid_ie_hdr.node_id));
+  }
 } fq_csid_t;
 
 //-------------------------------------

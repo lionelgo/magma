@@ -17,6 +17,7 @@ extern "C" {
 }
 #include <cstdlib>
 
+using namespace magma::lte::gtpv2c;
 using namespace std;
 
 // static std::string string_to_hex(const std::string& input) {
@@ -40,7 +41,7 @@ Gtpv2cStack::Gtpv2cStack(
     const ThreadSchedParams& sched_params)
     : t3_ms(t3_milli_seconds),
       n3(n3_retransmit),
-      udp_s(udp_server(ip_address.c_str(), port_num)),
+      udp_s(ip_address.c_str(), port_num),
       udp_s_allocated(ip_address.c_str(), 0),
       m_seq_num(),
       gtpc_tx_id2seq_num(512),
@@ -72,14 +73,14 @@ uint32_t Gtpv2cStack::GetNextSeqNum() {
 //------------------------------------------------------------------------------
 void Gtpv2cStack::HandleReceive(
     char* recv_buffer, const std::size_t bytes_transferred,
-    const endpoint& r_endpoint) {
+    const EndPoint& r_endpoint) {
   std::cerr << "TODO implement Gtpv2cStack::HandleReceive in derived class"
             << std::endl;
 }
 //------------------------------------------------------------------------------
 void Gtpv2cStack::NotifyUlError(
-    const endpoint& r_endpoint, const teid_t teid, const cause_value_e cause,
-    const uint64_t gtpc_tx_id) {
+    const EndPoint& r_endpoint, const teid_t teid,
+    const gtpv2c_cause_value_e cause, const uint64_t gtpc_tx_id) {
   std::cerr << "TODO implement Gtpv2cStack::NotifyUlError in derived class"
             << std::endl;
 }
@@ -270,7 +271,7 @@ void Gtpv2cStack::StopProcCleanupTimer(gtpv2c_procedure& p) {
 }
 //------------------------------------------------------------------------------
 void Gtpv2cStack::HandleReceiveMessageCb(
-    const gtpv2c_msg& msg, const endpoint& r_endpoint, const task_id_t& task_id,
+    const gtpv2c_msg& msg, const EndPoint& r_endpoint, const task_id_t& task_id,
     bool& error, uint64_t& gtpc_tx_id) {
   gtpc_tx_id = 0;
   error      = true;
@@ -282,6 +283,7 @@ void Gtpv2cStack::HandleReceiveMessageCb(
       gtpv2c_procedure proc = {};
       proc.gtpc_tx_id       = generate_gtpc_tx_id();
       proc.initial_msg_type = msg.get_message_type();
+      proc.remote_endpoint  = r_endpoint;
       // TODO later 13.3 Detection and handling of requests which have timed out
       // at the originating entity if (msg_has_timestamp()) {
       // start_proc_cleanup_timer(proc, (N3+1) x T3, task_id,
@@ -359,7 +361,7 @@ void Gtpv2cStack::HandleReceiveMessageCb(
 
 //------------------------------------------------------------------------------
 uint32_t Gtpv2cStack::SendInitialMessage(
-    const endpoint& dest, const gtpv2c_echo_request& gtp_ies,
+    const EndPoint& dest, const gtpv2c_echo_request& gtp_ies,
     const task_id_t& task_id, const uint64_t gtp_tx_id) {
   std::ostringstream oss(std::ostringstream::binary);
   gtpv2c_msg msg(gtp_ies);
@@ -393,7 +395,7 @@ uint32_t Gtpv2cStack::SendInitialMessage(
 }
 //------------------------------------------------------------------------------
 uint32_t Gtpv2cStack::SendInitialMessage(
-    const endpoint& dest, const teid_t r_teid, const teid_t l_teid,
+    const EndPoint& dest, const teid_t r_teid, const teid_t l_teid,
     const gtpv2c_create_session_request& gtp_ies, const task_id_t& task_id,
     const uint64_t gtp_tx_id) {
   std::ostringstream oss(std::ostringstream::binary);
@@ -431,7 +433,7 @@ uint32_t Gtpv2cStack::SendInitialMessage(
 }
 //------------------------------------------------------------------------------
 uint32_t Gtpv2cStack::SendInitialMessage(
-    const endpoint& dest, const teid_t r_teid, const teid_t l_teid,
+    const EndPoint& dest, const teid_t r_teid, const teid_t l_teid,
     const gtpv2c_delete_session_request& gtp_ies, const task_id_t& task_id,
     const uint64_t gtp_tx_id) {
   std::ostringstream oss(std::ostringstream::binary);
@@ -466,7 +468,7 @@ uint32_t Gtpv2cStack::SendInitialMessage(
 }
 //------------------------------------------------------------------------------
 uint32_t Gtpv2cStack::SendInitialMessage(
-    const endpoint& dest, const teid_t r_teid, const teid_t l_teid,
+    const EndPoint& dest, const teid_t r_teid, const teid_t l_teid,
     const gtpv2c_modify_bearer_request& gtp_ies, const task_id_t& task_id,
     const uint64_t gtp_tx_id) {
   std::ostringstream oss(std::ostringstream::binary);
@@ -501,7 +503,7 @@ uint32_t Gtpv2cStack::SendInitialMessage(
 }
 //------------------------------------------------------------------------------
 uint32_t Gtpv2cStack::SendInitialMessage(
-    const endpoint& dest, const teid_t r_teid, const teid_t l_teid,
+    const EndPoint& dest, const teid_t r_teid, const teid_t l_teid,
     const gtpv2c_release_access_bearers_request& gtp_ies,
     const task_id_t& task_id, const uint64_t gtp_tx_id) {
   std::ostringstream oss(std::ostringstream::binary);
@@ -536,7 +538,7 @@ uint32_t Gtpv2cStack::SendInitialMessage(
 }
 //------------------------------------------------------------------------------
 uint32_t Gtpv2cStack::SendInitialMessage(
-    const endpoint& dest, const teid_t r_teid, const teid_t l_teid,
+    const EndPoint& dest, const teid_t r_teid, const teid_t l_teid,
     const gtpv2c_downlink_data_notification& gtp_ies, const task_id_t& task_id,
     const uint64_t gtp_tx_id) {
   std::ostringstream oss(std::ostringstream::binary);
@@ -569,218 +571,258 @@ uint32_t Gtpv2cStack::SendInitialMessage(
       reinterpret_cast<const char*>(bstream.c_str()), bstream.length(), dest);
   return msg.get_sequence_number();
 }
-//------------------------------------------------------------------------------
-void Gtpv2cStack::SendTriggeredMessage(
-    const endpoint& dest, const gtpv2c_echo_response& gtp_ies,
-    const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a) {
-  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
-  if (it != gtpc_tx_id2seq_num.end()) {
-    std::ostringstream oss(std::ostringstream::binary);
-    gtpv2c_msg msg(gtp_ies);
-    msg.set_sequence_number(it->second);
-    msg.dump_to(oss);
-    std::string bstream = oss.str();
-    OAILOG_TRACE(
-        LOG_GTPV2C,
-        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
-        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
-        gtp_tx_id);
-    udp_s.async_send_to(
-        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(), dest);
+////------------------------------------------------------------------------------
+// void Gtpv2cStack::SendTriggeredMessage(
+//    const EndPoint& dest, const gtpv2c_echo_response& gtp_ies,
+//    const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a) {
+//  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
+//  if (it != gtpc_tx_id2seq_num.end()) {
+//    std::ostringstream oss(std::ostringstream::binary);
+//    gtpv2c_msg msg(gtp_ies);
+//    msg.set_sequence_number(it->second);
+//    msg.dump_to(oss);
+//    std::string bstream = oss.str();
+//    OAILOG_TRACE(
+//        LOG_GTPV2C,
+//        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
+//        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
+//        gtp_tx_id);
+//    udp_s.async_send_to(
+//        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
+//        dest);
+//
+//    if (a == DELETE_TX) {
+//      auto it_proc = pending_procedures.find(it->second);
+//      if (it_proc != pending_procedures.end()) {
+//        stop_proc_cleanup_timer(it_proc->second);
+//        free_gtpc_tx_id(gtp_tx_id);
+//        pending_procedures.erase(it_proc->first);
+//      }
+//      gtpc_tx_id2seq_num.erase(it->first);
+//    }
+//  } else {
+//    OAILOG_ERROR(
+//        LOG_GTPV2C,
+//        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
+//        gtp_ies.get_msg_name(), gtp_tx_id);
+//  }
+//}
+////------------------------------------------------------------------------------
+// void Gtpv2cStack::SendTriggeredMessage(
+//    const EndPoint& r_endpoint, const teid_t r_teid,
+//    const gtpv2c_create_session_response& gtp_ies, const uint64_t gtp_tx_id,
+//    const gtpv2c_transaction_action& a) {
+//  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
+//  if (it != gtpc_tx_id2seq_num.end()) {
+//    std::ostringstream oss(std::ostringstream::binary);
+//    gtpv2c_msg msg(gtp_ies);
+//    msg.set_teid(r_teid);
+//    msg.set_sequence_number(it->second);
+//    msg.dump_to(oss);
+//    std::string bstream = oss.str();
+//    OAILOG_TRACE(
+//        LOG_GTPV2C,
+//        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
+//        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
+//        gtp_tx_id);
+//    udp_s.async_send_to(
+//        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
+//        r_endpoint);
+//
+//    if (a == DELETE_TX) {
+//      auto it_proc = pending_procedures.find(it->second);
+//      if (it_proc != pending_procedures.end()) {
+//        stop_proc_cleanup_timer(it_proc->second);
+//        free_gtpc_tx_id(gtp_tx_id);
+//        pending_procedures.erase(it_proc->first);
+//      }
+//      gtpc_tx_id2seq_num.erase(it->first);
+//    }
+//  } else {
+//    OAILOG_ERROR(
+//        LOG_GTPV2C,
+//        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
+//        gtp_ies.get_msg_name(), gtp_tx_id);
+//  }
+//}
+////------------------------------------------------------------------------------
+// void Gtpv2cStack::SendTriggeredMessage(
+//    const EndPoint& r_endpoint, const teid_t r_teid,
+//    const gtpv2c_delete_session_response& gtp_ies, const uint64_t gtp_tx_id,
+//    const gtpv2c_transaction_action& a) {
+//  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
+//  if (it != gtpc_tx_id2seq_num.end()) {
+//    std::ostringstream oss(std::ostringstream::binary);
+//    gtpv2c_msg msg(gtp_ies);
+//    msg.set_teid(r_teid);
+//    msg.set_sequence_number(it->second);
+//    msg.dump_to(oss);
+//    std::string bstream = oss.str();
+//    OAILOG_TRACE(
+//        LOG_GTPV2C,
+//        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
+//        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
+//        gtp_tx_id);
+//    udp_s.async_send_to(
+//        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
+//        r_endpoint);
+//
+//    if (a == DELETE_TX) {
+//      auto it_proc = pending_procedures.find(it->second);
+//      if (it_proc != pending_procedures.end()) {
+//        stop_proc_cleanup_timer(it_proc->second);
+//        free_gtpc_tx_id(gtp_tx_id);
+//        pending_procedures.erase(it_proc->first);
+//      }
+//      gtpc_tx_id2seq_num.erase(it->first);
+//    }
+//  } else {
+//    OAILOG_ERROR(
+//        LOG_GTPV2C,
+//        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
+//        gtp_ies.get_msg_name(), gtp_tx_id);
+//  }
+//}
+////------------------------------------------------------------------------------
+// void Gtpv2cStack::SendTriggeredMessage(
+//    const EndPoint& r_endpoint, const teid_t r_teid,
+//    const gtpv2c_modify_bearer_response& gtp_ies, const uint64_t gtp_tx_id,
+//    const gtpv2c_transaction_action& a) {
+//  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
+//  if (it != gtpc_tx_id2seq_num.end()) {
+//    std::ostringstream oss(std::ostringstream::binary);
+//    gtpv2c_msg msg(gtp_ies);
+//    msg.set_teid(r_teid);
+//    msg.set_sequence_number(it->second);
+//    msg.dump_to(oss);
+//    std::string bstream = oss.str();
+//    OAILOG_TRACE(
+//        LOG_GTPV2C,
+//        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
+//        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
+//        gtp_tx_id);
+//    udp_s.async_send_to(
+//        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
+//        r_endpoint);
+//
+//    if (a == DELETE_TX) {
+//      auto it_proc = pending_procedures.find(it->second);
+//      if (it_proc != pending_procedures.end()) {
+//        stop_proc_cleanup_timer(it_proc->second);
+//        free_gtpc_tx_id(gtp_tx_id);
+//        pending_procedures.erase(it_proc->first);
+//      }
+//      gtpc_tx_id2seq_num.erase(it->first);
+//    }
+//  } else {
+//    OAILOG_ERROR(
+//        LOG_GTPV2C,
+//        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
+//        gtp_ies.get_msg_name(), gtp_tx_id);
+//  }
+//}
+////------------------------------------------------------------------------------
+// void Gtpv2cStack::SendTriggeredMessage(
+//    const EndPoint& r_endpoint, const teid_t r_teid,
+//    const gtpv2c_release_access_bearers_response& gtp_ies,
+//    const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a) {
+//  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
+//  if (it != gtpc_tx_id2seq_num.end()) {
+//    std::ostringstream oss(std::ostringstream::binary);
+//    gtpv2c_msg msg(gtp_ies);
+//    msg.set_teid(r_teid);
+//    msg.set_sequence_number(it->second);
+//    msg.dump_to(oss);
+//    std::string bstream = oss.str();
+//    OAILOG_TRACE(
+//        LOG_GTPV2C,
+//        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
+//        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
+//        gtp_tx_id);
+//    udp_s.async_send_to(
+//        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
+//        r_endpoint);
+//
+//    if (a == DELETE_TX) {
+//      auto it_proc = pending_procedures.find(it->second);
+//      if (it_proc != pending_procedures.end()) {
+//        stop_proc_cleanup_timer(it_proc->second);
+//        free_gtpc_tx_id(gtp_tx_id);
+//        pending_procedures.erase(it_proc->first);
+//      }
+//      gtpc_tx_id2seq_num.erase(it->first);
+//    }
+//  } else {
+//    OAILOG_ERROR(
+//        LOG_GTPV2C,
+//        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
+//        gtp_ies.get_msg_name(), gtp_tx_id);
+//  }
+//}
+////------------------------------------------------------------------------------
+// void Gtpv2cStack::SendTriggeredMessage(
+//    const EndPoint& r_endpoint, const teid_t r_teid,
+//    const gtpv2c_downlink_data_notification_acknowledge& gtp_ies,
+//    const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a) {
+//  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
+//  if (it != gtpc_tx_id2seq_num.end()) {
+//    std::ostringstream oss(std::ostringstream::binary);
+//    gtpv2c_msg msg(gtp_ies);
+//    msg.set_teid(r_teid);
+//    msg.set_sequence_number(it->second);
+//    msg.dump_to(oss);
+//    std::string bstream = oss.str();
+//    OAILOG_TRACE(
+//        LOG_GTPV2C,
+//        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
+//        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
+//        gtp_tx_id);
+//    udp_s.async_send_to(
+//        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
+//        r_endpoint);
+//
+//    if (a == DELETE_TX) {
+//      auto it_proc = pending_procedures.find(it->second);
+//      if (it_proc != pending_procedures.end()) {
+//        stop_proc_cleanup_timer(it_proc->second);
+//        free_gtpc_tx_id(gtp_tx_id);
+//        pending_procedures.erase(it_proc->first);
+//      }
+//      gtpc_tx_id2seq_num.erase(it->first);
+//    }
+//  } else {
+//    OAILOG_ERROR(
+//        LOG_GTPV2C,
+//        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
+//        gtp_ies.get_msg_name(), gtp_tx_id);
+//  }
+//}
 
-    if (a == DELETE_TX) {
-      auto it_proc = pending_procedures.find(it->second);
-      if (it_proc != pending_procedures.end()) {
-        stop_proc_cleanup_timer(it_proc->second);
-        free_gtpc_tx_id(gtp_tx_id);
-        pending_procedures.erase(it_proc->first);
-      }
-      gtpc_tx_id2seq_num.erase(it->first);
-    }
-  } else {
-    OAILOG_ERROR(
-        LOG_GTPV2C,
-        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
-        gtp_ies.get_msg_name(), gtp_tx_id);
-  }
-}
 //------------------------------------------------------------------------------
+template<typename GTP_IES>
 void Gtpv2cStack::SendTriggeredMessage(
-    const endpoint& r_endpoint, const teid_t r_teid,
-    const gtpv2c_create_session_response& gtp_ies, const uint64_t gtp_tx_id,
+    const teid_t r_teid, const GTP_IES& gtp_ies, const uint64_t gtp_tx_id,
     const gtpv2c_transaction_action& a) {
   auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
   if (it != gtpc_tx_id2seq_num.end()) {
-    std::ostringstream oss(std::ostringstream::binary);
-    gtpv2c_msg msg(gtp_ies);
-    msg.set_teid(r_teid);
-    msg.set_sequence_number(it->second);
-    msg.dump_to(oss);
-    std::string bstream = oss.str();
-    OAILOG_TRACE(
-        LOG_GTPV2C,
-        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
-        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
-        gtp_tx_id);
-    udp_s.async_send_to(
-        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
-        r_endpoint);
+    auto it_proc = pending_procedures.find(it->second);
+    if (it_proc != pending_procedures.end()) {
+      std::ostringstream oss(std::ostringstream::binary);
+      gtpv2c_msg msg(gtp_ies);
+      msg.set_teid(r_teid);
+      msg.set_sequence_number(it->second);
+      msg.dump_to(oss);
+      std::string bstream = oss.str();
+      OAILOG_TRACE(
+          LOG_GTPV2C,
+          "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
+          gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
+          gtp_tx_id);
+      udp_s.async_send_to(
+          reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
+          it_proc->second.remote_endpoint);
 
-    if (a == DELETE_TX) {
-      auto it_proc = pending_procedures.find(it->second);
-      if (it_proc != pending_procedures.end()) {
-        stop_proc_cleanup_timer(it_proc->second);
-        free_gtpc_tx_id(gtp_tx_id);
-        pending_procedures.erase(it_proc->first);
-      }
-      gtpc_tx_id2seq_num.erase(it->first);
-    }
-  } else {
-    OAILOG_ERROR(
-        LOG_GTPV2C,
-        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
-        gtp_ies.get_msg_name(), gtp_tx_id);
-  }
-}
-//------------------------------------------------------------------------------
-void Gtpv2cStack::SendTriggeredMessage(
-    const endpoint& r_endpoint, const teid_t r_teid,
-    const gtpv2c_delete_session_response& gtp_ies, const uint64_t gtp_tx_id,
-    const gtpv2c_transaction_action& a) {
-  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
-  if (it != gtpc_tx_id2seq_num.end()) {
-    std::ostringstream oss(std::ostringstream::binary);
-    gtpv2c_msg msg(gtp_ies);
-    msg.set_teid(r_teid);
-    msg.set_sequence_number(it->second);
-    msg.dump_to(oss);
-    std::string bstream = oss.str();
-    OAILOG_TRACE(
-        LOG_GTPV2C,
-        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
-        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
-        gtp_tx_id);
-    udp_s.async_send_to(
-        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
-        r_endpoint);
-
-    if (a == DELETE_TX) {
-      auto it_proc = pending_procedures.find(it->second);
-      if (it_proc != pending_procedures.end()) {
-        stop_proc_cleanup_timer(it_proc->second);
-        free_gtpc_tx_id(gtp_tx_id);
-        pending_procedures.erase(it_proc->first);
-      }
-      gtpc_tx_id2seq_num.erase(it->first);
-    }
-  } else {
-    OAILOG_ERROR(
-        LOG_GTPV2C,
-        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
-        gtp_ies.get_msg_name(), gtp_tx_id);
-  }
-}
-//------------------------------------------------------------------------------
-void Gtpv2cStack::SendTriggeredMessage(
-    const endpoint& r_endpoint, const teid_t r_teid,
-    const gtpv2c_modify_bearer_response& gtp_ies, const uint64_t gtp_tx_id,
-    const gtpv2c_transaction_action& a) {
-  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
-  if (it != gtpc_tx_id2seq_num.end()) {
-    std::ostringstream oss(std::ostringstream::binary);
-    gtpv2c_msg msg(gtp_ies);
-    msg.set_teid(r_teid);
-    msg.set_sequence_number(it->second);
-    msg.dump_to(oss);
-    std::string bstream = oss.str();
-    OAILOG_TRACE(
-        LOG_GTPV2C,
-        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
-        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
-        gtp_tx_id);
-    udp_s.async_send_to(
-        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
-        r_endpoint);
-
-    if (a == DELETE_TX) {
-      auto it_proc = pending_procedures.find(it->second);
-      if (it_proc != pending_procedures.end()) {
-        stop_proc_cleanup_timer(it_proc->second);
-        free_gtpc_tx_id(gtp_tx_id);
-        pending_procedures.erase(it_proc->first);
-      }
-      gtpc_tx_id2seq_num.erase(it->first);
-    }
-  } else {
-    OAILOG_ERROR(
-        LOG_GTPV2C,
-        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
-        gtp_ies.get_msg_name(), gtp_tx_id);
-  }
-}
-//------------------------------------------------------------------------------
-void Gtpv2cStack::SendTriggeredMessage(
-    const endpoint& r_endpoint, const teid_t r_teid,
-    const gtpv2c_release_access_bearers_response& gtp_ies,
-    const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a) {
-  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
-  if (it != gtpc_tx_id2seq_num.end()) {
-    std::ostringstream oss(std::ostringstream::binary);
-    gtpv2c_msg msg(gtp_ies);
-    msg.set_teid(r_teid);
-    msg.set_sequence_number(it->second);
-    msg.dump_to(oss);
-    std::string bstream = oss.str();
-    OAILOG_TRACE(
-        LOG_GTPV2C,
-        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
-        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
-        gtp_tx_id);
-    udp_s.async_send_to(
-        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
-        r_endpoint);
-
-    if (a == DELETE_TX) {
-      auto it_proc = pending_procedures.find(it->second);
-      if (it_proc != pending_procedures.end()) {
-        stop_proc_cleanup_timer(it_proc->second);
-        free_gtpc_tx_id(gtp_tx_id);
-        pending_procedures.erase(it_proc->first);
-      }
-      gtpc_tx_id2seq_num.erase(it->first);
-    }
-  } else {
-    OAILOG_ERROR(
-        LOG_GTPV2C,
-        "Sending %s, gtp_tx_id " PROC_ID_FMT " proc not found, discarded!",
-        gtp_ies.get_msg_name(), gtp_tx_id);
-  }
-}
-//------------------------------------------------------------------------------
-void Gtpv2cStack::SendTriggeredMessage(
-    const endpoint& r_endpoint, const teid_t r_teid,
-    const gtpv2c_downlink_data_notification_acknowledge& gtp_ies,
-    const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a) {
-  auto it = gtpc_tx_id2seq_num.find(gtp_tx_id);
-  if (it != gtpc_tx_id2seq_num.end()) {
-    std::ostringstream oss(std::ostringstream::binary);
-    gtpv2c_msg msg(gtp_ies);
-    msg.set_teid(r_teid);
-    msg.set_sequence_number(it->second);
-    msg.dump_to(oss);
-    std::string bstream = oss.str();
-    OAILOG_TRACE(
-        LOG_GTPV2C,
-        "Sending %s, seq %d, teid " TEID_FMT ", proc " PROC_ID_FMT "",
-        gtp_ies.get_msg_name(), msg.get_sequence_number(), msg.get_teid(),
-        gtp_tx_id);
-    udp_s.async_send_to(
-        reinterpret_cast<const char*>(bstream.c_str()), bstream.length(),
-        r_endpoint);
-
-    if (a == DELETE_TX) {
-      auto it_proc = pending_procedures.find(it->second);
-      if (it_proc != pending_procedures.end()) {
+      if (a == DELETE_TX) {
         stop_proc_cleanup_timer(it_proc->second);
         free_gtpc_tx_id(gtp_tx_id);
         pending_procedures.erase(it_proc->first);
@@ -827,7 +869,7 @@ void Gtpv2cStack::TimeOutEvent(
         // abort procedure
         NotifyUlError(
             it_proc->second.remote_endpoint, it_proc->second.local_teid,
-            cause_value_e::REMOTE_PEER_NOT_RESPONDING,
+            gtpv2c_cause_value_e::REMOTE_PEER_NOT_RESPONDING,
             it_proc->second.gtpc_tx_id);
         handled                               = true;
         it_proc->second.proc_cleanup_timer_id = 0;

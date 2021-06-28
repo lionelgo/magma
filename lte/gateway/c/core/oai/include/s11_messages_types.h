@@ -440,7 +440,7 @@ typedef struct itti_s11_create_session_request_s {
   // Private Extension
 
   /* S11 stack specific parameter. Not used in standalone epc mode */
-  void* trxn;  ///< Transaction identifier
+  uint64_t trxn;  ///< Transaction identifier
   edns_peer_ip_t edns_peer_ip;
   uint16_t peer_port;  ///< MME port for S-GW or S-GW port for MME
 } itti_s11_create_session_request_t;
@@ -630,7 +630,7 @@ typedef struct itti_s11_create_session_response_s {
   ///< interfaces.
 
   /* S11 stack specific parameter. Not used in standalone epc mode */
-  void* trxn;              ///< Transaction identifier
+  uint64_t trxn;           ///< Transaction identifier
   struct in_addr peer_ip;  ///< MME ipv4 address
 } itti_s11_create_session_response_t;
 
@@ -697,7 +697,7 @@ typedef struct itti_s11_create_bearer_request_s {
   // Private Extension   Private Extension
 
   /* GTPv2-C specific parameters */
-  void* trxn;  ///< Transaction identifier
+  uint64_t trxn;  ///< Transaction identifier
   struct in_addr peer_ip;
 } itti_s11_create_bearer_request_t;
 
@@ -781,7 +781,7 @@ typedef struct itti_s11_create_bearer_response_s {
   // Private Extension Private Extension        ///< optional
 
   /* S11 stack specific parameter. Not used in standalone epc mode */
-  void* trxn;  ///< Transaction identifier
+  uint64_t trxn;  ///< Transaction identifier
 } itti_s11_create_bearer_response_t;
 
 //-----------------------------------------------------------------------------
@@ -1020,7 +1020,7 @@ typedef struct itti_s11_modify_bearer_request_s {
 
   /* GTPv2-C specific parameters */
   edns_peer_ip_t edns_peer_ip;
-  void* trxn;  ///< Transaction identifier
+  uint64_t trxn;  ///< Transaction identifier
   uint8_t internal_flags;
 } itti_s11_modify_bearer_request_t;
 
@@ -1146,7 +1146,7 @@ typedef struct itti_s11_modify_bearer_response_s {
   // Private Extension Private Extension        ///< optional
 
   /* S11 stack specific parameter. Not used in standalone epc mode */
-  void* trxn;  ///< Transaction identifier
+  uint64_t trxn;  ///< Transaction identifier
   uint8_t internal_flags;
 } itti_s11_modify_bearer_response_t;
 
@@ -1172,7 +1172,7 @@ typedef struct itti_s11_delete_session_request_s {
   indication_flags_t indication_flags;
 
   /* GTPv2-C specific parameters */
-  void* trxn;  ///< Transaction identifier
+  uint64_t trxn;  ///< Transaction identifier
   edns_peer_ip_t edns_peer_ip;
   struct in_addr peer_ip;
   Uli_t uli;
@@ -1208,7 +1208,7 @@ typedef struct itti_s11_delete_session_response_s {
             ///< SGSN/MME on the S4/S11 interface.
 
   /* GTPv2-C specific parameters */
-  void* trxn;
+  uint64_t trxn;
   struct in_addr peer_ip;
   ebi_t lbi;
 } itti_s11_delete_session_response_t;
@@ -1239,7 +1239,7 @@ typedef struct itti_s11_release_access_bearers_request_s {
   ///< This IE shall be sent on S4 interface, if ISR is active in the SGSN
   // Private Extension Private Extension ///< optional
   /* GTPv2-C specific parameters */
-  void* trxn;
+  uint64_t trxn;
   edns_peer_ip_t edns_peer_ip;
 } itti_s11_release_access_bearers_request_t;
 
@@ -1266,7 +1266,7 @@ typedef struct itti_s11_release_access_bearers_response_s {
   // Recovery           ///< optional This IE shall be included if contacting
   // the peer for the first time Private Extension  ///< optional
   /* GTPv2-C specific parameters */
-  void* trxn;
+  uint64_t trxn;
   struct in_addr peer_ip;
 } itti_s11_release_access_bearers_response_t;
 
@@ -1280,7 +1280,7 @@ typedef struct itti_s11_release_access_bearers_response_s {
 typedef struct itti_s11_downlink_data_notification_s {
   teid_t teid;  ///< Tunnel Endpoint Identifier
   /* GTPv2-C specific parameters */
-  void* trxn;
+  uint64_t trxn;
   struct sockaddr* peer_ip;
 } itti_s11_downlink_data_notification_t;
 
@@ -1296,7 +1296,7 @@ typedef struct itti_s11_downlink_data_notification_acknowledge_s {
   teid_t local_teid;  ///< Tunnel Endpoint Identifier
   gtpv2c_cause_t cause;
   /* GTPv2-C specific parameters */
-  void* trxn;
+  uint64_t trxn;
   struct sockaddr* peer_ip;
 } itti_s11_downlink_data_notification_acknowledge_t;
 
@@ -1317,7 +1317,7 @@ typedef struct itti_s11_delete_bearer_command_s {
   teid_t local_teid;  ///< Tunnel Endpoint Identifier
 
   // TODO
-  void* trxn;
+  uint64_t trxn;
   edns_peer_ip_t edns_peer_ip;
   ebi_list_t ebi_list;
 } itti_s11_delete_bearer_command_t;

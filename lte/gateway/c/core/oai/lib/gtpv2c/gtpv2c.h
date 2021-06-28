@@ -37,10 +37,12 @@ namespace gtpv2c {
 
 static const uint16_t default_port = 2123;
 
+typedef int timer_id_t;
+
 class Gtpv2cProcedure {
  public:
   std::shared_ptr<gtpv2c_msg> retry_msg;
-  EndPoint remote_EndPoint;
+  EndPoint remote_endpoint;
   teid_t local_teid;  // for peer not responding
   timer_id_t retry_timer_id;
   timer_id_t proc_cleanup_timer_id;
@@ -56,7 +58,7 @@ class Gtpv2cProcedure {
   // of retransmission attempts compared to single leg communication.
   Gtpv2cProcedure()
       : retry_msg(),
-        remote_EndPoint(),
+        remote_endpoint(),
         local_teid(0),
         retry_timer_id(0),
         proc_cleanup_timer_id(0),
@@ -67,7 +69,7 @@ class Gtpv2cProcedure {
 
   Gtpv2cProcedure(const Gtpv2cProcedure& p)
       : retry_msg(p.retry_msg),
-        remote_EndPoint(p.remote_EndPoint),
+        remote_endpoint(p.remote_endpoint),
         local_teid(p.local_teid),
         retry_timer_id(p.retry_timer_id),
         proc_cleanup_timer_id(p.proc_cleanup_timer_id),
@@ -86,8 +88,8 @@ class Gtpv2cStack : public UdpApplication {
   uint32_t t3_ms;
   uint32_t n3;
   uint32_t id;
-  udp_server udp_s;
-  udp_server udp_s_allocated;
+  UdpServer udp_s;
+  UdpServer udp_s_allocated;
 
   // seems no need for atomic
   uint32_t seq_num;
@@ -106,11 +108,11 @@ class Gtpv2cStack : public UdpApplication {
   uint32_t GetNextSeqNum();
 
   static uint64_t GenerateGtpcTxId() {
-    return util::uint_uid_generator<uint64_t>::get_instance().get_uid();
+    return UintUidGenerator<uint64_t>::GetInstance().GetUid();
   }
 
   static void FreeGtpcTxId(const uint64_t gtpc_tx_id) {
-    util::uint_uid_generator<uint64_t>::get_instance().free_uid(gtpc_tx_id);
+    UintUidGenerator<uint64_t>::GetInstance().FreeUid(gtpc_tx_id);
   }
 
   static bool CheckInitialMessageType(const uint8_t initial);
@@ -122,23 +124,24 @@ class Gtpv2cStack : public UdpApplication {
   void StartMsgRetryTimer(
       Gtpv2cProcedure& p, uint32_t time_out_milli_seconds,
       const task_id_t& task_id, const uint32_t& seq_num);
-  void StopProcCleanupTimer(Gtpv2cProcedure& p);
+  void StartMsgRetryTimer(Gtpv2cProcedure& p);
   void StopProcCleanupTimer(timer_id_t& t);
   void StopProcCleanupTimer(Gtpv2cProcedure& p);
-  void NotifyUlError(const Gtpv2cProcedure& p, const cause_value_e cause);
+  void NotifyUlError(
+      const Gtpv2cProcedure& p, const gtpv2c_cause_value_e cause);
 
  public:
   static const uint8_t version = 2;
   Gtpv2cStack(
       const uint32_t t1_milli_seconds, const uint32_t n1_retransmit,
       const std::string& ip_address, const unsigned short port_num,
-      const util::thread_sched_params& sched_param);
+      const ThreadSchedParams& sched_param);
   virtual void HandleReceive(
       char* recv_buffer, const std::size_t bytes_transferred,
       const EndPoint& r_EndPoint);
   virtual void NotifyUlError(
       const EndPoint& r_EndPoint, const teid_t l_teid,
-      const cause_value_e cause, const uint64_t gtpc_tx_id);
+      const gtpv2c_cause_value_e cause, const uint64_t gtpc_tx_id);
 
   void HandleReceiveMessageCb(
       const gtpv2c_msg& msg, const EndPoint& r_EndPoint,
@@ -174,25 +177,31 @@ class Gtpv2cStack : public UdpApplication {
       const gtpv2c_downlink_data_notification& gtp_ies,
       const task_id_t& task_id, const uint64_t gtp_tx_id);
 
-  virtual void SendTriggeredMessage(
-      const EndPoint& r_EndPoint, const teid_t teid,
-      const gtpv2c_create_session_response& gtp_ies, const uint64_t gtp_tx_id,
-      const gtpv2c_transaction_action& a = DELETE_TX);
-  virtual void SendTriggeredMessage(
-      const EndPoint& r_EndPoint, const teid_t teid,
-      const gtpv2c_delete_session_response& gtp_ies, const uint64_t gtp_tx_id,
-      const gtpv2c_transaction_action& a = DELETE_TX);
-  virtual void SendTriggeredMessage(
-      const EndPoint& r_EndPoint, const teid_t teid,
-      const gtpv2c_modify_bearer_response& gtp_ies, const uint64_t gtp_tx_id,
-      const gtpv2c_transaction_action& a = DELETE_TX);
-  virtual void SendTriggeredMessage(
-      const EndPoint& r_EndPoint, const teid_t teid,
-      const gtpv2c_release_access_bearers_response& gtp_ies,
-      const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a = DELETE_TX);
-  virtual void SendTriggeredMessage(
-      const EndPoint& r_EndPoint, const teid_t teid,
-      const gtpv2c_downlink_data_notification_acknowledge& gtp_ies,
+  //  virtual void SendTriggeredMessage(
+  //      const EndPoint& r_EndPoint, const teid_t teid,
+  //      const gtpv2c_create_session_response& gtp_ies, const uint64_t
+  //      gtp_tx_id, const gtpv2c_transaction_action& a = DELETE_TX);
+  //  virtual void SendTriggeredMessage(
+  //      const EndPoint& r_EndPoint, const teid_t teid,
+  //      const gtpv2c_delete_session_response& gtp_ies, const uint64_t
+  //      gtp_tx_id, const gtpv2c_transaction_action& a = DELETE_TX);
+  //  virtual void SendTriggeredMessage(
+  //      const EndPoint& r_EndPoint, const teid_t teid,
+  //      const gtpv2c_modify_bearer_response& gtp_ies, const uint64_t
+  //      gtp_tx_id, const gtpv2c_transaction_action& a = DELETE_TX);
+  //  virtual void SendTriggeredMessage(
+  //      const EndPoint& r_EndPoint, const teid_t teid,
+  //      const gtpv2c_release_access_bearers_response& gtp_ies,
+  //      const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a =
+  //      DELETE_TX);
+  //  virtual void SendTriggeredMessage(
+  //      const EndPoint& r_EndPoint, const teid_t teid,
+  //      const gtpv2c_downlink_data_notification_acknowledge& gtp_ies,
+  //      const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a =
+  //      DELETE_TX);
+  template<typename GTP_IES>
+  void SendTriggeredMessage(
+      const EndPoint& r_EndPoint, const teid_t teid, const GTP_IES& gtp_ies,
       const uint64_t gtp_tx_id, const gtpv2c_transaction_action& a = DELETE_TX);
 
   void TimeOutEvent(

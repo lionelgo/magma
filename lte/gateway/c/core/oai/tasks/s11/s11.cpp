@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "s11.hpp"
+#include "s11.h"
 extern "C" {
 #include "common_defs.h"
 #include "intertask_interface.h"
@@ -20,32 +20,45 @@ extern "C" {
 }
 #include <stdexcept>
 
+using namespace magma::lte;
 using namespace std;
 
-task_zmq_ctx_t s11_task_zmq_ctx;
+task_zmq_ctx_t mme_s11_task_zmq_ctx;
 
 S11* s11_inst;
 
-void s11_task(void*);
+static int handle_message(zloop_t* loop, zsock_t* reader, void* arg);
+static void* mme_s11_thread(void* args);
+static void mme_s11_exit(void);
 
+//------------------------------------------------------------------------------
+static void* mme_s11_thread(void* args) {
+  itti_mark_task_ready(TASK_S11);
+  task_id_t task_ids[] = {TASK_MME_APP};
+  init_task_context(
+      TASK_S11, task_ids, 1, handle_message, &mme_s11_task_zmq_ctx);
+
+  zloop_start(mme_s11_task_zmq_ctx.event_loop);
+  mme_s11_exit();
+  return NULL;
+}
 //------------------------------------------------------------------------------
 int s11_mme_init(mme_config_t* mme_config_p) {
   int ret = 0;
 
-  OAILOG_DEBUG(LOG_S11, "Initializing S11 interface\n");
+  OAILOG_DEBUG(LOG_S11, "Initializing MME S11 interface\n");
 
   try {
     s11_inst = new S11();
 
-    if (itti_create_task(TASK_S11, &s11_mme_thread, mme_config_p) < 0) {
-      OAILOG_ERROR(LOG_S11, "gtpv1u phtread_create: %s\n", strerror(errno));
-      goto fail;
+    if (itti_create_task(TASK_S11, &mme_s11_thread, mme_config_p) < 0) {
+      OAILOG_ERROR(LOG_S11, "Failed to create mme_s11 task\n");
+      return RETURNerror;
     }
-
-    OAILOG_DEBUG(LOG_S11, "Initializing S11 interface: DONE\n");
+    OAILOG_DEBUG(LOG_S11, "Initializing MME S11 interface: DONE\n");
     return ret;
-  } catch (Exception e) {
-    OAILOG_DEBUG(LOG_S11, "Initializing S11 interface: FAILURE\n");
+  } catch (std::exception e) {
+    OAILOG_DEBUG(LOG_S11, "Initializing MME S11 interface: FAILURE\n");
     return RETURNerror;
   }
 }
@@ -59,20 +72,29 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
     } break;
 
     case S11_CREATE_BEARER_RESPONSE: {
-      s11_mme_create_bearer_response(
-          &s11_mme_stack_handle,
-          &received_message_p->ittiMsg.s11_create_bearer_response);
+      gtpv2c::gtpv2c_create_bearer_response m(
+          received_message_p->ittiMsg.s11_create_bearer_response);
+      s11_inst->SendMsg(
+          received_message_p->ittiMsg.s11_create_bearer_response.local_teid, m,
+          received_message_p->ittiMsg.s11_create_bearer_response.trxn);
     } break;
 
     case S11_CREATE_SESSION_REQUEST: {
-      s11_inst->send_msg(ref(*m));
-      ;
+      gtpv2c::gtpv2c_create_session_request m(
+          received_message_p->ittiMsg.s11_create_session_request);
+      s11_inst->SendMsg(
+          received_message_p->ittiMsg.s11_create_session_request.r_endpoint,
+          received_message_p->ittiMsg.s11_create_session_request.local_teid, m,
+          received_message_p->ittiMsg.s11_create_session_request.trxn);
     } break;
 
     case S11_DELETE_SESSION_REQUEST: {
-      s11_mme_delete_session_request(
-          &s11_mme_stack_handle,
-          &received_message_p->ittiMsg.s11_delete_session_request);
+      gtpv2c::gtpv2c_delete_session_request m(
+          received_message_p->ittiMsg.s11_delete_session_request);
+      s11_inst->SendMsg(
+          received_message_p->ittiMsg.s11_delete_session_request.r_endpoint,
+          received_message_p->ittiMsg.s11_delete_session_request.local_teid, m,
+          received_message_p->ittiMsg.s11_delete_session_request.trxn);
     } break;
 
     case S11_DELETE_BEARER_COMMAND: {
@@ -82,22 +104,36 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
     } break;
 
     case S11_MODIFY_BEARER_REQUEST: {
-      s11_mme_modify_bearer_request(
-          &s11_mme_stack_handle,
-          &received_message_p->ittiMsg.s11_modify_bearer_request);
+      gtpv2c::gtpv2c_modify_bearer_request m(
+          received_message_p->ittiMsg.s11_modify_bearer_request);
+      s11_inst->SendMsg(
+          received_message_p->ittiMsg.s11_modify_bearer_request.r_endpoint,
+          received_message_p->ittiMsg.s11_modify_bearer_request.local_teid, m,
+          received_message_p->ittiMsg.s11_modify_bearer_request.trxn);
     } break;
 
     case S11_RELEASE_ACCESS_BEARERS_REQUEST: {
-      s11_mme_release_access_bearers_request(
-          &s11_mme_stack_handle,
-          &received_message_p->ittiMsg.s11_release_access_bearers_request);
+      gtpv2c::gtpv2c_release_access_bearers_request m(
+          received_message_p->ittiMsg.s11_release_access_bearers_request);
+      s11_inst->SendMsg(
+          received_message_p->ittiMsg.s11_release_access_bearers_request
+              .r_endpoint,
+          received_message_p->ittiMsg.s11_release_access_bearers_request
+              .local_teid,
+          m,
+          received_message_p->ittiMsg.s11_release_access_bearers_request.trxn);
     } break;
 
     case S11_DOWNLINK_DATA_NOTIFICATION_ACKNOWLEDGE: {
-      s11_mme_downlink_data_notification_acknowledge(
-          &s11_mme_stack_handle,
-          &received_message_p->ittiMsg
-               .s11_downlink_data_notification_acknowledge);
+      gtpv2c::gtpv2c_downlink_data_notification_acknowledge m(
+          received_message_p->ittiMsg
+              .s11_downlink_data_notification_acknowledge);
+      s11_inst->SendMsg(
+          received_message_p->ittiMsg.s11_downlink_data_notification_acknowledge
+              .local_teid,
+          m,
+          received_message_p->ittiMsg.s11_downlink_data_notification_acknowledge
+              .trxn);
     } break;
 
     case TERMINATE_MESSAGE: {
@@ -122,21 +158,6 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
       }
     } break;
 
-    case UDP_DATA_IND: {
-      /*
-       * We received new data to handle from the UDP layer
-       */
-      nw_rc_t rc;
-      udp_data_ind_t* udp_data_ind;
-
-      udp_data_ind = &received_message_p->ittiMsg.udp_data_ind;
-      rc           = nwGtpv2cProcessUdpReq(
-          s11_mme_stack_handle, udp_data_ind->msgBuf,
-          udp_data_ind->buffer_length, udp_data_ind->local_port,
-          udp_data_ind->peer_port, (struct sockaddr*) &udp_data_ind->sock_addr);
-      DevAssert(rc == NW_OK);
-    } break;
-
     default:
       OAILOG_ERROR(
           LOG_S11, "Unknown message ID %d:%s\n",
@@ -149,111 +170,53 @@ static int handle_message(zloop_t* loop, zsock_t* reader, void* arg) {
   return 0;
 }
 
-void s11_task(void* args_p) {
-  const task_id_t task_id = TASK_S11;
-  itti_inst->notify_task_ready(task_id);
-
-  do {
-    std::shared_ptr<itti_msg> shared_msg = itti_inst->receive_msg(task_id);
-    auto* msg                            = shared_msg.get();
-    switch (msg->msg_type) {
-      case S5S8_CREATE_SESSION_REQUEST:
-        if (itti_s5s8_create_session_request* m =
-                dynamic_cast<itti_s5s8_create_session_request*>(msg)) {
-          s11_inst->send_msg(ref(*m));
-        }
-        break;
-
-      case S5S8_MODIFY_BEARER_REQUEST:
-        if (itti_s5s8_modify_bearer_request* m =
-                dynamic_cast<itti_s5s8_modify_bearer_request*>(msg)) {
-          s11_inst->send_msg(ref(*m));
-        }
-        break;
-
-      case S5S8_RELEASE_ACCESS_BEARERS_REQUEST:
-        if (itti_s5s8_release_access_bearers_request* m =
-                dynamic_cast<itti_s5s8_release_access_bearers_request*>(msg)) {
-          s11_inst->send_msg(ref(*m));
-        }
-        break;
-
-      case S5S8_DELETE_SESSION_REQUEST:
-        if (itti_s5s8_delete_session_request* m =
-                dynamic_cast<itti_s5s8_delete_session_request*>(msg)) {
-          s11_inst->send_msg(ref(*m));
-        }
-        break;
-
-      case S5S8_DOWNLINK_DATA_NOTIFICATION_ACKNOWLEDGE:
-        if (itti_s5s8_downlink_data_notification_acknowledge* m =
-                dynamic_cast<itti_s5s8_downlink_data_notification_acknowledge*>(
-                    msg)) {
-          s11_inst->send_msg(ref(*m));
-        }
-        break;
-
-      case TIME_OUT:
-        if (itti_msg_timeout* to = dynamic_cast<itti_msg_timeout*>(msg)) {
-          OAILOG_DEBUG(LOG_S11, "TIME-OUT event timer id %d", to->timer_id);
-          s11_inst->time_out_itti_event(to->timer_id);
-        }
-        break;
-
-      case TERMINATE:
-        if (itti_msg_terminate* terminate =
-                dynamic_cast<itti_msg_terminate*>(msg)) {
-          OAILOG_INFO(LOG_S11, "Received terminate message");
-          return;
-        }
-        break;
-
-      case HEALTH_PING:
-        break;
-
-      default:
-        OAILOG_INFO(LOG_S11, "no handler for msg type %d", msg->msg_type);
-    }
-  } while (true);
-}
-
 //------------------------------------------------------------------------------
 s11::s11()
     : gtpv2c_stack(
           mme_config.gtpv2c_config.t3_ms, mme_config.gtpv2c_config.n3,
           string(inet_ntoa(pgwc::pgw_config::s11_.iface.addr4)),
-          mme_config.gtpv2c_config.port) {
-  Logger::sgwc_s5s8().startup("Starting...");
-  if (itti_inst->create_task(TASK_S11, s11_task, nullptr)) {
-    OAILOG_ERROR(LOG_S11, "Cannot create task TASK_S11");
-    throw std::runtime_error("Cannot create task TASK_S11");
-  }
-  Logger::sgwc_s5s8().startup("Started");
+          mme_config.gtpv2c_config.port) {}
+//------------------------------------------------------------------------------
+void s11::send_msg(
+    teid_t local_teid, gtpv2c::gtpv2c_create_bearer_response& gtp_ies,
+    uint64_t gtpc_tx_id) {
+  send_triggered_message(local_teid, gtp_ies, gtpc_tx_id, CONTINUE_TX);
 }
 //------------------------------------------------------------------------------
-void s11::send_msg(itti_s5s8_create_session_request& i) {
+void s11::send_msg(
+    EndPoint& remote_endpoint, teid_t remote_teid, teid_t local_teid,
+    gtpv2c::gtpv2c_create_session_request gtp_ies, uint64_t gtpc_tx_id) {
   send_initial_message(
-      i.r_endpoint, i.teid, i.l_teid, i.gtp_ies, TASK_S11, i.gtpc_tx_id);
+      remote_endpoint, remote_teid, local_teid, gtp_ies, TASK_S11, gtpc_tx_id);
 }
 //------------------------------------------------------------------------------
-void s11::send_msg(itti_s5s8_delete_session_request& i) {
+void s11::send_msg(
+    EndPoint& remote_endpoint, teid_t remote_teid, teid_t local_teid,
+    gtpv2c::gtpv2c_delete_session_request gtp_ies, uint64_t gtpc_tx_id) {
   send_initial_message(
-      i.r_endpoint, i.teid, i.l_teid, i.gtp_ies, TASK_S11, i.gtpc_tx_id);
+      remote_endpoint, remote_teid, local_teid, gtp_ies, TASK_S11, gtpc_tx_id);
 }
 //------------------------------------------------------------------------------
-void s11::send_msg(itti_s5s8_modify_bearer_request& i) {
+void s11::send_msg(
+    EndPoint& remote_endpoint, teid_t remote_teid, teid_t local_teid,
+    gtpv2c::gtpv2c_modify_bearer_request gtp_ies, uint64_t gtpc_tx_id) {
   send_initial_message(
-      i.r_endpoint, i.teid, i.l_teid, i.gtp_ies, TASK_S11, i.gtpc_tx_id);
+      remote_endpoint, remote_teid, local_teid, gtp_ies, TASK_S11, gtpc_tx_id);
 }
 //------------------------------------------------------------------------------
-void s11::send_msg(itti_s5s8_release_access_bearers_request& i) {
+void s11::send_msg(
+    EndPoint& remote_endpoint, teid_t remote_teid, teid_t local_teid,
+    gtpv2c::gtpv2c_release_access_bearers_request gtp_ies,
+    uint64_t gtpc_tx_id) {
   send_initial_message(
-      i.r_endpoint, i.teid, i.l_teid, i.gtp_ies, TASK_S11, i.gtpc_tx_id);
+      remote_endpoint, remote_teid, local_teid, gtp_ies, TASK_S11, gtpc_tx_id);
 }
 //------------------------------------------------------------------------------
-void s11::send_msg(itti_s5s8_downlink_data_notification_acknowledge& i) {
-  send_triggered_message(
-      i.r_endpoint, i.teid, i.gtp_ies, i.gtpc_tx_id, CONTINUE_TX);
+void s11::send_msg(
+    EndPoint& remote_endpoint, teid_t local_teid,
+    gtpv2c::gtpv2c_downlink_data_notification_acknowledge gtp_ies,
+    uint64_t gtpc_tx_id) {
+  send_triggered_message(local_teid, gtp_ies, gtpc_tx_id, CONTINUE_TX);
 }
 //------------------------------------------------------------------------------
 void s11::handle_receive_create_session_response(
@@ -550,4 +513,11 @@ void s11::time_out_itti_event(const uint32_t timer_id) {
   if (!handled) {
     OAILOG_WARNING(LOG_S11, "Timer %d not Found", timer_id);
   }
+}
+//------------------------------------------------------------------------------
+static void mme_s11_exit(void) {
+  destroy_task_context(&mme_s11_task_zmq_ctx);
+  OAILOG_DEBUG(LOG_S11, "Finished cleaning up MME_S11 task \n");
+  OAI_FPRINTF_INFO("TASK_S11 terminated\n");
+  pthread_exit(NULL);
 }
